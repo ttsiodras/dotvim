@@ -1,7 +1,7 @@
 
 These are my VIM settings.
 
-A video showing what I can do with these when I code C++ is here:
+A video showing what I can do with these when I code in C++ is here:
 
     http://www.wupload.com/file/2665561027/Vim.flv
 
@@ -53,6 +53,9 @@ I use a small number of plugins, and did some minor customization for shortcuts:
 - For my Python needs, I use:
     PyFlakes for "edit-time compiling" :-)
     F8 to run pep8 (perfectionism)
+
+- I also have easy motion in, so I can navigate to any place in the screen
+  with a simple \\w followed by a character. Amazing plugin.
 
 Am I insane to use VIM?
 
