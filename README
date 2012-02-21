@@ -26,7 +26,7 @@ I use a small number of plugins, and did some minor customization for shortcuts:
     cd ..
     ln -s .vim/.vimrc
 
-  And therefore use the same environment everywhere.
+  And therefore use the same environment in all machines I work on.
 
 - I create /usr/include/tags:
 
@@ -35,12 +35,12 @@ I use a small number of plugins, and did some minor customization for shortcuts:
     ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
 
   ... and my .vimrc is set to use these, as well as any local tags I build
-  in my Makefiles:
+  in my project-specific Makefiles:
 
     set tags+=/usr/include/tags
 
 - I use clang complete ( http://www.vim.org/scripts/script.php?script_id=3302 )
-  to get Intellisense-like autocompletion. 
+  to get Intellisense-like autocompletion (see the video above)
 
 - I've mapped:
     NERDTreeToggle to F10, for direct access to "file manager" interface :-)
@@ -52,7 +52,7 @@ I use a small number of plugins, and did some minor customization for shortcuts:
     
 - For my Python needs, I use:
     PyFlakes for "edit-time compiling" :-)
-    F8 to run pep8 (perfectionism)
+    F6 to run pep8 (perfectionism)
 
 - I also have easy motion in, so I can navigate to any place in the screen
   with a simple \\w followed by a character. Amazing plugin.
