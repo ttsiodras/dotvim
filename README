@@ -18,8 +18,10 @@ I use a small number of plugins, and did some minor customization for shortcuts:
 - In any new machine/account I need to work on, I clone:
 
     git clone https://github.com/ttsiodras/dotvim .vim
+    cd .vim
     git submodule init
     git submodule update
+    cd ..
     ln -s .vim/.vimrc
 
   And therefore use the same environment everywhere.
