@@ -17,7 +17,7 @@ I use a small number of plugins, and did some minor customization for shortcuts:
 
 - In any new machine/account I need to work on, I clone:
 
-    git clone git@github.com:ttsiodras/dotvim.git .vim
+    git clone https://github.com/ttsiodras/dotvim .vim
     git submodule init
     git submodule update
     ln -s .vim/.vimrc
