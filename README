@@ -48,7 +48,7 @@ I use a small number of plugins, and did some minor customization for shortcuts:
     Ctrl-L to clear search results (hate seeing yellow stuff)
     Ctrl-End to quickly close "window" (buffer)
     K to show manpages in "inner window" (allows me to copy/paste)
-    F6 to show taglists (macros/types/variables/functions/classes)
+    F8 to show taglists (macros/types/variables/functions/classes)
     
 - For my Python needs, I use:
     PyFlakes for "edit-time compiling" :-)
