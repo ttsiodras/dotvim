@@ -14,7 +14,7 @@ General stuff
 - I maintain my plugins with pathogen, and use Git submodules to always
   have the latest versions. 
 
-- In any new machine/account I need to work on, I clone:
+- In any new machine/account I need to work on, I clone::
 
     cd 
     git clone https://github.com/ttsiodras/dotvim .vim
@@ -29,14 +29,14 @@ General stuff
 For C/C++ development
 ---------------------
 
-- I create /usr/include/tags:
+- I create /usr/include/tags::
 
     (become root via su/sudo)
     cd /usr/include
     ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
 
   ... and my .vimrc is set to use these, as well as any local tags I build
-  in my project-specific Makefiles:
+  in my project-specific Makefiles::
 
     set tags+=/usr/include/tags
 
