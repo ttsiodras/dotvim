@@ -43,6 +43,9 @@ endif
 " obsolete, replaced by flake8
 " PEP8
 "let g:pep8_map='<leader>8'
+
+" ignore 'too long lines'
+g:flake8_ignore=E501
 " My attempt at easy navigation amongst windows
 if !has("gui_running")
     nmap <silent> [1;5B <C-W>j
