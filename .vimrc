@@ -40,8 +40,9 @@ if has("wildmenu")
     set wildignore+=.DS_Store,.git,.hg,.svn
     set wildignore+=*~,*.swp,*.tmp
 endif
+" obsolete, replaced by flake8
 " PEP8
-let g:pep8_map='<leader>8'
+"let g:pep8_map='<leader>8'
 " My attempt at easy navigation amongst windows
 if !has("gui_running")
     nmap <silent> [1;5B <C-W>j
