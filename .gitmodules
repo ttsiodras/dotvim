@@ -16,3 +16,6 @@
 [submodule "bundle/repeat"]
 	path = bundle/repeat
 	url = http://github.com/tpope/vim-repeat
+[submodule "bundle/flake8"]
+	path = bundle/flake8
+	url = https://github.com/nvie/vim-flake8.git
