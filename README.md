@@ -70,4 +70,4 @@ I've mapped:
 
 Am I insane to use VIM?
 -----------------------
-(No, I am not)[http://www.viemu.com/a-why-vi-vim.html]
+[No, I am not](http://www.viemu.com/a-why-vi-vim.html)
