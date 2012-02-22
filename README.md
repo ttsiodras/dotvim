@@ -16,7 +16,6 @@ General stuff
 
 - In any new machine/account I need to work on, I clone:
 
-    # get to home
     cd 
     git clone https://github.com/ttsiodras/dotvim .vim
     cd .vim
