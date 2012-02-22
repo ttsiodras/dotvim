@@ -45,7 +45,7 @@ I use [clang complete](http://www.vim.org/scripts/script.php?script_id=3302)
 The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
 
 Pressing 'K' shows manpages on the symbol under the cursor in an "inner window" 
-(which allows me to copy/paste). I quickly close the manpage "window" with Ctrl-End.
+(which allows me to copy/paste). I quickly close the manpage "window" with Ctrl-F12.
 
 For Python development
 ----------------------
