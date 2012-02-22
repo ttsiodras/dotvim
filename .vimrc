@@ -48,17 +48,28 @@ endif
 let g:flake8_ignore="E501,E225"
 " My attempt at easy navigation amongst windows
 if !has("gui_running")
+    " Set Ctrl-Cursor keys to navigate open windows
+    " And Ctrl-F12 to close current window
+    "
+    " XTerm
     nmap <silent> [1;5B <C-W>j
     nmap <silent> [1;5A <C-W>k
     nmap <silent> [1;5D <C-W>h
     nmap <silent> [1;5C <C-W>l
-    nmap <silent> [1;5F :bd!<CR>
+    nmap <silent> [24;5~ :bd!<CR>
+    " Putty
+    nmap <silent> OB <C-W>j
+    nmap <silent> OA <C-W>k
+    nmap <silent> OD <C-W>h
+    nmap <silent> OC <C-W>l
+    nmap <silent> [24~ :bd!<CR>
 else
+    " GVim
     nnoremap <silent> <C-Down> <C-W>j
     nnoremap <silent> <C-Up> <C-W>k
     nnoremap <silent> <C-Left> <C-W>h
     nnoremap <silent> <C-Right> <C-W>l
-    nnoremap <silent> <C-End> :bd!<CR>
+    nnoremap <silent> <C-F12> :bd!<CR>
 endif
 " incremental search
 se incsearch
