@@ -51,8 +51,7 @@ I use a small number of plugins, and did some minor customization for shortcuts:
     F8 to show taglists (macros/types/variables/functions/classes)
     
 - For my Python needs, I use:
-    PyFlakes for "edit-time compiling" :-)
-    F6 to run pep8 (perfectionism)
+    Not anymore, both are now superseded by flake8
 
 - I also have easy motion in, so I can navigate to any place in the screen
   with a simple \\w followed by a character. Amazing plugin.
