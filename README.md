@@ -11,10 +11,10 @@ I use a small number of plugins, and did some minor customization for shortcuts:
 General stuff
 -------------
 
-- I maintain my plugins with pathogen, and use Git submodules to always
-  have the latest versions. 
+I maintain my plugins with pathogen, and use Git submodules to always
+have the latest versions of the plugins. 
 
-- In any new machine/account I need to work on, I clone::
+In any new machine/account I need to work on, I clone from the repos:
 
     cd 
     git clone https://github.com/ttsiodras/dotvim .vim
@@ -24,28 +24,29 @@ General stuff
     cd ..
     ln -s .vim/.vimrc
 
-  And therefore use the same environment in all machines I work on.
+I therefore use the same VIM environment in all my machines.
 
 For C/C++ development
 ---------------------
 
-- I create /usr/include/tags::
+I create /usr/include/tags:
 
     (become root via su/sudo)
     cd /usr/include
     ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
 
-  ... and my .vimrc is set to use these, as well as any local tags I build
-  in my project-specific Makefiles::
+My .vimrc is set to use these, as well as any local tags I build
+in my project-specific Makefiles::
 
     set tags+=/usr/include/tags
 
-- I use clang complete ( http://www.vim.org/scripts/script.php?script_id=3302 )
-  to get Intellisense-like autocompletion (see the video above)
+I use [clang complete](http://www.vim.org/scripts/script.php?script_id=3302)
+  to get Intellisense-like autocompletion (see the video above).
 
-- I use the 'A' plugin to quickly switch between .h/c{c,pp} with ':A'
+The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
 
-- 'K' to show manpages on current symbol under cursor in "inner window" (allows me to copy/paste)
+Pressing 'K' shows manpages on the symbol under the cursor in an "inner window" 
+(which allows me to copy/paste).
 
 For Python development
 ----------------------
@@ -57,13 +58,13 @@ from error to error in the usual way (:cn, :cp)
 Generic stuff
 -------------
 
-- I've mapped:
-    NERDTreeToggle to F10, for direct access to "file manager" interface :-)
-    Ctrl-cursors to navigate windows (under both XTerms and GVim)
-    Ctrl-L to clear search results (hate seeing yellow stuff after search)
-    Ctrl-End to quickly close "window" (buffer)
-    F8 to show taglists (macros/types/variables/functions/classes)
-    
+I've mapped:
+
+-    NERDTreeToggle to F10, for direct access to "file manager" interface :-)
+-    Ctrl-cursors to navigate windows (under both XTerms and GVim)
+-    Ctrl-L to clear search results (hate seeing yellow stuff after search)
+-    Ctrl-End to quickly close "window" (buffer)
+-    F8 to show taglists (macros/types/variables/functions/classes)
 - I also have easy motion in, so I can navigate to any place in the screen
   with a simple \\w followed by a character. Amazing plugin.
 
