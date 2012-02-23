@@ -4,7 +4,7 @@ These are my VIM settings, mostly targeting development with C/C++ and Python.
 Here is a [video showing what I can do with these](http://www.wupload.com/file/2665561027/Vim.flv) when I code in C++.
 
 Use [MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/) to play it.
-I also tried [uploading it to Youtube](http://www.youtube.com/watch?v=5f5MN8dZDtk), but quality is really low, even in HD setting.
+I also tried [uploading it to Youtube](http://www.youtube.com/watch?v=o0BgAp11C9s), but font quality is really low, even in HD setting.
 
 General stuff
 -------------
