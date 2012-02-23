@@ -14,7 +14,8 @@ if has("autocmd")
     filetype plugin on
 endif
 syntax on
-" map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" If I ever need to generate tags on the fly, I uncomment this:
+" map <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 set tags+=/usr/include/tags
 " se autoindent
 se undofile
