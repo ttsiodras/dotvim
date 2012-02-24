@@ -98,3 +98,10 @@ endfun
 map K :call ReadMan()<CR>
 " Toggle TagList window with F8
 nnoremap <silent> <F8> :TlistToggle<CR>
+" Fix insert-mode cursor keys in FreeBSD
+if has("unix")
+  let myosuname = system("uname")
+  if myosuname == "FreeBSD"
+    set term=cons25
+  endif
+endif
