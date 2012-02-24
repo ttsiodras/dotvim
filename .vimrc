@@ -14,44 +14,70 @@ if has("autocmd")
     filetype plugin on
 endif
 syntax on
+
+"
+" Tags
+"
 " If I ever need to generate tags on the fly, I uncomment this:
 " map <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 set tags+=/usr/include/tags
+
+
 " se autoindent
 se undofile
 se undodir=~/.vimundo
 se term=linux
 "map <ESC>OP <F1>
+
+
+"
 " necessary for using libclang
+"
 let g:clang_library_path='/usr/lib/llvm'
 " auto-closes preview window after you select what to auto-complete with
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-" maps NERDTree to Ctrl-Y
+
+
+"
+" maps NERDTree to F10
+"
 nmap <silent> <F10> :NERDTreeToggle<CR>
 " tells NERDTree to use ASCII chars
 let g:NERDTreeDirArrows=0
+
+
+"
+" Better TAB completion for files (like the shell)
+"
 if has("wildmenu")
-    " Better TAB completion for files (like the shell)
     set wildmenu
     set wildmode=longest,list
-    " Ignore stuff from autocompletion
+    " Ignore stuff (for TAB autocompletion)
     set wildignore+=*.a,*.o
     set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png
     set wildignore+=.DS_Store,.git,.hg,.svn
     set wildignore+=*~,*.swp,*.tmp
 endif
+
+
+"
+" Python stuff
+"
 " obsolete, replaced by flake8
 " PEP8
 "let g:pep8_map='<leader>8'
 
 " ignore 'too long lines'
 let g:flake8_ignore="E501,E225"
-" My attempt at easy navigation amongst windows
+
+
+"
+" My attempt at easy navigation amongst windows:
+"   Ctrl-Cursor keys to navigate open windows
+"   Ctrl-F12 to close current window
+"
 if !has("gui_running")
-    " Set Ctrl-Cursor keys to navigate open windows
-    " And Ctrl-F12 to close current window
-    "
     " XTerm
     nmap <silent> [1;5B <C-W>j
     nmap <silent> [1;5A <C-W>k
@@ -72,12 +98,20 @@ else
     nnoremap <silent> <C-Right> <C-W>l
     nnoremap <silent> <C-F12> :bd!<CR>
 endif
-" incremental search
+
+
+"
+" incremental search that highlights results
+"
 se incsearch
 se hlsearch
-" part of the incremental search: make Ctrl-L clear searches
+" Ctrl-L clears the highlight from the last search
 nnoremap <C-l> :nohlsearch<CR><C-l>
-" Smart manpages
+
+
+"
+" Smart in-line manpages with 'K' in command mode
+"
 fun! ReadMan()
   " Assign current word under cursor to a script variable:
   let s:man_word = expand('<cword>')
@@ -96,9 +130,16 @@ fun! ReadMan()
 endfun
 " Map the K key to the ReadMan function:
 map K :call ReadMan()<CR>
+
+
+"
 " Toggle TagList window with F8
+"
 nnoremap <silent> <F8> :TlistToggle<CR>
+
+"
 " Fix insert-mode cursor keys in FreeBSD
+"
 if has("unix")
   let myosuname = system("uname")
   if myosuname == "FreeBSD"
