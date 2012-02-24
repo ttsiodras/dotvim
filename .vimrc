@@ -16,6 +16,11 @@ endif
 syntax on
 
 "
+" Search path for 'gf' command (e.g. open #include-d files)
+"
+set path+=/usr/include/c++/**
+
+"
 " Tags
 "
 " If I ever need to generate tags on the fly, I uncomment this:
