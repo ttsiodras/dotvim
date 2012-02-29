@@ -142,6 +142,7 @@ map K :call ReadMan()<CR>
 "
 nnoremap <silent> <F8> :TlistToggle<CR>
 
+
 "
 " Fix insert-mode cursor keys in FreeBSD
 "
@@ -151,3 +152,19 @@ if has("unix")
     set term=cons25
   endif
 endif
+
+
+"
+" Reselect visual block after indenting
+"
+vnoremap < <gv
+vnoremap > >gv
+
+
+"
+" Keep search pattern at the center of the screen
+"
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
