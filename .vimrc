@@ -212,3 +212,9 @@ function! SelectClassOrFunction ()
     :call Send_to_Screen(@r)
 endfunction
 nmap <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
+
+
+"
+" Make Y behave like other capitals
+"
+map Y y$
