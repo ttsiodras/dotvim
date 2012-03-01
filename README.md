@@ -62,7 +62,7 @@ via...
 ...and you will get two screen windows: one with a VIM, one with a python instance.
 Navigate to whatever function/class you want in VIM, and hit Ctrl-c Ctrl-c (i.e.
 Ctrl-c twice). This will send the function/class to the running python instance.
-Cool, no?
+You can switch between VIM and python via Alt-[ and Alt-]
 
 Generic stuff
 -------------
