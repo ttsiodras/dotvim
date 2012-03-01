@@ -168,3 +168,47 @@ nnoremap <silent> n nzz
 nnoremap <silent> N Nzz
 nnoremap <silent> * *zz
 nnoremap <silent> # #zz
+
+
+"
+" Function that sends individual Python classes or Python functions 
+" to active screen (SLIME emulation)
+" 
+function! SelectClassOrFunction ()
+
+    let s:currLine = getline(line('.'))
+    if s:currLine =~ '^def\|^class' 
+	" If the cursor line is a function/class start line, 
+	" save its number
+	let s:beginLineNumber = line('.')
+    elseif s:currLine =~ '^[a-zA-Z]'
+	" If the cursor line begins with something else, 
+	" we must be on something like a global assignment
+	let s:beginLineNumber = line('.')
+	let s:endLineNumber = line('.')
+	:exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
+	:call Send_to_Screen(@r)
+	return
+    else
+	" we are inside something, so search backwards 
+	" for function/class beginning, and save its number
+	let s:beginLineNumber = search('^def\|^class', 'bnW')
+	if !s:beginLineNumber 
+	    let s:beginLineNumber = 1
+	endif
+    endif
+
+    " Now search for the first line that starts with something
+    " (function, class, global, etc) and save it
+    let s:endLineNumber = search('^[a-zA-Z@]', 'nW')
+    if !s:endLineNumber
+	let s:endLineNumber = line('$')
+    else
+	let s:endLineNumber = s:endLineNumber-1
+    endif
+
+    " Finally pass the range to the screen session running a REPL
+    :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
+    :call Send_to_Screen(@r)
+endfunction
+nmap <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
