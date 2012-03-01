@@ -54,6 +54,16 @@ I've mapped F7 to invoke flake8 (install it with: "easy_install flake8") to get
 static analysis error reports from "pyflakes" and style issues from "pep8", navigating
 from error to error in the usual way (":cn", ":cp")
 
+I've also added a "screen" based SLIME-like environment - spawn a screen session
+via...
+
+    screen -c python.screenrc
+
+...and you will get two screen windows: one with a VIM, one with a python instance.
+Navigate to whatever function/class you want in VIM, and hit Ctrl-c Ctrl-c (i.e.
+Ctrl-c twice). This will send the function/class to the running python instance.
+Cool, no?
+
 Generic stuff
 -------------
 
