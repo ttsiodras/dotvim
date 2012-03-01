@@ -17,12 +17,12 @@ endfunction
 
 function Screen_Vars()
   if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
-    let g:screen_sessionname = ""
+    let g:screen_sessionname = "PythonSlime"
     let g:screen_windowname = "python"
   end
 
-  let g:screen_sessionname = input("session name: ", "PythonSlime", "custom,Screen_Session_Names")
-  let g:screen_windowname = input("window name: ", g:screen_windowname)
+  " let g:screen_sessionname = input("session name: ", "PythonSlime", "custom,Screen_Session_Names")
+  " let g:screen_windowname = input("window name: ", g:screen_windowname)
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
