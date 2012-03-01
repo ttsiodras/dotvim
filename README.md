@@ -47,6 +47,8 @@ The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
 Pressing 'K' shows manpages on the symbol under the cursor in an "inner window" 
 (which allows me to copy/paste). I quickly close the manpage "window" with Ctrl-F12.
 
+F8 shows taglists (macros/types/variables/functions/classes).
+
 For Python development
 ----------------------
 
@@ -73,7 +75,6 @@ I've mapped:
 -    Ctrl-cursors to navigate windows (under both XTerms and GVim)
 -    Ctrl-L to clear search results (hate seeing yellow stuff after search)
 -    Ctrl-F12 to quickly close "window" (buffer)
--    F8 to show taglists (macros/types/variables/functions/classes)
 - I also have easy motion in, so I can navigate to any place in the screen
   with a simple \\\\w followed by a character. Amazing plugin.
 
