@@ -1,9 +1,9 @@
 
 These are my VIM settings, mostly targeting development with C/C++ and Python.
 
-Here is a [video showing what I can do with these](http://www.wupload.com/file/2665561027/Vim.flv) when I work with C++. Use [MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/) to play it.
+Here is a [video showing what I can do with these](http://www.mediafire.com/?ge1imhbivswsixr) when I work with C++. Use [MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/) to play it.
 
-I also tried uploading it to [Vimeo](http://vimeo.com/37793501) and [Youtube](http://www.youtube.com/watch?v=o0BgAp11C9s) (with annotations, too). Quality of the video is much lower in these, though.
+I also uploaded the video to [Vimeo](http://vimeo.com/37875339) so you can watch it in your browser.
 
 I use a small number of plugins, and did some minor customization for keyboard shortcuts.
 The plugins are maintained with pathogen, and are placed under bundle/ via Git submodules 
