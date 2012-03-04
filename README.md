@@ -1,13 +1,16 @@
 
-These are my VIM settings, mostly targeting development with C/C++ and Python.
+These are my VIM settings, mostly targeting development with C, C++ and Python.
 
-Here is a [video showing what I can do with these](http://www.mediafire.com/?ge1imhbivswsixr) when I work with C++. Use [MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/) to play it.
+Here is a [Vimeo-hosted video](http://vimeo.com/37875339) showing some of 
+the things I can do when I work in C or C++. You can also 
+[download](http://www.mediafire.com/file/ge1imhbivswsixr/Vim.C.and.C++.flv) 
+a high resolution version of the video for offline playback, using 
+[MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/).
 
-I also uploaded the video to [Vimeo](http://vimeo.com/37875339) so you can watch it in your browser.
-
-I use a small number of plugins, and did some minor customization for keyboard shortcuts.
-The plugins are maintained with pathogen, and are placed under bundle/ via Git submodules 
-(so I always have the latest plugin versions). 
+I use a small number of plugins, and did some minor customization for 
+keyboard shortcuts. The plugins are maintained with pathogen, and 
+are placed under bundle/ via Git submodules (so I always have the latest 
+plugin versions). 
 
 Installation
 -------------
