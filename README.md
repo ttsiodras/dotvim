@@ -89,4 +89,4 @@ I've mapped:
 
 Am I insane to use VIM?
 -----------------------
-[No, I am not](http://www.viemu.com/a-why-vi-vim.html)
+[No,](http://www.viemu.com/a-why-vi-vim.html) I am [not](http://users.softlab.ntua.gr/~ttsiod/vim.html).
