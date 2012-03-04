@@ -84,24 +84,41 @@ let g:flake8_ignore="E501,E225"
 "
 if !has("gui_running")
     " XTerm
-    nmap <silent> [1;5B <C-W>j
-    nmap <silent> [1;5A <C-W>k
-    nmap <silent> [1;5D <C-W>h
-    nmap <silent> [1;5C <C-W>l
-    nmap <silent> [24;5~ :bd!<CR>
+    map <silent> [1;5B <C-W>j
+    map <silent> [1;5A <C-W>k
+    map <silent> [1;5D <C-W>h
+    map <silent> [1;5C <C-W>l
+    map <silent> [24;5~ :bd!<CR>
+    map! <silent> [1;5B <ESC><C-W>j
+    map! <silent> [1;5A <ESC><C-W>k
+    map! <silent> [1;5D <ESC><C-W>h
+    map! <silent> [1;5C <ESC><C-W>l
+    map! <silent> [24;5~ <ESC>:bd!<CR>
+
     " Putty
-    nmap <silent> OB <C-W>j
-    nmap <silent> OA <C-W>k
-    nmap <silent> OD <C-W>h
-    nmap <silent> OC <C-W>l
-    nmap <silent> [24~ :bd!<CR>
+    map <silent> OB <C-W>j
+    map <silent> OA <C-W>k
+    map <silent> OD <C-W>h
+    map <silent> OC <C-W>l
+    map <silent> [24~ :bd!<CR>
+    map! <silent> OB <ESC><C-W>j
+    map! <silent> OA <ESC><C-W>k
+    map! <silent> OD <ESC><C-W>h
+    map! <silent> OC <ESC><C-W>l
+    map! <silent> [24~ <ESC>:bd!<CR>
+
 else
     " GVim
-    nnoremap <silent> <C-Down> <C-W>j
-    nnoremap <silent> <C-Up> <C-W>k
-    nnoremap <silent> <C-Left> <C-W>h
-    nnoremap <silent> <C-Right> <C-W>l
-    nnoremap <silent> <C-F12> :bd!<CR>
+    map <silent> <C-Down> <C-W>j
+    map <silent> <C-Up> <C-W>k
+    map <silent> <C-Left> <C-W>h
+    map <silent> <C-Right> <C-W>l
+    map <silent> <C-F12> :bd!<CR>
+    map! <silent> <C-Down> <ESC><C-W>j
+    map! <silent> <C-Up> <ESC><C-W>k
+    map! <silent> <C-Left> <ESC><C-W>h
+    map! <silent> <C-Right> <ESC><C-W>l
+    map! <silent> <C-F12> <ESC>:bd!<CR>
 endif
 
 
