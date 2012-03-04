@@ -15,10 +15,12 @@ if has("autocmd")
 endif
 syntax on
 
+
 "
 " Search path for 'gf' command (e.g. open #include-d files)
 "
 set path+=/usr/include/c++/**
+
 
 "
 " Tags
@@ -39,6 +41,8 @@ se term=linux
 " necessary for using libclang
 "
 let g:clang_library_path='/usr/lib/llvm'
+
+
 " auto-closes preview window after you select what to auto-complete with
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -73,7 +77,8 @@ endif
 " PEP8
 "let g:pep8_map='<leader>8'
 
-" ignore 'too long lines'
+
+" flake8: ignore 'too long lines'
 let g:flake8_ignore="E501,E225"
 
 
