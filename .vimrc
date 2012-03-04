@@ -26,7 +26,7 @@ set path+=/usr/include/c++/**
 " Tags
 "
 " If I ever need to generate tags on the fly, I uncomment this:
-" map <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 set tags+=/usr/include/tags
 
 
@@ -34,7 +34,7 @@ set tags+=/usr/include/tags
 se undofile
 se undodir=~/.vimundo
 se term=linux
-"map <ESC>OP <F1>
+"noremap <ESC>OP <F1>
 
 
 "
@@ -51,8 +51,8 @@ let g:clang_library_path='/usr/lib/llvm'
 "
 " maps NERDTree to F10
 "
-map <silent> <F10> :NERDTreeToggle<CR>
-map! <silent> <F10> <ESC>:NERDTreeToggle<CR>
+noremap <silent> <F10> :NERDTreeToggle<CR>
+noremap! <silent> <F10> <ESC>:NERDTreeToggle<CR>
 
 
 "
@@ -94,41 +94,41 @@ let g:flake8_ignore="E501,E225"
 "
 if !has("gui_running")
     " XTerm
-    map <silent> [1;5B <C-W>j
-    map <silent> [1;5A <C-W>k
-    map <silent> [1;5D <C-W>h
-    map <silent> [1;5C <C-W>l
-    map <silent> [24;5~ :bd!<CR>
-    map! <silent> [1;5B <ESC><C-W>j
-    map! <silent> [1;5A <ESC><C-W>k
-    map! <silent> [1;5D <ESC><C-W>h
-    map! <silent> [1;5C <ESC><C-W>l
-    map! <silent> [24;5~ <ESC>:bd!<CR>
+    noremap <silent> [1;5B <C-W>j
+    noremap <silent> [1;5A <C-W>k
+    noremap <silent> [1;5D <C-W>h
+    noremap <silent> [1;5C <C-W>l
+    noremap <silent> [24;5~ :bd!<CR>
+    noremap! <silent> [1;5B <ESC><C-W>j
+    noremap! <silent> [1;5A <ESC><C-W>k
+    noremap! <silent> [1;5D <ESC><C-W>h
+    noremap! <silent> [1;5C <ESC><C-W>l
+    noremap! <silent> [24;5~ <ESC>:bd!<CR>
 
     " Putty
-    map <silent> OB <C-W>j
-    map <silent> OA <C-W>k
-    map <silent> OD <C-W>h
-    map <silent> OC <C-W>l
-    map <silent> [24~ :bd!<CR>
-    map! <silent> OB <ESC><C-W>j
-    map! <silent> OA <ESC><C-W>k
-    map! <silent> OD <ESC><C-W>h
-    map! <silent> OC <ESC><C-W>l
-    map! <silent> [24~ <ESC>:bd!<CR>
+    noremap <silent> OB <C-W>j
+    noremap <silent> OA <C-W>k
+    noremap <silent> OD <C-W>h
+    noremap <silent> OC <C-W>l
+    noremap <silent> [24~ :bd!<CR>
+    noremap! <silent> OB <ESC><C-W>j
+    noremap! <silent> OA <ESC><C-W>k
+    noremap! <silent> OD <ESC><C-W>h
+    noremap! <silent> OC <ESC><C-W>l
+    noremap! <silent> [24~ <ESC>:bd!<CR>
 
 else
     " GVim
-    map <silent> <C-Down> <C-W>j
-    map <silent> <C-Up> <C-W>k
-    map <silent> <C-Left> <C-W>h
-    map <silent> <C-Right> <C-W>l
-    map <silent> <C-F12> :bd!<CR>
-    map! <silent> <C-Down> <ESC><C-W>j
-    map! <silent> <C-Up> <ESC><C-W>k
-    map! <silent> <C-Left> <ESC><C-W>h
-    map! <silent> <C-Right> <ESC><C-W>l
-    map! <silent> <C-F12> <ESC>:bd!<CR>
+    noremap <silent> <C-Down> <C-W>j
+    noremap <silent> <C-Up> <C-W>k
+    noremap <silent> <C-Left> <C-W>h
+    noremap <silent> <C-Right> <C-W>l
+    noremap <silent> <C-F12> :bd!<CR>
+    noremap! <silent> <C-Down> <ESC><C-W>j
+    noremap! <silent> <C-Up> <ESC><C-W>k
+    noremap! <silent> <C-Left> <ESC><C-W>h
+    noremap! <silent> <C-Right> <ESC><C-W>l
+    noremap! <silent> <C-F12> <ESC>:bd!<CR>
 endif
 
 
@@ -138,7 +138,8 @@ endif
 se incsearch
 se hlsearch
 " Ctrl-L clears the highlight from the last search
-nnoremap <C-l> :nohlsearch<CR><C-l>
+noremap <C-l> :nohlsearch<CR><C-l>
+noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 
 
 "
@@ -161,13 +162,14 @@ fun! ReadMan()
   :resize 20
 endfun
 " Map the K key to the ReadMan function:
-map K :call ReadMan()<CR>
+noremap K :call ReadMan()<CR>
 
 
 "
 " Toggle TagList window with F8
 "
-nnoremap <silent> <F8> :TlistToggle<CR>
+noremap <silent> <F8> :TlistToggle<CR>
+noremap! <silent> <F8> <ESC>:TlistToggle<CR>
 
 
 "
@@ -244,7 +246,7 @@ nmap <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
 "
 " Make Y behave like other capitals
 "
-map Y y$
+noremap Y y$
 
 
 "
