@@ -73,10 +73,10 @@ Generic stuff
 
 I've mapped:
 
--    NERDTreeToggle to F10, for direct access to "file manager" interface
--    Ctrl-cursors to navigate windows (under both XTerms and GVim)
--    Ctrl-L to clear search results (hate seeing yellow stuff after search)
--    Ctrl-F12 to quickly close "window" (buffer)
+- NERDTreeToggle to F10, for direct access to "file manager" interface
+- Ctrl-cursors to navigate windows (under both XTerms and GVim)
+- Ctrl-L to clear search results (hate seeing yellow stuff after search)
+- Ctrl-F12 to quickly close "window" (buffer)
 - I also have easy motion in, so I can navigate to any place in the screen
   with a simple \\\\w followed by a character. Amazing plugin.
 
