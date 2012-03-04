@@ -51,8 +51,13 @@ let g:clang_library_path='/usr/lib/llvm'
 "
 " maps NERDTree to F10
 "
-nmap <silent> <F10> :NERDTreeToggle<CR>
+map <silent> <F10> :NERDTreeToggle<CR>
+map! <silent> <F10> <ESC>:NERDTreeToggle<CR>
+
+
+"
 " tells NERDTree to use ASCII chars
+"
 let g:NERDTreeDirArrows=0
 
 
