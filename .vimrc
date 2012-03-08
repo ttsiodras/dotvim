@@ -253,3 +253,9 @@ noremap Y y$
 " Force Saving Files that Require Root Permission
 "
 cmap w!! %!sudo tee > /dev/null %
+
+
+"
+" Syntastic - Ignore 'too long lines' from flake8 report
+"
+"let g:syntastic_python_checker_args = "--ignore=E501,E225"
