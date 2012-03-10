@@ -259,3 +259,9 @@ cmap w!! %!sudo tee > /dev/null %
 " Syntastic - Ignore 'too long lines' from flake8 report
 "
 "let g:syntastic_python_checker_args = "--ignore=E501,E225"
+
+
+"
+"when the vim window is resized resize the vsplit panes as well
+"
+au VimResized * exe "normal! \<c-w>="
