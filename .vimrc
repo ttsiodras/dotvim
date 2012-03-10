@@ -212,10 +212,10 @@ vnoremap > >gv
 "
 " Keep search pattern at the center of the screen
 "
-nnoremap <silent> n nzz
-nnoremap <silent> N Nzz
-nnoremap <silent> * *zz
-nnoremap <silent> # #zz
+"nnoremap <silent> n nzz
+"nnoremap <silent> N Nzz
+"nnoremap <silent> * *zz
+"nnoremap <silent> # #zz
 
 
 "
