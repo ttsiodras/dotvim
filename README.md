@@ -54,7 +54,7 @@ F8 shows taglists (macros/types/variables/functions/classes).
 For Python development
 ----------------------
 
-I've mapped F7 to invoke flake8 (install it with: "easy_install flake8") to get
+I've mapped F7 to invoke flake8 (install it with: "easy\_install flake8") to get
 static analysis error reports from "pyflakes" and style issues from "pep8", navigating
 from error to error in the usual way (":cn", ":cp")
 
