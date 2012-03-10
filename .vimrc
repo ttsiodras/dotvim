@@ -88,47 +88,66 @@ let g:flake8_ignore="E501,E225"
 
 
 "
-" My attempt at easy navigation amongst windows:
+" My attempt at easy navigation/creation of windows:
 "   Ctrl-Cursor keys to navigate open windows
 "   Ctrl-F12 to close current window
 "
+function! WinMove(key)
+  let t:curwin = winnr()
+  exec "wincmd ".a:key
+  if (t:curwin == winnr()) "we havent moved
+    if (match(a:key,'[jk]')) "were we going up/down
+      wincmd v
+    else
+      wincmd s
+    endif
+    exec "wincmd ".a:key
+  endif
+endfunction
+function! WinClose()
+  if &filetype == "man"
+    q!
+  else
+    wincmd q
+  endif
+endfunction
 if !has("gui_running")
     " XTerm
-    noremap <silent> [1;5B <C-W>j
-    noremap <silent> [1;5A <C-W>k
-    noremap <silent> [1;5D <C-W>h
-    noremap <silent> [1;5C <C-W>l
-    noremap <silent> [24;5~ :bd!<CR>
-    noremap! <silent> [1;5B <ESC><C-W>j
-    noremap! <silent> [1;5A <ESC><C-W>k
-    noremap! <silent> [1;5D <ESC><C-W>h
-    noremap! <silent> [1;5C <ESC><C-W>l
-    noremap! <silent> [24;5~ <ESC>:bd!<CR>
+    noremap <silent> [1;5B :call WinMove('j')<CR>
+    noremap <silent> [1;5A :call WinMove('k')<CR>
+    noremap <silent> [1;5D :call WinMove('h')<CR>
+    noremap <silent> [1;5C :call WinMove('l')<CR>
+    noremap <silent> [24;5~ :call WinClose()<CR>
+    noremap! <silent> [1;5B <ESC>:call WinMove('j')<CR>
+    noremap! <silent> [1;5A <ESC>:call WinMove('k')<CR>
+    noremap! <silent> [1;5D <ESC>:call WinMove('h')<CR>
+    noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
+    noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
     " Putty
-    noremap <silent> OB <C-W>j
-    noremap <silent> OA <C-W>k
-    noremap <silent> OD <C-W>h
-    noremap <silent> OC <C-W>l
-    noremap <silent> [24~ :bd!<CR>
-    noremap! <silent> OB <ESC><C-W>j
-    noremap! <silent> OA <ESC><C-W>k
-    noremap! <silent> OD <ESC><C-W>h
-    noremap! <silent> OC <ESC><C-W>l
-    noremap! <silent> [24~ <ESC>:bd!<CR>
+    noremap <silent> OB :call WinMove('j')<CR>
+    noremap <silent> OA :call WinMove('k')<CR>
+    noremap <silent> OD :call WinMove('h')<CR>
+    noremap <silent> OC :call WinMove('l')<CR>
+    noremap <silent> [24~ :call WinClose()<CR>
+    noremap! <silent> OB <ESC>:call WinMove('j')<CR>
+    noremap! <silent> OA <ESC>:call WinMove('k')<CR>
+    noremap! <silent> OD <ESC>:call WinMove('h')<CR>
+    noremap! <silent> OC <ESC>:call WinMove('l')<CR>
+    noremap! <silent> [24~ <ESC>:call WinClose()<CR>
 
 else
     " GVim
-    noremap <silent> <C-Down> <C-W>j
-    noremap <silent> <C-Up> <C-W>k
-    noremap <silent> <C-Left> <C-W>h
-    noremap <silent> <C-Right> <C-W>l
-    noremap <silent> <C-F12> :bd!<CR>
-    noremap! <silent> <C-Down> <ESC><C-W>j
-    noremap! <silent> <C-Up> <ESC><C-W>k
-    noremap! <silent> <C-Left> <ESC><C-W>h
-    noremap! <silent> <C-Right> <ESC><C-W>l
-    noremap! <silent> <C-F12> <ESC>:bd!<CR>
+    noremap <silent> <C-Down>  :call WinMove('j')<CR>
+    noremap <silent> <C-Up>    :call WinMove('k')<CR>
+    noremap <silent> <C-Left>  :call WinMove('h')<CR>
+    noremap <silent> <C-Right> :call WinMove('l')<CR>
+    noremap <silent> <C-F12>   :call WinClose()<CR>
+    noremap! <silent> <C-Down>  <ESC>:call WinMove('j')<CR>
+    noremap! <silent> <C-Up>    <ESC>:call WinMove('k')<CR>
+    noremap! <silent> <C-Left>  <ESC>:call WinMove('h')<CR>
+    noremap! <silent> <C-Right> <ESC>:call WinMove('l')<CR>
+    noremap! <silent> <C-F12>   <ESC>:call WinClose()<CR>
 endif
 
 
