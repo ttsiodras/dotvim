@@ -265,7 +265,7 @@ nmap <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
 "
 " Make Y behave like other capitals
 "
-noremap Y y$
+"noremap Y y$
 
 
 "
