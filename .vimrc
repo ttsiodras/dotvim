@@ -284,5 +284,3 @@ cmap w!! %!sudo tee > /dev/null %
 "when the vim window is resized resize the vsplit panes as well
 "
 au VimResized * exe "normal! \<c-w>="
-
-se modeline
