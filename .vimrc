@@ -170,7 +170,7 @@ fun! ReadMan()
   " Open a new window:
   :wincmd n
   " Read in the manpage for man_word (col -b is for formatting):
-  :exe "r!man " . s:man_word . " | col -b"
+  :exe ":r!man " . s:man_word . " | col -b"
   " Goto first line...
   :goto
   " and delete it:
@@ -284,3 +284,5 @@ cmap w!! %!sudo tee > /dev/null %
 "when the vim window is resized resize the vsplit panes as well
 "
 au VimResized * exe "normal! \<c-w>="
+
+se modeline
