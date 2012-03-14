@@ -168,15 +168,15 @@ fun! ReadMan()
   " Assign current word under cursor to a script variable:
   let s:man_word = expand('<cword>')
   " Open a new window:
-  :exe ":wincmd n"
+  :wincmd n
   " Read in the manpage for man_word (col -b is for formatting):
-  :exe ":r!man " . s:man_word . " | col -b"
+  :exe "r!man " . s:man_word . " | col -b"
   " Goto first line...
-  :exe ":goto"
+  :goto
   " and delete it:
-  :exe ":delete"
+  :delete
   " finally set file type to 'man':
-  :exe ":set filetype=man"
+  :set filetype=man
   " lines set to 20
   :resize 20
 endfun
