@@ -284,3 +284,10 @@ cmap w!! %!sudo tee > /dev/null %
 "when the vim window is resized resize the vsplit panes as well
 "
 au VimResized * exe "normal! \<c-w>="
+
+
+"
+" TAB and Shift-TAB in normal mode cycle buffers
+"
+:nmap <Tab> :bn<CR>
+:nmap <S-Tab> :bp<CR>
