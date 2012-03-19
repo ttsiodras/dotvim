@@ -81,6 +81,7 @@ Generic stuff
 I've mapped:
 
 - NERDTreeToggle to F10, for direct access to "file manager" interface
+- TAB and Shift-TAB (in normal mode) cycle buffers
 - Ctrl-cursors to navigate windows (or create them, if missing)
 - Ctrl-L to clear search results (hate seeing yellow stuff after search)
 - Ctrl-F12 to quickly close "window" (buffer)
