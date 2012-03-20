@@ -1,0 +1,33 @@
+#!/usr/bin/perl -w
+use strict;
+
+# Place this script in /usr/local/bin
+# and in your .bashrc, add:
+#
+# alias vi=/usr/local/bin/vi
+
+my $gvim = "\"/cygdrive/c/Program Files (x86)/Vim/vim73/gvim.exe\"";
+if ($#ARGV == -1) {
+    system $gvim." &";
+    exit 0;
+} else {
+    my $args;
+    for (my $i=0; $i<=$#ARGV; $i++) {
+        my $arg = $ARGV[$i];
+        if (substr($arg, 0, 1) eq '+') {
+            $args .= $arg." ";
+        } else {
+            my $temp = `cygpath -w -a "$arg"`;
+            $temp =~ s/^.*?\\cygdrive\\([abcdef])/$1:/;
+	    #$temp =~ s/^.*?\\cygwin\\([abcdef])/$1:/;
+            $temp =~ s/\\/\\\\/g;
+            $temp =~ s/&/\\&/g;
+            $temp =~ s/ /\\ /g;
+            chomp $temp;
+            $args .= $temp." ";
+        }
+    }
+    $args = $gvim." ".$args." &";
+    print "$args\n";
+    system $args;
+}
