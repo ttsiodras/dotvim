@@ -13,7 +13,6 @@ if has("autocmd")
     filetype indent on
     filetype plugin on
 endif
-syntax on
 
 
 "
@@ -291,3 +290,6 @@ au VimResized * exe "normal! \<c-w>="
 "
 :nmap <Tab> :bn<CR>
 :nmap <S-Tab> :bp<CR>
+
+
+syntax on
