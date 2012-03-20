@@ -133,18 +133,6 @@ if !has("gui_running")
     noremap! <silent> OD <ESC>:call WinMove('h')<CR>
     noremap! <silent> OC <ESC>:call WinMove('l')<CR>
     noremap! <silent> [24~ <ESC>:call WinClose()<CR>
-
-    " Windows Cygwin RXVT
-    noremap <silent> Ob :call WinMove('j')<CR>
-    noremap <silent> Oa :call WinMove('k')<CR>
-    noremap <silent> Od :call WinMove('h')<CR>
-    noremap <silent> Oc :call WinMove('l')<CR>
-    noremap <silent> [24^ :call WinClose()<CR>
-    noremap! <silent> Ob <ESC>:call WinMove('j')<CR>
-    noremap! <silent> Oa <ESC>:call WinMove('k')<CR>
-    noremap! <silent> Od <ESC>:call WinMove('h')<CR>
-    noremap! <silent> Oc <ESC>:call WinMove('l')<CR>
-    noremap! <silent> [24^ <ESC>:call WinClose()<CR>
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
