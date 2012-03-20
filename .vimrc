@@ -32,7 +32,6 @@ set tags+=/usr/include/tags
 " se autoindent
 se undofile
 se undodir=~/.vimundo
-se term=linux
 "noremap <ESC>OP <F1>
 
 
