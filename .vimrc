@@ -123,16 +123,16 @@ if !has("gui_running")
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
     " Putty
-    noremap <silent> OB :call WinMove('j')<CR>
-    noremap <silent> OA :call WinMove('k')<CR>
-    noremap <silent> OD :call WinMove('h')<CR>
-    noremap <silent> OC :call WinMove('l')<CR>
+    noremap <silent> [B :call WinMove('j')<CR>
+    noremap <silent> [A :call WinMove('k')<CR>
+    noremap <silent> [D :call WinMove('h')<CR>
+    noremap <silent> [C :call WinMove('l')<CR>
     noremap <silent> [24~ :call WinClose()<CR>
-    noremap! <silent> OB <ESC>:call WinMove('j')<CR>
-    noremap! <silent> OA <ESC>:call WinMove('k')<CR>
-    noremap! <silent> OD <ESC>:call WinMove('h')<CR>
-    noremap! <silent> OC <ESC>:call WinMove('l')<CR>
-    noremap! <silent> [24~ <ESC>:call WinClose()<CR>
+    noremap! <silent> [B :call WinMove('j')<CR>
+    noremap! <silent> [A :call WinMove('k')<CR>
+    noremap! <silent> [D :call WinMove('h')<CR>
+    noremap! <silent> [C :call WinMove('l')<CR>
+    noremap! <silent> [24~ :call WinClose()<CR>
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
