@@ -7,7 +7,7 @@ se sts=4
 se modelines=2
 se modeline
 se nocp
-colorscheme evening
+
 if has("autocmd")
     filetype on
     filetype indent on
@@ -292,4 +292,7 @@ au VimResized * exe "normal! \<c-w>="
 :nmap <S-Tab> :bp<CR>
 
 
+"
+" Syntax-coloring of files
 syntax on
+colorscheme evening
