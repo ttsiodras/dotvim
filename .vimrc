@@ -104,9 +104,9 @@ function! WinMove(key)
 endfunction
 function! WinClose()
   if &filetype == "man"
-    q!
+    bd!
   else
-    wincmd q
+    bd
   endif
 endfunction
 if !has("gui_running")
