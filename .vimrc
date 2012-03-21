@@ -193,8 +193,10 @@ noremap! <silent> <F8> <ESC>:TlistToggle<CR>
 "
 if has("unix")
   let myosuname = system("uname")
-  if myosuname == "FreeBSD"
+  if myosuname =~ "FreeBSD"
     set term=cons25
+  elseif myosuname =~ "Linux"
+    set term=linux
   endif
 endif
 
