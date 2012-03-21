@@ -122,17 +122,21 @@ if !has("gui_running")
     noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
-    " Putty
-    noremap <silent> [B :call WinMove('j')<CR>
-    noremap <silent> [A :call WinMove('k')<CR>
-    noremap <silent> [D :call WinMove('h')<CR>
-    noremap <silent> [C :call WinMove('l')<CR>
-    noremap <silent> [24~ :call WinClose()<CR>
-    noremap! <silent> [B :call WinMove('j')<CR>
-    noremap! <silent> [A :call WinMove('k')<CR>
-    noremap! <silent> [D :call WinMove('h')<CR>
-    noremap! <silent> [C :call WinMove('l')<CR>
-    noremap! <silent> [24~ :call WinClose()<CR>
+    " Putty under Windows - gotta find a way to
+    " automatically detect it, because these
+    " settings mess up normal XTerms
+    " (cursor keys generate these...)
+    "
+    "noremap <silent> [B :call WinMove('j')<CR>
+    "noremap <silent> [A :call WinMove('k')<CR>
+    "noremap <silent> [D :call WinMove('h')<CR>
+    "noremap <silent> [C :call WinMove('l')<CR>
+    "noremap <silent> [24~ :call WinClose()<CR>
+    "noremap! <silent> [B :call WinMove('j')<CR>
+    "noremap! <silent> [A :call WinMove('k')<CR>
+    "noremap! <silent> [D :call WinMove('h')<CR>
+    "noremap! <silent> [C :call WinMove('l')<CR>
+    "noremap! <silent> [24~ :call WinClose()<CR>
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
