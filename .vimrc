@@ -110,30 +110,29 @@ function! WinClose()
   endif
 endfunction
 if !has("gui_running")
-    if &term =~ '^xterm'
-	noremap <silent> [1;5B :call WinMove('j')<CR>
-	noremap <silent> [1;5A :call WinMove('k')<CR>
-	noremap <silent> [1;5D :call WinMove('h')<CR>
-	noremap <silent> [1;5C :call WinMove('l')<CR>
-	noremap <silent> [24;5~ :call WinClose()<CR>
-	noremap! <silent> [1;5B <ESC>:call WinMove('j')<CR>
-	noremap! <silent> [1;5A <ESC>:call WinMove('k')<CR>
-	noremap! <silent> [1;5D <ESC>:call WinMove('h')<CR>
-	noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
-	noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
-    endif
+    " XTerm
+    noremap <silent> [1;5B :call WinMove('j')<CR>
+    noremap <silent> [1;5A :call WinMove('k')<CR>
+    noremap <silent> [1;5D :call WinMove('h')<CR>
+    noremap <silent> [1;5C :call WinMove('l')<CR>
+    noremap <silent> [24;5~ :call WinClose()<CR>
+    noremap! <silent> [1;5B <ESC>:call WinMove('j')<CR>
+    noremap! <silent> [1;5A <ESC>:call WinMove('k')<CR>
+    noremap! <silent> [1;5D <ESC>:call WinMove('h')<CR>
+    noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
+    noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
-    "" Putty
-    "noremap <silent> [B :call WinMove('j')<CR>
-    "noremap <silent> [A :call WinMove('k')<CR>
-    "noremap <silent> [D :call WinMove('h')<CR>
-    "noremap <silent> [C :call WinMove('l')<CR>
-    "noremap <silent> [24~ :call WinClose()<CR>
-    "noremap! <silent> [B :call WinMove('j')<CR>
-    "noremap! <silent> [A :call WinMove('k')<CR>
-    "noremap! <silent> [D :call WinMove('h')<CR>
-    "noremap! <silent> [C :call WinMove('l')<CR>
-    "noremap! <silent> [24~ :call WinClose()<CR>
+    " Putty
+    noremap <silent> [B :call WinMove('j')<CR>
+    noremap <silent> [A :call WinMove('k')<CR>
+    noremap <silent> [D :call WinMove('h')<CR>
+    noremap <silent> [C :call WinMove('l')<CR>
+    noremap <silent> [24~ :call WinClose()<CR>
+    noremap! <silent> [B :call WinMove('j')<CR>
+    noremap! <silent> [A :call WinMove('k')<CR>
+    noremap! <silent> [D :call WinMove('h')<CR>
+    noremap! <silent> [C :call WinMove('l')<CR>
+    noremap! <silent> [24~ :call WinClose()<CR>
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
@@ -194,10 +193,8 @@ noremap! <silent> <F8> <ESC>:TlistToggle<CR>
 "
 if has("unix")
   let myosuname = system("uname")
-  if myosuname =~ "FreeBSD"
+  if myosuname == "FreeBSD"
     set term=cons25
-  elseif myosuname =~ "Linux"
-    set term=linux
   endif
 endif
 
