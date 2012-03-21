@@ -1,5 +1,6 @@
 
 These are my VIM settings, mostly targeting development with C, C++ and Python.
+I wrote a blog post about them [here](http://users.softlab.ntua.gr/~ttsiod/vim.html).
 
 Here is a [Vimeo-hosted video](http://vimeo.com/37875339) showing some of
 the things I can do when I work in C or C++. You can also
