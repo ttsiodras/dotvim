@@ -121,12 +121,24 @@ if !has("gui_running")
     noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
-    " Putty under Windows - I've set it up to use
-    " xterm-color - and only execute these then,
-    " because they mess up normal XTerms
-    " (cursor keys generate these...)
+    " Putty-ing from Windows 
     "
-    if &term == "xterm-color"
+    if has("unix")
+      let myosuname = system("uname")
+      if myosuname =~ "OpenBSD"
+	" Putty-ing from Windows into OpenBSD
+	noremap <silent> B :call WinMove('j')<CR>
+	noremap <silent> A :call WinMove('k')<CR>
+	noremap <silent> D :call WinMove('h')<CR>
+	noremap <silent> C :call WinMove('l')<CR>
+	noremap <silent> [24~ :call WinClose()<CR>
+	noremap! <silent> B <ESC>:call WinMove('j')<CR>
+	noremap! <silent> A <ESC>:call WinMove('k')<CR>
+	noremap! <silent> D <ESC>:call WinMove('h')<CR>
+	noremap! <silent> C <ESC>:call WinMove('l')<CR>
+	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
+      elseif &term == "xterm-color"
+	" Putty-ing from Windows into Linux
 	noremap <silent> OB :call WinMove('j')<CR>
 	noremap <silent> OA :call WinMove('k')<CR>
 	noremap <silent> OD :call WinMove('h')<CR>
@@ -137,8 +149,8 @@ if !has("gui_running")
 	noremap! <silent> OD <ESC>:call WinMove('h')<CR>
 	noremap! <silent> OC <ESC>:call WinMove('l')<CR>
 	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
+      endif
     endif
-
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
