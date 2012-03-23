@@ -72,7 +72,6 @@ if has("wildmenu")
     set wildignore+=*~,*.swp,*.tmp
 endif
 
-
 "
 " Python stuff
 "
@@ -122,21 +121,24 @@ if !has("gui_running")
     noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
 
-    " Putty under Windows - gotta find a way to
-    " automatically detect it, because these
-    " settings mess up normal XTerms
+    " Putty under Windows - I've set it up to use
+    " xterm-color - and only execute these then,
+    " because they mess up normal XTerms
     " (cursor keys generate these...)
     "
-    "noremap <silent> [B :call WinMove('j')<CR>
-    "noremap <silent> [A :call WinMove('k')<CR>
-    "noremap <silent> [D :call WinMove('h')<CR>
-    "noremap <silent> [C :call WinMove('l')<CR>
-    "noremap <silent> [24~ :call WinClose()<CR>
-    "noremap! <silent> [B :call WinMove('j')<CR>
-    "noremap! <silent> [A :call WinMove('k')<CR>
-    "noremap! <silent> [D :call WinMove('h')<CR>
-    "noremap! <silent> [C :call WinMove('l')<CR>
-    "noremap! <silent> [24~ :call WinClose()<CR>
+    if &term == "xterm-color"
+	noremap <silent> OB :call WinMove('j')<CR>
+	noremap <silent> OA :call WinMove('k')<CR>
+	noremap <silent> OD :call WinMove('h')<CR>
+	noremap <silent> OC :call WinMove('l')<CR>
+	noremap <silent> [24~ :call WinClose()<CR>
+	noremap! <silent> OB <ESC>:call WinMove('j')<CR>
+	noremap! <silent> OA <ESC>:call WinMove('k')<CR>
+	noremap! <silent> OD <ESC>:call WinMove('h')<CR>
+	noremap! <silent> OC <ESC>:call WinMove('l')<CR>
+	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
+    endif
+
 else
     " GVim
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
