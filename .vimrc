@@ -127,15 +127,15 @@ if !has("gui_running")
       let myosuname = system("uname")
       if myosuname =~ "OpenBSD"
 	" Putty-ing from Windows into OpenBSD
-	noremap <silent> B :call WinMove('j')<CR>
-	noremap <silent> A :call WinMove('k')<CR>
-	noremap <silent> D :call WinMove('h')<CR>
-	noremap <silent> C :call WinMove('l')<CR>
+	noremap <silent> [B :call WinMove('j')<CR>
+	noremap <silent> [A :call WinMove('k')<CR>
+	noremap <silent> [D :call WinMove('h')<CR>
+	noremap <silent> [C :call WinMove('l')<CR>
 	noremap <silent> [24~ :call WinClose()<CR>
-	noremap! <silent> B <ESC>:call WinMove('j')<CR>
-	noremap! <silent> A <ESC>:call WinMove('k')<CR>
-	noremap! <silent> D <ESC>:call WinMove('h')<CR>
-	noremap! <silent> C <ESC>:call WinMove('l')<CR>
+	noremap! <silent> [B <ESC>:call WinMove('j')<CR>
+	noremap! <silent> [A <ESC>:call WinMove('k')<CR>
+	noremap! <silent> [D <ESC>:call WinMove('h')<CR>
+	noremap! <silent> [C <ESC>:call WinMove('l')<CR>
 	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
       elseif &term == "xterm-color"
 	" Putty-ing from Windows into Linux
