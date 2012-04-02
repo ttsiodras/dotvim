@@ -92,14 +92,16 @@ let g:flake8_ignore="E501,E225"
 function! WinMove(key)
   let t:curwin = winnr()
   exec "wincmd ".a:key
-  if (t:curwin == winnr()) "we havent moved
-    if (match(a:key,'[jk]')) "were we going up/down
-      wincmd v
-    else
-      wincmd s
-    endif
-    exec "wincmd ".a:key
-  endif
+  " if (t:curwin == winnr())
+  "   " we havent moved
+  "   " Create window in that direction,
+  "   if (match(a:key,'[jk]')) "were we going up/down
+  "     wincmd v
+  "   else
+  "     wincmd s
+  "   endif
+  "   exec "wincmd ".a:key
+  " endif
 endfunction
 function! WinClose()
   if &filetype == "man"
