@@ -361,3 +361,9 @@ set statusline=%F%m%r%h%w[%L][%{&ff}]%y[%p%%][%04l,%04v]
 "
 set list
 set listchars=tab:>-,trail:-
+
+"
+" Use F4 to navigate to next compile/link/flake8 error
+"
+noremap <silent> <F4> :cn<CR>
+noremap! <silent> <F4> <ESC>:cn<CR>
