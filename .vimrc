@@ -314,5 +314,50 @@ au VimResized * exe "normal! \<c-w>="
 
 "
 " Syntax-coloring of files
+"
 syntax on
 colorscheme evening
+
+"
+" Disable cursors (force myself to learn VI moves)
+"
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+map <up> <nop>
+
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
+imap <up> <nop>
+
+"
+" highlight current line
+"
+set cursorline
+
+"
+" always show the status line
+"
+set laststatus=2
+set statusline=%F%m%r%h%w[%L][%{&ff}]%y[%p%%][%04l,%04v]
+"              | | | | |  |   |      |  |     |    |
+"              | | | | |  |   |      |  |     |    + current
+"              | | | | |  |   |      |  |     |       column
+"              | | | | |  |   |      |  |     +-- current line
+"              | | | | |  |   |      |  +-- current % into file
+"              | | | | |  |   |      +-- current syntax in
+"              | | | | |  |   |          square brackets
+"              | | | | |  |   +-- current fileformat
+"              | | | | |  +-- number of lines
+"              | | | | +-- preview flag in square brackets
+"              | | | +-- help flag in square brackets
+"              | | +-- readonly flag in square brackets
+"              | +-- rodified flag in square brackets
+"              +-- full path to file in the buffer
+
+"
+" tabs must be visible
+"
+set list
+set listchars=tab:>-,trail:-
