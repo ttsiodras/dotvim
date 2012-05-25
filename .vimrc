@@ -372,3 +372,8 @@ noremap! <silent> <F4> <ESC>:cn<CR>
 " Smart backspace
 "
 set backspace=start,indent,eol
+
+"
+" Avoid TABs like the plague
+"
+set expandtab
