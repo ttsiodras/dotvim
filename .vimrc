@@ -124,6 +124,8 @@ if !has("gui_running")
     noremap! <silent> [1;5D <ESC>:call WinMove('h')<CR>
     noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
+    noremap <silent>  OS :cn<CR>
+    noremap! <silent> OS <ESC>:cn<CR>
 
     " Putty-ing from Windows 
     "
