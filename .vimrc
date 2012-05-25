@@ -369,11 +369,6 @@ noremap <silent> <F4> :cn<CR>
 noremap! <silent> <F4> <ESC>:cn<CR>
 
 "
-" For normal mode, set semicolon to emit colon
-"
-nnoremap ; :
-
-"
 " Smart backspace
 "
 set backspace=start,indent,eol
