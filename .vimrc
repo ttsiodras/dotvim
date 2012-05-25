@@ -88,6 +88,8 @@ let g:flake8_ignore="E501,E225"
 " My attempt at easy navigation/creation of windows:
 "   Ctrl-Cursor keys to navigate open windows
 "   Ctrl-F12 to close current window
+" Also...
+"   F4 to navigate to next compile/link/flake8 error
 "
 function! WinMove(key)
   let t:curwin = winnr()
@@ -139,6 +141,8 @@ if !has("gui_running")
 	noremap! <silent> [D <ESC>:call WinMove('h')<CR>
 	noremap! <silent> [C <ESC>:call WinMove('l')<CR>
 	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
+        noremap <silent>  [14~ :cn<CR>
+        noremap! <silent> [14~ <ESC>:cn<CR>
       elseif &term == "xterm-color"
 	" Putty-ing from Windows into Linux
 	noremap <silent> OB :call WinMove('j')<CR>
@@ -151,9 +155,6 @@ if !has("gui_running")
 	noremap! <silent> OD <ESC>:call WinMove('h')<CR>
 	noremap! <silent> OC <ESC>:call WinMove('l')<CR>
 	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
-        "
-        " Use F4 to navigate to next compile/link/flake8 error
-        "
         noremap <silent> [14~ :cn<CR>
         noremap! <silent> [14~ <ESC>:cn<CR>
       endif
@@ -170,9 +171,6 @@ else
     noremap! <silent> <C-Left>  <ESC>:call WinMove('h')<CR>
     noremap! <silent> <C-Right> <ESC>:call WinMove('l')<CR>
     noremap! <silent> <C-F12>   <ESC>:call WinClose()<CR>
-    "
-    " Use F4 to navigate to next compile/link/flake8 error
-    "
     noremap <silent> <F4> :cn<CR>
     noremap! <silent> <F4> <ESC>:cn<CR>
 
