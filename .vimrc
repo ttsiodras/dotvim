@@ -372,3 +372,9 @@ noremap! <silent> <F4> <ESC>:cn<CR>
 " Smart backspace
 "
 set backspace=start,indent,eol
+
+"
+" Paste and reindent/reformat
+"
+:nnoremap <Esc>P P'[v']=
+:nnoremap <Esc>p p'[v']=
