@@ -374,6 +374,22 @@ set list
 set listchars=tab:>-,trail:-
 
 "
+" But we must be able to hide them if we want to
+"
+nnoremap [17~ :call ToggleTabShowingListMode()<CR>
+nnoremap <F6> :call ToggleTabShowingListMode()<CR>
+
+function! ToggleTabShowingListMode()
+    if &list == 'a'
+        set list
+        echo "List mode enabled"
+    else
+        set nolist
+        echo "List mode disabled"
+    endif
+endfunction
+
+"
 " Smart backspace
 "
 set backspace=start,indent,eol
