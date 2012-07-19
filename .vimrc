@@ -398,3 +398,18 @@ set backspace=start,indent,eol
 " Avoid TABs like the plague
 "
 set expandtab
+
+"
+" When in vimdiff, enable wrap (visible diffs past 80 columns)
+" This is part of the svn diff hack - in ~/.subversion/config:
+"
+"    diff-cmd = /usr/local/bin/svndiff
+"
+" and this helper cmd is simply...
+"
+" $ cat /usr/local/bin/svndiff
+" #!/bin/bash
+" vimdiff "$6" "$7"
+" exit 0
+"
+au FilterWritePre * if &diff | set wrap | endif
