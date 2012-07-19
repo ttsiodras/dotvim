@@ -55,9 +55,10 @@ noremap! <silent> <F10> <ESC>:NERDTreeToggle<CR>
 
 "
 " tells NERDTree to use ASCII chars
+" and to ignore some files
 "
 let g:NERDTreeDirArrows=0
-
+let g:NERDTreeIgnore=['\.pyc$', '\.o$']
 
 "
 " Better TAB completion for files (like the shell)
