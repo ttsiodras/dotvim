@@ -392,15 +392,38 @@ set expandtab
 
 "
 " When in vimdiff, enable wrap (visible diffs past 80 columns)
-" This is part of the svn diff hack - in ~/.subversion/config:
+" This is part of the SVN/GIT vimdiff hack:
+"
+" For SVN ...
+"
+" in ~/.subversion/config:
 "
 "    diff-cmd = /usr/local/bin/svndiff
 "
 " and this helper cmd is simply...
 "
-" $ cat /usr/local/bin/svndiff
-" #!/bin/bash
-" vimdiff "$6" "$7"
-" exit 0
+"    $ cat /usr/local/bin/svndiff
+"    #!/bin/bash
+"    vimdiff "$6" "$7"
+"    exit 0
+"
+" 
+" For GIT ...
+"
+" in ~/.gitconfig:
+"
+"    ....
+"    [diff]
+"        external = git_diff_wrapper
+"
+"    [pager]
+"        diff =
+"
+" and this wrapper is simply...
+"
+"    $ cat /usr/local/bin/git_diff_wrapper 
+"    #!/bin/sh
+"    vimdiff "$2" "$5"
+"    exit 0
 "
 au FilterWritePre * if &diff | set wrap | endif
