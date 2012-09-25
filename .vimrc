@@ -426,4 +426,11 @@ set expandtab
 "    vimdiff "$2" "$5"
 "    exit 0
 "
-au FilterWritePre * if &diff | set wrap | endif
+"au FilterWritePre * if &diff | set wrap | endif
+
+
+"
+" Remap F7 from flake8 to JSHint if the file is a .js one
+"
+autocmd FileType javascript    noremap <buffer> <F7> :JSHint<CR>
+autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
