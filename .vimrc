@@ -425,8 +425,14 @@ set expandtab
 "    exit 0
 
 " When in vimdiff, enable wrap (visible diffs past 80 columns)
-" au FilterWritePre * if &diff | set nowrap | endif
+" au FilterWritePre * if &diff | set wrap | endif
 
 " Set vimdiff to ignore whitespace
 set diffopt+=iwhite
 set diffexpr=
+
+"
+" Remap F7 from flake8 to JSHint if the file is a .js one
+"
+autocmd FileType javascript    noremap <buffer> <F7> :JSHint<CR>
+autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
