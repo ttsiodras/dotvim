@@ -390,9 +390,7 @@ set backspace=start,indent,eol
 "
 set expandtab
 
-"
-" When in vimdiff, enable wrap (visible diffs past 80 columns)
-" This is part of the SVN/GIT vimdiff hack:
+" SVN/GIT vimdiff hack:
 "
 " For SVN ...
 "
@@ -425,9 +423,13 @@ set expandtab
 "    #!/bin/sh
 "    vimdiff "$2" "$5"
 "    exit 0
-"
-"au FilterWritePre * if &diff | set wrap | endif
 
+" When in vimdiff, enable wrap (visible diffs past 80 columns)
+" au FilterWritePre * if &diff | set wrap | endif
+
+" Set vimdiff to ignore whitespace
+set diffopt+=iwhite
+set diffexpr=
 
 "
 " Remap F7 from flake8 to JSHint if the file is a .js one
