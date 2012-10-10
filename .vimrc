@@ -377,8 +377,8 @@ set listchars=tab:>-,trail:-
 "
 " But we must be able to hide them if we want to
 "
-nnoremap [17~ :set list!<CR>
-nnoremap <F6> :set list!<CR>
+nnoremap [20~ :set list!<CR>
+nnoremap <F9> :set list!<CR>
 
 "
 " Smart backspace
