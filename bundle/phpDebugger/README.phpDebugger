@@ -1,0 +1,13 @@
+Step 1: Open a terminal/shell to the place where your PHP code is:
+
+    bash$ export XDEBUG_CONFIG="idekey=session_name"
+
+Step 2: Open a terminal/shell, spawn vim/gvim and hit F5. It will
+        tell you that it will wait for a connection in the next
+        10 seconds
+
+Step 3: In the first terminal, run your PHP code (within 10 sec)
+
+    bash$ php5 ./myPhpCode.php
+
+Step 4: Enjoy your full-blown PHP IDE inside your VIM!
