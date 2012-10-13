@@ -1,0 +1,44 @@
+My first VIM plugin ever: use SAXCount to validate XMLs based on their .xsds ;
+provided that they have header lines on top telling what .xsd they use - like...
+
+    <?xml version="1.0" encoding="utf-8" ?>
+    <WhateverElement ... 
+            xsi:noNamespaceSchemaLocation="something.xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <AnotherElement>
+            ...
+        </AnotherElement>
+    </WhateverElement>
+
+The .xsd file must be at the same place as the .xml - or a "search"
+functionality must be added to SAXCount - some sort of XSDPATH.
+
+Now for the ":make" (mapped to F7) and error parsing.
+No need to explain this:
+
+    se makeprg=SAXCount\ -n\ -s\ -f\ %
+
+But I do need to explain this:
+
+    se errorformat=%E,%CError\ at\ file\ %f%.\ line\ %l%.\ char\ %c,\ \ Message:\ %m,%Z
+
+It is supposed to catch error messages like these:
+
+    $ SAXCount -n -s -f a.xml
+
+    Error at file /var/tmp/a.xml, line 4, char 23
+      Message: empty content is not valid for content model '(transferBatch|notification)'
+
+So it says:
+
+    %E (begin multiline match)
+    , (end of first line)
+    %C (continuation - next line)
+    Error... %f%. ... (match file, followed by any char (the comma) ...
+                      (I could not type comma, and \, didn't work either)
+    %Z (end multiline match)
+
+Seems to work (so far).
+
+Thanassis Tsiodras
+ttsiodras@gmail.com
