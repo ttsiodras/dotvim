@@ -20,7 +20,7 @@ No need to explain this:
 
 But I do need to explain this:
 
-    se errorformat=%E,%CError\ at\ file\ %f%.\ line\ %l%.\ char\ %c,\ \ Message:\ %m,%Z
+    se errorformat=%E,%C%.%#Error\ at\ file\ %f%.\ line\ %l%.\ char\ %c,\ \ Message:\ %m,%Z
 
 It is supposed to catch error messages like these:
 
@@ -29,13 +29,19 @@ It is supposed to catch error messages like these:
     Error at file /var/tmp/a.xml, line 4, char 23
       Message: empty content is not valid for content model '(transferBatch|notification)'
 
+It may also say:
+
+    Fatal Error ...
+
 So it says:
 
     %E (begin multiline match)
     , (end of first line)
     %C (continuation - next line)
-    Error... %f%. ... (match file, followed by any char (the comma) ...
-                      (I could not type comma, and \, didn't work either)
+    %.%#Error... %f%. ... 
+    (which means match '.*Error... %f is file, followed by any char (the comma) ...
+    (I could not use ',' or '\,', so I just used a '.')
+    (%m matches the actual message for the copen list)
     %Z (end multiline match)
 
 Seems to work (so far).
