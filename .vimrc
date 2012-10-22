@@ -179,6 +179,12 @@ else
 
 endif
 
+"
+" In cmd mode, + and - vertically enlarge/shrink a split
+"
+noremap  <silent> + :call WinMove('+')<CR>
+noremap  <silent> - :call WinMove('-')<CR>
+
 
 "
 " incremental search that highlights results
