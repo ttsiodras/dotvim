@@ -443,6 +443,11 @@ set diffexpr=
 autocmd FileType javascript    noremap <buffer> <F7> :JSHint<CR>
 autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
 
+"
+" Remap F7 from flake8 to make if the file is an .ml one
+"
+autocmd FileType ocaml    noremap <buffer> <F7> :make<CR>
+autocmd FileType ocaml    noremap <buffer> [18~ :make<CR>
 
 "
 " Show me column 80
