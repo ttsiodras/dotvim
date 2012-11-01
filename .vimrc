@@ -182,8 +182,10 @@ endif
 "
 " In cmd mode, + and - vertically enlarge/shrink a split
 "
-noremap  <silent> + :call WinMove('+')<CR>
+noremap  <silent> = :call WinMove('+')<CR>
 noremap  <silent> - :call WinMove('-')<CR>
+noremap  <silent> + :call WinMove('>')<CR>
+noremap  <silent> _ :call WinMove('<')<CR>
 
 
 "
