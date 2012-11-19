@@ -377,16 +377,28 @@ set statusline=%F%m%r%h%w[%L][%{&ff}]%y[%p%%][%04l,%04v]
 "              +-- full path to file in the buffer
 
 "
-" tabs must be visible
-"
-set list
-set listchars=tab:>-,trail:-
-
-"
 " But we must be able to hide them if we want to
 "
-nnoremap [20~ :set list!<CR>
-nnoremap <F9> :set list!<CR>
+function! TabsAndColumn80AndNumbers ()
+    "
+    " tabs must be visible
+    "
+    set list!
+    set number!
+    set listchars=tab:>-,trail:-
+    if exists('+colorcolumn')
+        "
+        " Show me column 80
+        "
+        if &colorcolumn == ""
+            set colorcolumn=80
+        else
+            set colorcolumn=
+        endif
+    endif
+endfunction
+nnoremap [20~ :call TabsAndColumn80AndNumbers()<CR>
+nnoremap <F9> :call TabsAndColumn80AndNumbers()<CR>
 
 "
 " Smart backspace
@@ -450,12 +462,3 @@ autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
 "
 autocmd FileType ocaml    noremap <buffer> <F7> :make<CR>
 autocmd FileType ocaml    noremap <buffer> [18~ :make<CR>
-
-"
-" Show me column 80
-"
-if exists('+colorcolumn')
-  set colorcolumn=80
-else
-  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-endif
