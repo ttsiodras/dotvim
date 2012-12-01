@@ -36,3 +36,6 @@
 	path = bundle/xmledit
         url = https://github.com/sukima/xmledit.git
         ignore = untracked
+[submodule "bundle/jedi-vim"]
+	path = bundle/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
