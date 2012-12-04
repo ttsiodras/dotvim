@@ -462,3 +462,8 @@ autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
 "
 autocmd FileType ocaml    noremap <buffer> <F7> :make<CR>
 autocmd FileType ocaml    noremap <buffer> [18~ :make<CR>
+
+"
+" Much improved auto completion menus
+"
+set completeopt=menuone,longest,preview 
