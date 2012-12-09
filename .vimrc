@@ -467,3 +467,13 @@ autocmd FileType ocaml    noremap <buffer> [18~ :make<CR>
 " Much improved auto completion menus
 "
 set completeopt=menuone,longest,preview 
+
+"
+" Use C-space for omni completion in insert mode
+"
+inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
+            \ "\<lt>C-n>" :
+            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
+            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
+            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
+imap <C-@> <C-Space>
