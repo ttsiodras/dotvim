@@ -36,9 +36,6 @@
 	path = bundle/xmledit
         url = https://github.com/sukima/xmledit.git
         ignore = untracked
-[submodule "bundle/minibufexpl"]
-	path = bundle/minibufexpl
-	url = https://github.com/fholgado/minibufexpl.vim.git
 [submodule "bundle/ack"]
 	path = bundle/ack
 	url = https://github.com/mileszs/ack.vim.git
