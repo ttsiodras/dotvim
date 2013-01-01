@@ -482,3 +482,8 @@ imap <C-@> <C-Space>
 " Stop warning me about leaving a modified buffer
 "
 set hidden
+
+"
+" Show command as I type it
+"
+set showcmd
