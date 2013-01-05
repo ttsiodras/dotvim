@@ -14,31 +14,33 @@ if has("autocmd")
     filetype plugin on
 endif
 
+au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h call SetupCandCPPenviron()
 
-"
-" Search path for 'gf' command (e.g. open #include-d files)
-"
-set path+=/usr/include/c++/**
+function! SetupCandCPPenviron()
+    "
+    " Search path for 'gf' command (e.g. open #include-d files)
+    "
+    set path+=/usr/include/c++/**
+    
+    "
+    " Tags
+    "
+    " If I ever need to generate tags on the fly, I uncomment this:
+    " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+    set tags+=/usr/include/tags
+
+    "
+    " necessary for using libclang
+    "
+    let g:clang_library_path='/usr/lib/llvm'
 
 
-"
-" Tags
-"
-" If I ever need to generate tags on the fly, I uncomment this:
-" noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-set tags+=/usr/include/tags
-
+endfunction
 
 " se autoindent
 se undofile
 se undodir=~/.vimundo
 "noremap <ESC>OP <F1>
-
-
-"
-" necessary for using libclang
-"
-let g:clang_library_path='/usr/lib/llvm'
 
 
 " auto-closes preview window after you select what to auto-complete with
