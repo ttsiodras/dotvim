@@ -84,7 +84,7 @@ endif
 
 
 " flake8: ignore 'too long lines'
-let g:flake8_ignore="E501,E225"
+"let g:flake8_ignore="E501,E225"
 
 
 "
