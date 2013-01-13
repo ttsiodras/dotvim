@@ -338,7 +338,7 @@ au VimResized * exe "normal! \<c-w>="
 " Syntax-coloring of files
 "
 syntax on
-colorscheme evening
+colorscheme elflord
 
 "
 " Disable cursors (force myself to learn VI moves)
@@ -489,3 +489,8 @@ set hidden
 " Show command as I type it
 "
 set showcmd
+
+"
+" Now that I use vim-paren-crosshairs, I need 256 colors in my console VIM
+"
+set t_Co=256

@@ -42,3 +42,6 @@
 [submodule "bundle/tabular"]
 	path = bundle/tabular
 	url = https://github.com/godlygeek/tabular.git
+[submodule "bundle/vim-paren-crosshairs"]
+	path = bundle/vim-paren-crosshairs
+	url = https://github.com/chreekat/vim-paren-crosshairs.git
