@@ -93,6 +93,7 @@ endif
 "   Ctrl-F12 to close current window
 " Also...
 "   F4 to navigate to next compile/link/flake8 error
+"   F3 to navigate to next Syntastic error (first, invoke :Errors)
 "
 function! WinMove(key)
   let t:curwin = winnr()
@@ -129,6 +130,8 @@ if !has("gui_running")
     noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
     noremap <silent>  OS :cn<CR>
     noremap! <silent> OS <ESC>:cn<CR>
+    noremap <silent> OR :lnext<CR>
+    noremap! <silent> OR <ESC>:lnext<CR>
 
     " Putty-ing from Windows 
     "
@@ -178,7 +181,8 @@ else
     noremap! <silent> <C-F12>   <ESC>:call WinClose()<CR>
     noremap <silent> <F4> :cn<CR>
     noremap! <silent> <F4> <ESC>:cn<CR>
-
+    noremap <silent> <F3> :ln<CR>
+    noremap! <silent> <F3> <ESC>:ln<CR>
 endif
 
 "
@@ -494,3 +498,8 @@ set showcmd
 " Now that I use vim-paren-crosshairs, I need 256 colors in my console VIM
 "
 set t_Co=256
+
+"
+" Flake8 is always at F7 - but syntastic must use pylint
+"
+let g:syntastic_python_checker = 'pylint'
