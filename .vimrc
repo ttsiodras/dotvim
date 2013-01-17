@@ -232,6 +232,7 @@ noremap K :call ReadMan()<CR>
 "
 noremap <silent> <F8> :TlistToggle<CR>
 noremap! <silent> <F8> <ESC>:TlistToggle<CR>
+let Tlist_Use_Right_Window = 1
 
 
 "
