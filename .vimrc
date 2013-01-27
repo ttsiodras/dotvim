@@ -14,29 +14,6 @@ if has("autocmd")
     filetype plugin on
 endif
 
-au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h call SetupCandCPPenviron()
-
-function! SetupCandCPPenviron()
-    "
-    " Search path for 'gf' command (e.g. open #include-d files)
-    "
-    set path+=/usr/include/c++/**
-    
-    "
-    " Tags
-    "
-    " If I ever need to generate tags on the fly, I uncomment this:
-    " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-    set tags+=/usr/include/tags
-
-    "
-    " necessary for using libclang
-    "
-    let g:clang_library_path='/usr/lib/llvm'
-
-
-endfunction
-
 " se autoindent
 se undofile
 se undodir=~/.vimundo
@@ -74,18 +51,6 @@ if has("wildmenu")
     set wildignore+=.DS_Store,.git,.hg,.svn
     set wildignore+=*~,*.swp,*.tmp
 endif
-
-"
-" Python stuff
-"
-" obsolete, replaced by flake8
-" PEP8
-"let g:pep8_map='<leader>8'
-
-
-" flake8: ignore 'too long lines'
-"let g:flake8_ignore="E501,E225"
-
 
 "
 " My attempt at easy navigation/creation of windows:
@@ -133,7 +98,7 @@ if !has("gui_running")
     noremap <silent> OR :lnext<CR>
     noremap! <silent> OR <ESC>:lnext<CR>
 
-    " Putty-ing from Windows 
+    " Putty-ing from Windows
     "
     if has("unix")
       let myosuname = system("uname")
@@ -205,37 +170,6 @@ noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 
 
 "
-" Smart in-line manpages with 'K' in command mode
-"
-fun! ReadMan()
-  " Assign current word under cursor to a script variable:
-  let s:man_word = expand('<cword>')
-  " Open a new window:
-  :wincmd n
-  " Read in the manpage for man_word (col -b is for formatting):
-  :exe ":r!man " . s:man_word . " | col -b"
-  " Goto first line...
-  :goto
-  " and delete it:
-  :delete
-  " finally set file type to 'man':
-  :set filetype=man
-  " lines set to 20
-  :resize 20
-endfun
-" Map the K key to the ReadMan function:
-noremap K :call ReadMan()<CR>
-
-
-"
-" Toggle TagList window with F8
-"
-noremap <silent> <F8> :TlistToggle<CR>
-noremap! <silent> <F8> <ESC>:TlistToggle<CR>
-let Tlist_Use_Right_Window = 1
-
-
-"
 " Fix insert-mode cursor keys in FreeBSD
 "
 if has("unix")
@@ -262,50 +196,6 @@ vnoremap > >gv
 "nnoremap <silent> N Nzz
 "nnoremap <silent> * *zz
 "nnoremap <silent> # #zz
-
-
-"
-" Function that sends individual Python classes or Python functions 
-" to active screen (SLIME emulation)
-" 
-function! SelectClassOrFunction ()
-
-    let s:currLine = getline(line('.'))
-    if s:currLine =~ '^def\|^class' 
-	" If the cursor line is a function/class start line, 
-	" save its number
-	let s:beginLineNumber = line('.')
-    elseif s:currLine =~ '^[a-zA-Z]'
-	" If the cursor line begins with something else, 
-	" we must be on something like a global assignment
-	let s:beginLineNumber = line('.')
-	let s:endLineNumber = line('.')
-	:exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-	:call Send_to_Screen(@r)
-	return
-    else
-	" we are inside something, so search backwards 
-	" for function/class beginning, and save its number
-	let s:beginLineNumber = search('^def\|^class', 'bnW')
-	if !s:beginLineNumber 
-	    let s:beginLineNumber = 1
-	endif
-    endif
-
-    " Now search for the first line that starts with something
-    " (function, class, global, etc) and save it
-    let s:endLineNumber = search('^[a-zA-Z@]', 'nW')
-    if !s:endLineNumber
-	let s:endLineNumber = line('$')
-    else
-	let s:endLineNumber = s:endLineNumber-1
-    endif
-
-    " Finally pass the range to the screen session running a REPL
-    :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-    :call Send_to_Screen(@r)
-endfunction
-nmap <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
 
 
 "
@@ -432,7 +322,7 @@ set expandtab
 "    vimdiff "$6" "$7"
 "    exit 0
 "
-" 
+"
 " For GIT ...
 "
 " in ~/.gitconfig:
@@ -446,7 +336,7 @@ set expandtab
 "
 " and this wrapper is simply...
 "
-"    $ cat /usr/local/bin/git_diff_wrapper 
+"    $ cat /usr/local/bin/git_diff_wrapper
 "    #!/bin/sh
 "    vimdiff "$2" "$5"
 "    exit 0
@@ -459,21 +349,9 @@ set diffopt+=iwhite
 set diffexpr=
 
 "
-" Remap F7 from flake8 to JSHint if the file is a .js one
-"
-autocmd FileType javascript    noremap <buffer> <F7> :JSHint<CR>
-autocmd FileType javascript    noremap <buffer> [18~ :JSHint<CR>
-
-"
-" Remap F7 from flake8 to make if the file is an .ml one
-"
-autocmd FileType ocaml    noremap <buffer> <F7> :make<CR>
-autocmd FileType ocaml    noremap <buffer> [18~ :make<CR>
-
-"
 " Much improved auto completion menus
 "
-set completeopt=menuone,longest,preview 
+set completeopt=menuone,longest,preview
 
 "
 " Use C-space for omni completion in insert mode
@@ -501,6 +379,130 @@ set showcmd
 set t_Co=256
 
 "
-" Flake8 is always at F7 - but syntastic must use pylint
+" After 'f' in normal mode, I always mistype 'search next' - use space for ;
 "
-let g:syntastic_python_checker = 'pylint'
+nmap <space> ;
+
+"
+" Manpage for word under cursor via 'K' in command mode
+"
+runtime ftplugin/man.vim
+nmap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
+
+"
+" Language-specific section
+"
+
+"
+" For C and C++
+"
+au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h call SetupCandCPPenviron()
+function! SetupCandCPPenviron()
+    "
+    " Search path for 'gf' command (e.g. open #include-d files)
+    "
+    set path+=/usr/include/c++/**
+
+    "
+    " Tags
+    "
+    " If I ever need to generate tags on the fly, I uncomment this:
+    " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+    set tags+=/usr/include/tags
+
+    "
+    " necessary for using libclang
+    "
+    let g:clang_library_path='/usr/lib/llvm'
+
+    "
+    " Toggle TagList window with F8
+    "
+    nmap <buffer> <silent> <F8> :TlistToggle<CR>
+    imap <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
+    let g:Tlist_Use_Right_Window = 1
+endfunction
+
+"
+" For Python
+"
+au BufNewFile,BufRead *.py call SetupPythonEnviron()
+function! SetupPythonEnviron()
+    "
+    " flake8: ignore 'too long lines'
+    "
+    "let g:flake8_ignore="E501,E225"
+
+    "
+    " Function that sends individual Python classes or Python functions
+    " to active screen (SLIME emulation)
+    "
+    function! SelectClassOrFunction ()
+
+        let s:currLine = getline(line('.'))
+        if s:currLine =~ '^def\|^class'
+            " If the cursor line is a function/class start line,
+            " save its number
+            let s:beginLineNumber = line('.')
+        elseif s:currLine =~ '^[a-zA-Z]'
+            " If the cursor line begins with something else,
+            " we must be on something like a global assignment
+            let s:beginLineNumber = line('.')
+            let s:endLineNumber = line('.')
+            :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
+            :call Send_to_Screen(@r)
+            return
+        else
+            " we are inside something, so search backwards
+            " for function/class beginning, and save its number
+            let s:beginLineNumber = search('^def\|^class', 'bnW')
+            if !s:beginLineNumber
+                let s:beginLineNumber = 1
+            endif
+        endif
+
+        " Now search for the first line that starts with something
+        " (function, class, global, etc) and save it
+        let s:endLineNumber = search('^[a-zA-Z@]', 'nW')
+        if !s:endLineNumber
+            let s:endLineNumber = line('$')
+        else
+            let s:endLineNumber = s:endLineNumber-1
+        endif
+
+        " Finally pass the range to the screen session running a REPL
+        :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
+        :call Send_to_Screen(@r)
+    endfunction
+    nmap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
+
+    "
+    " Flake8 is always at F7 - but syntastic must use pylint
+    "
+    let g:syntastic_python_checker = 'pylint'
+
+endfunction
+
+"
+" OCaml
+"
+au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
+function! SetupOCamlEnviron()
+    "
+    " Remap F7 to make if the file is an .ml one
+    "
+    nmap <buffer> <special> <F7> :make<CR>
+    imap <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
+"
+" Javascript
+"
+au BufNewFile,BufRead *.js call SetupJSEnviron()
+function! SetupJSEnviron()
+    "
+    " Remap F7 to JSHint if the file is a .js one
+    "
+    nmap <buffer> <special> <F7> :JSHint<CR>
+    imap <buffer> <special> <F7> <ESC>:JSHint<CR>
+endfunction
