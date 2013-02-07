@@ -354,14 +354,16 @@ set diffexpr=
 set completeopt=menuone,longest,preview
 
 "
-" Use C-space for omni completion in insert mode
+" Use C-space for omni completion in insert mode.
+" Disabled currently, because I am testing the
+" 'YouCompleteMe' plugin...
 "
-inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
-            \ "\<lt>C-n>" :
-            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
-            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
-            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
-imap <C-@> <C-Space>
+"inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
+"            \ "\<lt>C-n>" :
+"            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
+"            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
+"            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
+"imap <C-@> <C-Space>
 
 "
 " Stop warning me about leaving a modified buffer
@@ -388,6 +390,17 @@ nmap <space> ;
 "
 runtime ftplugin/man.vim
 nmap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
+
+"
+" Map SyntasticCheck to F6
+"
+nmap <buffer> <special> <F6> :SyntasticCheck<CR>
+imap <buffer> <special> <F6> <ESC>:SyntasticCheck<CR>
+
+let g:syntastic_mode_map = {
+    \ 'mode': 'active',
+    \ 'active_filetypes': [],
+    \ 'passive_filetypes': ['python', 'cpp', 'c'] }
 
 "
 " Language-specific section
@@ -480,7 +493,6 @@ function! SetupPythonEnviron()
     " Flake8 is always at F7 - but syntastic must use pylint
     "
     let g:syntastic_python_checker = 'pylint'
-
 endfunction
 
 "
