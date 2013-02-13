@@ -409,6 +409,11 @@ let g:syntastic_mode_map = {
 "
 " For C and C++
 "
+    
+" libclang use is mandatory now
+"
+let g:clang_use_library = 1
+
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h call SetupCandCPPenviron()
 function! SetupCandCPPenviron()
     "
@@ -422,11 +427,6 @@ function! SetupCandCPPenviron()
     " If I ever need to generate tags on the fly, I uncomment this:
     " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
     set tags+=/usr/include/tags
-
-    "
-    " necessary for using libclang
-    "
-    let g:clang_library_path='/usr/lib/llvm'
 
     "
     " Toggle TagList window with F8
