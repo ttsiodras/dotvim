@@ -83,20 +83,20 @@ function! WinClose()
 endfunction
 if !has("gui_running")
     " XTerm
-    noremap <silent> [1;5B :call WinMove('j')<CR>
-    noremap <silent> [1;5A :call WinMove('k')<CR>
-    noremap <silent> [1;5D :call WinMove('h')<CR>
-    noremap <silent> [1;5C :call WinMove('l')<CR>
-    noremap <silent> [24;5~ :call WinClose()<CR>
-    noremap! <silent> [1;5B <ESC>:call WinMove('j')<CR>
-    noremap! <silent> [1;5A <ESC>:call WinMove('k')<CR>
-    noremap! <silent> [1;5D <ESC>:call WinMove('h')<CR>
-    noremap! <silent> [1;5C <ESC>:call WinMove('l')<CR>
-    noremap! <silent> [24;5~ <ESC>:call WinClose()<CR>
-    noremap <silent>  OS :cn<CR>
-    noremap! <silent> OS <ESC>:cn<CR>
-    noremap <silent> OR :lnext<CR>
-    noremap! <silent> OR <ESC>:lnext<CR>
+    noremap <silent> <Esc>[1;5B :call WinMove('j')<CR>
+    noremap <silent> <Esc>[1;5A :call WinMove('k')<CR>
+    noremap <silent> <Esc>[1;5D :call WinMove('h')<CR>
+    noremap <silent> <Esc>[1;5C :call WinMove('l')<CR>
+    noremap <silent> <Esc>[24;5~ :call WinClose()<CR>
+    noremap! <silent> <Esc>[1;5B <ESC>:call WinMove('j')<CR>
+    noremap! <silent> <Esc>[1;5A <ESC>:call WinMove('k')<CR>
+    noremap! <silent> <Esc>[1;5D <ESC>:call WinMove('h')<CR>
+    noremap! <silent> <Esc>[1;5C <ESC>:call WinMove('l')<CR>
+    noremap! <silent> <Esc>[24;5~ <ESC>:call WinClose()<CR>
+    noremap <silent>  <Esc>OS :cn<CR>
+    noremap! <silent> <Esc>OS <ESC>:cn<CR>
+    noremap <silent> <Esc>OR :lnext<CR>
+    noremap! <silent> <Esc>OR <ESC>:lnext<CR>
 
     " Putty-ing from Windows
     "
@@ -104,32 +104,32 @@ if !has("gui_running")
       let myosuname = system("uname")
       if myosuname =~ "OpenBSD"
 	" Putty-ing from Windows into OpenBSD
-	noremap <silent> [B :call WinMove('j')<CR>
-	noremap <silent> [A :call WinMove('k')<CR>
-	noremap <silent> [D :call WinMove('h')<CR>
-	noremap <silent> [C :call WinMove('l')<CR>
-	noremap <silent> [24~ :call WinClose()<CR>
-	noremap! <silent> [B <ESC>:call WinMove('j')<CR>
-	noremap! <silent> [A <ESC>:call WinMove('k')<CR>
-	noremap! <silent> [D <ESC>:call WinMove('h')<CR>
-	noremap! <silent> [C <ESC>:call WinMove('l')<CR>
-	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
-        noremap <silent>  [14~ :cn<CR>
-        noremap! <silent> [14~ <ESC>:cn<CR>
+	noremap <silent> <Esc>[B :call WinMove('j')<CR>
+	noremap <silent> <Esc>[A :call WinMove('k')<CR>
+	noremap <silent> <Esc>[D :call WinMove('h')<CR>
+	noremap <silent> <Esc>[C :call WinMove('l')<CR>
+	noremap <silent> <Esc>[24~ :call WinClose()<CR>
+	noremap! <silent> <Esc>[B <ESC>:call WinMove('j')<CR>
+	noremap! <silent> <Esc>[A <ESC>:call WinMove('k')<CR>
+	noremap! <silent> <Esc>[D <ESC>:call WinMove('h')<CR>
+	noremap! <silent> <Esc>[C <ESC>:call WinMove('l')<CR>
+	noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
+        noremap <silent>  <Esc>[14~ :cn<CR>
+        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
       elseif &term == "xterm-color"
 	" Putty-ing from Windows into Linux
-	noremap <silent> OB :call WinMove('j')<CR>
-	noremap <silent> OA :call WinMove('k')<CR>
-	noremap <silent> OD :call WinMove('h')<CR>
-	noremap <silent> OC :call WinMove('l')<CR>
-	noremap <silent> [24~ :call WinClose()<CR>
-	noremap! <silent> OB <ESC>:call WinMove('j')<CR>
-	noremap! <silent> OA <ESC>:call WinMove('k')<CR>
-	noremap! <silent> OD <ESC>:call WinMove('h')<CR>
-	noremap! <silent> OC <ESC>:call WinMove('l')<CR>
-	noremap! <silent> [24~ <ESC>:call WinClose()<CR>
-        noremap <silent> [14~ :cn<CR>
-        noremap! <silent> [14~ <ESC>:cn<CR>
+	noremap <silent> <Esc>OB :call WinMove('j')<CR>
+	noremap <silent> <Esc>OA :call WinMove('k')<CR>
+	noremap <silent> <Esc>OD :call WinMove('h')<CR>
+	noremap <silent> <Esc>OC :call WinMove('l')<CR>
+	noremap <silent> <Esc>[24~ :call WinClose()<CR>
+	noremap! <silent> <Esc>OB <ESC>:call WinMove('j')<CR>
+	noremap! <silent> <Esc>OA <ESC>:call WinMove('k')<CR>
+	noremap! <silent> <Esc>OD <ESC>:call WinMove('h')<CR>
+	noremap! <silent> <Esc>OC <ESC>:call WinMove('l')<CR>
+	noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
+        noremap <silent> <Esc>[14~ :cn<CR>
+        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
       endif
     endif
 else
@@ -294,7 +294,7 @@ function! TabsAndColumn80AndNumbers ()
         endif
     endif
 endfunction
-nnoremap [20~ :call TabsAndColumn80AndNumbers()<CR>
+nnoremap <Esc>[20~ :call TabsAndColumn80AndNumbers()<CR>
 nnoremap <F9> :call TabsAndColumn80AndNumbers()<CR>
 
 "
