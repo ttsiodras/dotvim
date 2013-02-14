@@ -225,8 +225,8 @@ au VimResized * exe "normal! \<c-w>="
 "
 " TAB and Shift-TAB in normal mode cycle buffers
 "
-:nmap <Tab> :bn<CR>
-:nmap <S-Tab> :bp<CR>
+noremap <Tab> :bn<CR>
+noremap <S-Tab> :bp<CR>
 
 
 "
@@ -383,19 +383,19 @@ set t_Co=256
 "
 " After 'f' in normal mode, I always mistype 'search next' - use space for ;
 "
-nmap <space> ;
+noremap <space> ;
 
 "
 " Manpage for word under cursor via 'K' in command mode
 "
 runtime ftplugin/man.vim
-nmap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
+noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
 
 "
 " Map SyntasticCheck to F6
 "
-nmap <buffer> <special> <F6> :SyntasticCheck<CR>
-imap <buffer> <special> <F6> <ESC>:SyntasticCheck<CR>
+noremap <silent> <F6> :SyntasticCheck<CR>
+noremap! <silent> <F6> <ESC>:SyntasticCheck<CR>
 
 let g:syntastic_mode_map = {
     \ 'mode': 'active',
@@ -431,8 +431,8 @@ function! SetupCandCPPenviron()
     "
     " Toggle TagList window with F8
     "
-    nmap <buffer> <silent> <F8> :TlistToggle<CR>
-    imap <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
+    noremap <buffer> <silent> <F8> :TlistToggle<CR>
+    noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
     let g:Tlist_Use_Right_Window = 1
 endfunction
 
@@ -487,7 +487,7 @@ function! SetupPythonEnviron()
         :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
         :call Send_to_Screen(@r)
     endfunction
-    nmap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
+    noremap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
 
     "
     " Flake8 is always at F7 - but syntastic must use pylint
@@ -503,8 +503,8 @@ function! SetupOCamlEnviron()
     "
     " Remap F7 to make if the file is an .ml one
     "
-    nmap <buffer> <special> <F7> :make<CR>
-    imap <buffer> <special> <F7> <ESC>:make<CR>
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
@@ -515,6 +515,6 @@ function! SetupJSEnviron()
     "
     " Remap F7 to JSHint if the file is a .js one
     "
-    nmap <buffer> <special> <F7> :JSHint<CR>
-    imap <buffer> <special> <F7> <ESC>:JSHint<CR>
+    noremap <buffer> <special> <F7> :JSHint<CR>
+    noremap! <buffer> <special> <F7> <ESC>:JSHint<CR>
 endfunction
