@@ -518,3 +518,12 @@ function! SetupJSEnviron()
     noremap <buffer> <special> <F7> :JSHint<CR>
     noremap! <buffer> <special> <F7> <ESC>:JSHint<CR>
 endfunction
+
+au BufNewFile,BufRead *.md call SetupMDEnviron()
+function! SetupMDEnviron()
+    "
+    " Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
