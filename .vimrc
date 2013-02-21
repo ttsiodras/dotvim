@@ -403,6 +403,13 @@ let g:syntastic_mode_map = {
     \ 'passive_filetypes': ['python', 'cpp', 'c'] }
 
 "
+" Now that I use the CtrlP plugin, a very useful shortcut is to open
+" an XTerm in the folder of the currently opened file:
+"
+noremap <silent> <F2> :!xterm -e "cd %:p:h ; bash" &<CR>
+noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR>
+
+"
 " Language-specific section
 "
 
