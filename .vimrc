@@ -434,6 +434,8 @@ function! SetupCandCPPenviron()
     noremap <buffer> <silent> <F8> :TlistToggle<CR>
     noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
     let g:Tlist_Use_Right_Window = 1
+
+    noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
 endfunction
 
 "
