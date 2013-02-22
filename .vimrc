@@ -406,8 +406,9 @@ let g:syntastic_mode_map = {
 " Now that I use the CtrlP plugin, a very useful shortcut is to open
 " an XTerm in the folder of the currently opened file:
 "
-noremap <silent> <F2> :!xterm -e "cd %:p:h ; bash" &<CR>
-noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR>
+noremap <silent> <F2> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
+noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
+let g:ctrlp_working_path_mode = 0
 
 "
 " Language-specific section
