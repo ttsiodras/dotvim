@@ -412,6 +412,11 @@ let g:ctrlp_working_path_mode = 0
 let g:ctrlp_clear_cache_on_exit = 0
 
 "
+" Powerline settings
+"
+let g:Powerline_stl_path_style = 'short'
+
+"
 " Language-specific section
 "
 
