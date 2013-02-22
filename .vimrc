@@ -409,6 +409,7 @@ let g:syntastic_mode_map = {
 noremap <silent> <F2> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 let g:ctrlp_working_path_mode = 0
+let g:ctrlp_clear_cache_on_exit = 0
 
 "
 " Language-specific section
