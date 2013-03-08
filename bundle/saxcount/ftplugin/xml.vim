@@ -84,4 +84,4 @@ noremap! <buffer> <F7> :make<CR>
 " In visual mode (with multiple lines selected) use Leader followed by '=' 
 " to align attribute assignments so that they line up horizontally
 " vmap <buffer> <Leader>= :s,\v\s*(\w+)\s*\=\s*,@\1=,g<CR>gv:!column -t -s @<CR>
-vmap <buffer> <Leader>= :Tabularize/\v\zs\w+\ze\=["']
+vmap <buffer> <Leader>= :Tabularize/\v\zs\w+\ze\=["']<CR>
