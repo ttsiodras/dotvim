@@ -7,6 +7,7 @@ se sts=4
 se modelines=2
 se modeline
 se nocp
+se mouse=a
 
 if has("autocmd")
     filetype on
@@ -176,8 +177,6 @@ if has("unix")
   let myosuname = system("uname")
   if myosuname =~ "FreeBSD"
     set term=cons25
-  elseif myosuname =~ "Linux"
-    set term=linux
   endif
 endif
 
