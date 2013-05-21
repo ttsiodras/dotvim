@@ -434,7 +434,7 @@ function! SetupCandCPPenviron()
     "
     " Search path for 'gf' command (e.g. open #include-d files)
     "
-    set path+=/usr/include/c++/**
+    "set path+=/usr/include/c++/**
 
     "
     " Tags
