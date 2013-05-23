@@ -429,7 +429,7 @@ let g:Powerline_stl_path_style = 'short'
 "
 let g:clang_use_library = 1
 
-au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h call SetupCandCPPenviron()
+au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
 function! SetupCandCPPenviron()
     "
     " Search path for 'gf' command (e.g. open #include-d files)
@@ -454,6 +454,12 @@ function! SetupCandCPPenviron()
     " Especially for C and C++, use section 3 of the manpages
     "
     noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
+
+    "
+    " (Cover CUDA .cu, too) Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
