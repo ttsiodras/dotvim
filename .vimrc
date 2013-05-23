@@ -553,3 +553,12 @@ function! SetupMDEnviron()
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
+
+au BufNewFile,BufRead *.tex call SetupTexEnviron()
+function! SetupTexEnviron()
+    "
+    " Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
