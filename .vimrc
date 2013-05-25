@@ -22,7 +22,10 @@ se undodir=~/.vimundo
 
 " Turbo-charge EasyMotion
 let mapleader = " "
- 
+
+" ESC is too far away
+inoremap jj <esc>
+
 " auto-closes preview window after you select what to auto-complete with
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
