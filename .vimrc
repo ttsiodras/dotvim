@@ -20,7 +20,9 @@ se undofile
 se undodir=~/.vimundo
 "noremap <ESC>OP <F1>
 
-
+" Turbo-charge EasyMotion
+let mapleader = " "
+ 
 " auto-closes preview window after you select what to auto-complete with
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
