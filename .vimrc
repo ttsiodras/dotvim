@@ -21,7 +21,7 @@ se undodir=~/.vimundo
 "noremap <ESC>OP <F1>
 
 " Turbo-charge EasyMotion
-let mapleader = " "
+"let mapleader = " "
 
 " ESC is too far away
 inoremap jj <esc>
