@@ -30,6 +30,10 @@ inoremap jj <esc>
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
+"
+" Stop moving the cursor to the beginning of the line - for many commands
+"
+se nostartofline
 
 "
 " maps NERDTree to F10
