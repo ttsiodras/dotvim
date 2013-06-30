@@ -245,16 +245,18 @@ colorscheme elflord
 
 "
 " Disable cursors (force myself to learn VI moves)
+" Months later: It worked - I now only use the home row.
+" Leaving it here for any one else needing it.
 "
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
-map <up> <nop>
-
-imap <down> <nop>
-imap <left> <nop>
-imap <right> <nop>
-imap <up> <nop>
+"map <down> <nop>
+"map <left> <nop>
+"map <right> <nop>
+"map <up> <nop>
+"
+"imap <down> <nop>
+"imap <left> <nop>
+"imap <right> <nop>
+"imap <up> <nop>
 
 "
 " highlight current line
