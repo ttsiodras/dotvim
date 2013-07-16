@@ -410,7 +410,7 @@ noremap! <silent> <F6> <ESC>:SyntasticCheck<CR>
 let g:syntastic_mode_map = {
     \ 'mode': 'active',
     \ 'active_filetypes': [],
-    \ 'passive_filetypes': ['python', 'cpp', 'c'] }
+    \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript'] }
 
 "
 " Now that I use the CtrlP plugin, a very useful shortcut is to open
