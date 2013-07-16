@@ -563,6 +563,7 @@ function! SetupJSEnviron()
     "
     noremap <buffer> <special> <F7> :JSHint<CR>
     noremap! <buffer> <special> <F7> <ESC>:JSHint<CR>
+    let g:syntastic_javascript_syntax_checker="jshint"
 endfunction
 
 au BufNewFile,BufRead *.md call SetupMDEnviron()
