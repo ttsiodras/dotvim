@@ -429,6 +429,15 @@ let g:ctrlp_working_path_mode = 0
 let g:Powerline_stl_path_style = 'short'
 
 "
+" For GVIM only
+"
+if has("gui_running")
+    " Horizontal scrollbar
+    set guioptions+=b
+    set nowrap
+endif
+
+"
 " Language-specific section
 "
 
