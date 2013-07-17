@@ -435,6 +435,8 @@ if has("gui_running")
     " Horizontal scrollbar
     set guioptions+=b
     set nowrap
+    set guifont=Lucida\ Console\ Semi-Condensed\ 11
+    colorscheme evening
 endif
 
 "
