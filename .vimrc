@@ -585,3 +585,14 @@ function! SetupTexEnviron()
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
+
+au BufNewFile,BufRead *.htm,*.html call SetupHTMLenviron()
+function! SetupHTMLenviron()
+    "
+    " I use custom Makefiles that do many things
+    " (tidy checks, etc)
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
