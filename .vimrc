@@ -296,7 +296,11 @@ function! TabsAndColumn80AndNumbers ()
     " tabs must be visible
     "
     set list!
-    set number!
+    if (&relativenumber == 1)
+        set number!
+    else
+        set relativenumber!
+    endif
     set listchars=tab:>-,trail:-
     if exists('+colorcolumn')
         "
