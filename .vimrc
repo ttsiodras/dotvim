@@ -36,6 +36,11 @@ inoremap jj <esc>
 se nostartofline
 
 "
+" Very efficient moves amongst lines
+"
+se relativenumber
+
+"
 " maps NERDTree to F10
 "
 noremap <silent> <F10> :NERDTreeToggle<CR>
