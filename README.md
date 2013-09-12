@@ -31,7 +31,7 @@ I therefore use the same VIM environment in all my machines.
 For C/C++ development
 ---------------------
 
-I create /usr/include/tags:
+I first create /usr/include/tags:
 
     (become root via su/sudo)
     cd /usr/include
@@ -48,16 +48,18 @@ I use [clang complete](http://www.vim.org/scripts/script.php?script_id=3302)
 The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
 
 Pressing 'K' shows manpages on the symbol under the cursor in an "inner window"
-(which allows me to copy/paste). I quickly close the manpage "window" with Ctrl-F12.
+(which allows me to copy/paste).
+I then quickly close the manpage "window" with Ctrl-F12.
 
 F8 shows taglists (macros/types/variables/functions/classes).
 
 For Python development
 ----------------------
 
-I've mapped F7 to invoke flake8 (install it with: "easy\_install flake8") to get
-static analysis error reports from "pyflakes" and style issues from "pep8", navigating
-from error to error in the usual way (":cn", ":cp")
+F7 is mapped to invoke flake8 (install it with: "pip install flake8") to get
+static analysis error reports from "pyflakes" and style issues from "pep8",
+navigating from error to error in the usual way (":cn", ":cp") - which is
+mapped to F4.
 
 I've also added a "screen" based SLIME-like environment. Here's a
 [demonstration of the process on Vimeo](http://www.vimeo.com/37894593)
@@ -70,11 +72,21 @@ Basically, spawn a screen session via...
 
     screen -c python.screenrc
 
-(or "python.screenrc.for.ArchLinux" if your screen doesn't support the "split -v"
-command) and you will get two screen windows: one with a VIM, one with a python
-instance. Navigate to whatever function/class you want in VIM, and hit Ctrl-c Ctrl-c
-(i.e. Ctrl-c twice). This will send the function/class to the running python instance.
-You can switch between VIM and python via Alt-[ and Alt-]
+(or "python.screenrc.for.ArchLinux" if your screen doesn't support the
+"split -v" command) and you will get two screen windows: one with a VIM,
+one with a python instance. Navigate to whatever function/class you want
+in VIM, and hit Ctrl-c Ctrl-c (i.e. Ctrl-c twice). This will send
+the function/class to the running python instance.
+
+You can then switch between VIM and python 'windows' via Alt-[ and Alt-]
+
+For XML
+-------
+F7 is mapped to SAXCount (the Xerces XML validator) and F4 navigates
+from each error (reported by SAXCount) to the next.
+
+I've written a blog post about how I did this, here:
+   http://ttsiodras.github.io/regexp.html
 
 Generic stuff
 -------------
@@ -86,7 +98,7 @@ I've mapped:
 - Ctrl-cursors to navigate windows (or create them, if missing)
 - Ctrl-L to clear search results (hate seeing yellow stuff after search)
 - Ctrl-F12 to quickly close "window" (buffer)
-- I also have easy motion in, so I can navigate to any place in the screen
+- I've also installed the easymotion plugin, so I can navigate to any place in the screen
   with a simple \\\\w followed by a character. Amazing plugin.
 
 Am I insane to use VIM?
