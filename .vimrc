@@ -460,6 +460,7 @@ endif
 "
 let g:clang_use_library = 1
 
+" Cover CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
 function! SetupCandCPPenviron()
     "
@@ -487,7 +488,7 @@ function! SetupCandCPPenviron()
     noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
 
     "
-    " (Cover CUDA .cu, too) Remap F7 to make
+    " Remap F7 to make
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
