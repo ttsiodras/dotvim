@@ -60,3 +60,6 @@
 [submodule "bundle/mediawiki"]
 	path = bundle/mediawiki
 	url = git://github.com/chikamichi/mediawiki.vim.git
+[submodule "bundle/ultisnips"]
+	path = bundle/ultisnips
+	url = https://github.com/SirVer/ultisnips.git

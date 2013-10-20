@@ -1,0 +1,160 @@
+snippet direc "AngularJS Directive by ttsiodras" !b
+function ${1:directiveNameInCamelCase}(\$timeout$2) {
+
+    // Use the common debugging functionality of automatic wrapping
+    var debugDirective = false;
+    var info = infoGeneric(debugDirective);
+    var logWrap = logWrapGeneric(debugDirective);
+
+    // "Global" variables for your direct
+    // e.g. var localeDecSep = '.';
+    $3
+
+    return {
+        // Will we change the model via this directive?
+        ${4:require: '?ngModel',}
+
+        link: function(scope:ng.IScope, element, attrs`!p snip.rv=", ngModel" if t[4] else ""`) {
+            `!p snip.rv="if(!ngModel) return; // do nothing if no ng-model" if t[4] else ""`
+
+            // Read the options passed in the directive
+            var options:NpTypes.${5:SomeType} = scope.\$eval(attrs.$1);
+            if (options === undefined)          options = new NpTypes.$5();
+            //set default values to missing fields, e.g.
+            if (options.required === undefined) options.required = false;
+            if (options.isValid === undefined)  options.isValid = true;
+            $6
+
+            // cache stuff inside the options object
+            // e.g. the validation and cleaning regexps (so they are not compiled all the time)
+            //var regex = "^[0-9]*(" + options.decSep + "([0-9]{0," + options.decimals + "}))?$";
+            //options.compiledRegExValidate = new RegExp(regex);
+            $7
+
+            // Converters to and from between the model ($8) and the two state strings (edit/view)
+
+            function $8ToEditText(n:$8):string {
+                if (!n) return '$9'; // the model may be undefined by the user
+                //return n.toString().split(localeDecSep).join(options.decSep);
+                $10
+            }
+
+            function $8ToViewText(n:$8):string {
+                if (!n) return '$11'; // the model may be undefined by the user
+                //var parts = n.toString().split(localeDecSep);
+                //parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, options.thSep);
+                //return parts.join(options.decSep);
+                $12
+            }
+
+            function editTextTo`!p snip.rv=t[8].capitalize()`(t:string):$8 {
+                //return parseFloat(t.replace(options.compiledRegExClean, '').replace(options.decSep, localeDecSep));
+                $13
+            }
+
+            function viewTextTo`!p snip.rv=t[8].capitalize()`(t:string):$8 {
+                //return parseFloat(t.replace(options.decSep, localeDecSep));
+                $14
+            }
+
+            function focus(e) {
+                // If showError has been called (and the control has been marked with Bootstrap error colors)
+                // then don't re-read from the model - the user has already edited, keep his changes
+                if (options.isValid)
+                    element.val($8ToEditText(ngModel.\$modelValue));
+            }
+            element.focus(logWrap(focus));
+
+            function blur(e) {
+                // Update the number model
+                ngModel.\$setViewValue(element.val());
+                // Trigger a digest
+                \$timeout(function() { scope.\$apply(); }, 0);
+            }
+            element.blur(logWrap(blur));
+
+            // when Angular detects the model changed, it will call the formatters...
+            function formatter(modelValue:$8) {
+                options.oldModelValue = modelValue;
+                if (modelValue === undefined) {
+                    return '$15';
+                } else
+                    return $8ToViewText(modelValue);
+            }
+            ngModel.\$formatters.push(logWrap(formatter));
+
+            // Angular calls this when the model -> formatters -> \$viewValue call chain completes.
+            function render() {
+                element.val(ngModel.\$viewValue);
+            }
+            ngModel.\$render = logWrap(render);
+
+            // Whenever the control's content changes, Angular will call this:
+            // check that the value is valid, and if so, return the updated model value
+            // otherwise show a popover and return the last known good value
+            function parser(viewValue:string) {
+                if (\$(element).is(":focus"))
+                    return options.oldModelValue;
+
+                options.isValid = true;
+                if (viewValue === '') {
+                    if (options.required) {
+                        showError(' Υποχρεωτικό πεδίο', element, options, \$timeout);
+                        $16//requestAnimationFrame(function() { element.focus(); });
+                        return options.oldModelValue;
+                    } else
+                        return undefined;
+                } else {
+                    // Write your validations on the viewValue here - e.g.
+                    //if (!options.compiledRegExValidate.test(viewValue)) {
+                    //    // it fails the regex, it's not valid
+                    //    info('This ('+viewValue+') is invalid due to regex: ' + options.compiledRegExValidate);
+                    //    showError(
+                    //        ' Μόνο αριθμοί' + ((options.decimals>0)?
+                    //            ", " + options.decimals + ' δεκαδικά ψηφία και μία υποδιαστολή (' + options.decSep +')'
+                    //            :''),
+                    //        element, options, \$timeout);
+                    //    //requestAnimationFrame(function() { element.focus(); });
+                    //    return options.oldModelValue;
+                    //}
+
+                    // Write your validations on the modelValue here - e.g.
+                    var newValue:$8 = editTextTo`!p t[8].capitalize()`(viewValue);
+                    //if (newValue>options.max || newValue<options.min) {
+                    //    // it fails the range check
+                    //    info(viewValue + ' is invalid due to range check');
+                    //    showError(
+                    //        ' Από ' + options.min + ' έως ' + options.max,
+                    //        element, options, \$timeout);
+                    //    //requestAnimationFrame(function() { element.focus(); });
+                    //    return options.oldModelValue;
+                    //}
+
+                    if (options.validationCallback !== undefined) {
+                        var validationResult:NpTypes.ValidationResult = scope.\$eval(
+                                options.validationCallback + '(' + newValue + ')');
+                        if (!validationResult.isValid) {
+                            // it fails the user check
+                            info(newValue + ' is invalid due to custom check');
+                            showError(validationResult.errorMessage, element, options, \$timeout);
+                            //requestAnimationFrame(function() { element.focus(); });
+                            return options.oldModelValue;
+                        }
+                    }
+
+                    // The input was solid, return the updated value for the model.
+                    // (but first, clear any error popovers)
+                    markAsGood(element, options, \$timeout);
+                    element.val($8ToViewText(newValue));
+                    ngModel.\$modelValue = null; // Force model update
+                                                 // (angular.js, line 13435)
+                    options.oldModelValue = newValue;
+                    return newValue;
+                }
+            }
+            ngModel.\$parsers.push(logWrap(parser));
+        }
+    }
+}
+
+endsnippet
