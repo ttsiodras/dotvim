@@ -449,6 +449,11 @@ if has("gui_running")
 endif
 
 "
+" Sacrilege: Make Ctrl-c act as 'Clipboard-copy' in visual select mode
+"
+vmap <C-c> "+y
+
+"
 " Language-specific section
 "
 
