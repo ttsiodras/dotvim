@@ -700,4 +700,13 @@ function! SetupXMLEnviron()
     " to align attribute assignments so that they line up horizontally
     " vmap <buffer> <Leader>= :s,\v\s*(\w+)\s*\=\s*,@\1=,g<CR>gv:!column -t -s @<CR>
     vmap <buffer> <Leader>= :Tabularize/\v\zs\w+\ze\=["']/l1l0<CR>
+
+    " 
+    " We sometimes need XSD-based autocompletion for .xml files
+    " Spawn eclimd in some screen, then hit F8 with your .xml file open.
+    "
+    noremap <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
+    noremap! <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
 endfunction
+
+au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
