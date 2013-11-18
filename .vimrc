@@ -703,10 +703,28 @@ function! SetupXMLEnviron()
 
     " 
     " We sometimes need XSD-based autocompletion for .xml files
-    " Spawn eclimd in some screen, then hit F8 with your .xml file open.
+    " Step 1: Spawn eclimd in some screen
+    " Step 2: Open your file, make sure filetype is xml (:se filetype)
+    " Step 3: Unfortunately, eclim/eclipse sometimes get confused with BOM and DOS
+    "         newlines... Hit F12 for instant dos2unix
+    "
+    noremap <buffer> <F12> :!dos2unix %:p<CR>
+    noremap! <buffer> <F12> :!dos2unix %:p<CR>
+    "
+    " Step 4: Make the file known to Eclipse, by hiting F8 (with your .xml file open)
     "
     noremap <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
     noremap! <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
+    "
+    " Step 5: Ctrl-x Ctrl-u is too difficult - for XML insert mode, map to TAB
+    "
+    inoremap <buffer> <Tab> <C-x><C-u>
+    "
+    " Step 6: Auto-close preview window when insertion cursor moves (usually,
+    "         by just hitting space) or escaping into normal mode.
+    "
+    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 endfunction
 
 au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
