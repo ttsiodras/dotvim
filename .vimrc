@@ -454,6 +454,12 @@ endif
 vmap <C-c> "+y
 
 "
+" Default to very magic (I prefer normal regexps)
+"
+nnoremap / /\v
+vnoremap / /\v
+
+"
 " Language-specific section
 "
 
