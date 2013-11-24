@@ -419,7 +419,7 @@ noremap! <silent> <F6> <ESC>:SyntasticCheck<CR>
 let g:syntastic_mode_map = {
     \ 'mode': 'active',
     \ 'active_filetypes': [],
-    \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript'] }
+    \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript', 'java'] }
 
 "
 " Now that I use the CtrlP plugin, a very useful shortcut is to open
@@ -694,6 +694,23 @@ endfunction
 " Now all I have to do to validate my .xml files is hit F7, and navigate from
 " each error to the next with F4 (just as I do for my Python work, via pyflakes).
 "
+function! CommonEclim(myfiletype)
+    "
+    " Step 1: Make the file known to Eclipse, by hiting F8 (with .xml/.java file open)
+    "
+    exec printf('noremap <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
+    exec printf('noremap! <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
+    "
+    " Step 2: Ctrl-x Ctrl-u is too difficult - for insert mode, map to TAB
+    "
+    inoremap <buffer> <Tab> <C-x><C-u>
+    "
+    " Step 3: Auto-close preview window when insertion cursor moves (usually,
+    "         by just hitting space) or escaping into normal mode.
+    "
+    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+endfunction
 
 au BufNewFile,BufRead *.xml call SetupXMLEnviron()
 function! SetupXMLEnviron()
@@ -716,21 +733,12 @@ function! SetupXMLEnviron()
     "
     noremap <buffer> <F12> :!dos2unix %:p<CR>
     noremap! <buffer> <F12> :!dos2unix %:p<CR>
-    "
-    " Step 4: Make the file known to Eclipse, by hiting F8 (with your .xml file open)
-    "
-    noremap <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
-    noremap! <buffer> <F8> :ProjectCreate %:p:h -n none<CR>
-    "
-    " Step 5: Ctrl-x Ctrl-u is too difficult - for XML insert mode, map to TAB
-    "
-    inoremap <buffer> <Tab> <C-x><C-u>
-    "
-    " Step 6: Auto-close preview window when insertion cursor moves (usually,
-    "         by just hitting space) or escaping into normal mode.
-    "
-    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    call CommonEclim("none")
 endfunction
 
 au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
+
+au BufNewFile,BufRead *.java call SetupJavaEnviron()
+function! SetupJavaEnviron()
+    call CommonEclim("java")
+endfunction
