@@ -112,6 +112,8 @@ if !has("gui_running")
     noremap! <silent> <Esc>OS <ESC>:cn<CR>
     noremap <silent> <Esc>OR :lnext<CR>
     noremap! <silent> <Esc>OR <ESC>:lnext<CR>
+    noremap <silent> <Esc>[1;5S :bd<CR>
+    noremap! <silent> <Esc>[1;5S <ESC>:bd<CR>
 
     " Putty-ing from Windows
     "
@@ -163,6 +165,8 @@ else
     noremap! <silent> <F4> <ESC>:cn<CR>
     noremap <silent> <F3> :ln<CR>
     noremap! <silent> <F3> <ESC>:ln<CR>
+    noremap <silent> <C-F4> :bd<CR>
+    noremap! <silent> <C-F4> <ESC>:bd<CR>
 endif
 
 "
