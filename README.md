@@ -40,7 +40,8 @@ in my project-specific Makefiles:
     set tags+=/usr/include/tags
 
 I use [clang complete](http://www.vim.org/scripts/script.php?script_id=3302)
-  to get Intellisense-like autocompletion (see the video above).
+  to get Intellisense-like autocompletion (see an example session recorded
+in this [Vimeo-hosted video](http://vimeo.com/37875339)).
 
 The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
 
