@@ -464,6 +464,11 @@ nnoremap / /\v
 vnoremap / /\v
 
 "
+" cd to the currently opened file's folder
+"
+command Cdd cd %:p:h
+
+"
 " Language-specific section
 "
 
