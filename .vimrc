@@ -746,3 +746,12 @@ au BufNewFile,BufRead *.java call SetupJavaEnviron()
 function! SetupJavaEnviron()
     call CommonEclim("java")
 endfunction
+
+au BufNewFile,BufRead *.ts call SetupTSEnviron()
+function! SetupTSEnviron()
+    setlocal filetype=typescript
+    noremap <buffer> <F8> :set rtp+=/home/ttsiod/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
+    inoremap <buffer> <Tab> <C-x><C-o>
+endfunction
+
+let $PATH .= ':/home/ttsiod/.vim/bundle/typescript-tools/bin'
