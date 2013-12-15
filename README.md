@@ -3,10 +3,7 @@ These are my VIM settings, mostly targeting development with C, C++ and Python.
 I wrote a blog post about them [here](http://users.softlab.ntua.gr/~ttsiod/vim.html).
 
 Here is a [Vimeo-hosted video](http://vimeo.com/37875339) showing some of
-the things I can do when I work in C or C++. You can also
-[download](http://www.mediafire.com/file/ge1imhbivswsixr/Vim.C.and.C++.flv)
-a high resolution version of the video for offline playback, using
-[MPlayer](http://www.mplayerhq.hu) or [VideoLAN](http://www.videolan.org/).
+the things I can do when I work in C or C++.
 
 I use a small number of plugins, and did some minor customization for
 keyboard shortcuts. The plugins are maintained with pathogen, and
@@ -62,11 +59,7 @@ navigating from error to error in the usual way (":cn", ":cp") - which is
 mapped to F4.
 
 I've also added a "screen" based SLIME-like environment. Here's a
-[demonstration of the process on Vimeo](http://www.vimeo.com/37894593)
-and an [HD version](http://www.mediafire.com/file/zz9gpv3095fkizl/Vim.SLIME.flv)
-that you can download for offline playback, using [MPlayer](http://www.mplayerhq.hu)
-or [VideoLAN](http://www.videolan.org/).
-
+[demonstration of the process on Vimeo](http://www.vimeo.com/37894593).
 
 Basically, spawn a screen session via...
 
