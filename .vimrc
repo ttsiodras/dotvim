@@ -378,15 +378,13 @@ set completeopt=menuone,longest,preview
 
 "
 " Use C-space for omni completion in insert mode.
-" Disabled currently, because I am testing the
-" 'YouCompleteMe' plugin...
 "
-"inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
-"            \ "\<lt>C-n>" :
-"            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
-"            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
-"            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
-"imap <C-@> <C-Space>
+inoremap <expr> <C-Space> pumvisible() \|\| &omnifunc == '' ?
+            \ "\<lt>C-n>" :
+            \ "\<lt>C-x>\<lt>C-o><c-r>=pumvisible() ?" .
+            \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
+            \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
+imap <C-@> <C-Space>
 
 "
 " Stop warning me about leaving a modified buffer
@@ -752,11 +750,9 @@ function! SetupJavaEnviron()
     call CommonEclim("java")
 endfunction
 
+let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
-    noremap <buffer> <F8> :set rtp+=/home/ttsiod/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
-    inoremap <buffer> <Tab> <C-x><C-o>
+    noremap <buffer> <F8> :set rtp+=$HOME/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
 endfunction
-
-let $PATH .= ':/home/ttsiod/.vim/bundle/typescript-tools/bin'
