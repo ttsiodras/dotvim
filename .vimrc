@@ -755,4 +755,5 @@ au BufNewFile,BufRead *.ts call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
     noremap <buffer> <F8> :set rtp+=$HOME/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
+    noremap <buffer> <F7> :make<CR>
 endfunction
