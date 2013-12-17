@@ -54,9 +54,6 @@
 [submodule "bundle/vim-indent-object"]
 	path = bundle/vim-indent-object
 	url = https://github.com/michaeljsmith/vim-indent-object.git
-[submodule "bundle/typescript"]
-	path = bundle/typescript
-	url = https://github.com/leafgarland/typescript-vim.git
 [submodule "bundle/mediawiki"]
 	path = bundle/mediawiki
 	url = git://github.com/chikamichi/mediawiki.vim.git
