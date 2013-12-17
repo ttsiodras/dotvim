@@ -69,3 +69,6 @@
 [submodule "bundle/typescript-tools"]
 	path = bundle/typescript-tools
 	url = https://github.com/clausreinke/typescript-tools.git
+[submodule "bundle/typescript"]
+	path = bundle/typescript
+	url = https://github.com/ttsiodras/typescript-vim.git
