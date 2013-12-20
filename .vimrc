@@ -754,7 +754,8 @@ let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
-    noremap <buffer> <F8> :set rtp+=$HOME/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
-    noremap <buffer> <F7> :make<CR>
+    nnoremap <buffer> <F8> :set rtp+=$HOME/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
+    nnoremap <buffer> <F7> :make<CR>
+    nnoremap <buffer> <C-]> :TSSdef<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
