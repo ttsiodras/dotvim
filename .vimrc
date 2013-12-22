@@ -1,5 +1,10 @@
 call pathogen#infect()
 call pathogen#helptags()
+
+"""""""""""""""""""""""""""""
+" Generic, all buffer stuff
+"""""""""""""""""""""""""""""
+
 se nobackup
 se directory=~/.vim/swp,.
 se shiftwidth=4
@@ -20,39 +25,27 @@ se undofile
 se undodir=~/.vimundo
 "noremap <ESC>OP <F1>
 
-" Turbo-charge EasyMotion
-"let mapleader = " "
-
-" ESC is too far away
-inoremap jj <esc>
+" ESC is too far away - and Steve Losh is right, this is better than jj
+inoremap jk <esc>
 
 " auto-closes preview window after you select what to auto-complete with
 "autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 "autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
 "
-" Stop moving the cursor to the beginning of the line - for many commands
+" Stop moving the cursor to the beginning of the line (in many move commands)
 "
 se nostartofline
 
 "
-" Very efficient moves amongst lines
+" Very efficient moves amongst local lines, shows relative jump distances
 "
 se relativenumber
 
 "
-" maps NERDTree to F10
+" ...yet show the absolute number of the current line. Best of both worlds!
 "
-noremap <silent> <F10> :NERDTreeToggle<CR>
-noremap! <silent> <F10> <ESC>:NERDTreeToggle<CR>
-
-
-"
-" tells NERDTree to use ASCII chars
-" and to ignore some files
-"
-let g:NERDTreeDirArrows=0
-let g:NERDTreeIgnore=['\.pyc$', '\.o$']
+set number
 
 "
 " Better TAB completion for files (like the shell)
@@ -67,14 +60,33 @@ if has("wildmenu")
     set wildignore+=*~,*.swp,*.tmp
 endif
 
-"
-" My attempt at easy navigation/creation of windows:
-"   Ctrl-Cursor keys to navigate open windows
-"   Ctrl-F12 to close current window
-" Also...
-"   F4 to navigate to next compile/link/flake8 error
-"   F3 to navigate to next Syntastic error (first, invoke :Errors)
-"
+""""""""""""""""""""
+" NERDTree section "
+""""""""""""""""""""
+
+" maps NERDTree to F10
+" (normal, visual and operator-pending modes)
+noremap <silent> <F10> :NERDTreeToggle<CR>
+" (also in insert and command-line modes)
+noremap! <silent> <F10> <ESC>:NERDTreeToggle<CR>
+
+" tell NERDTree to use ASCII chars
+" and to ignore some files
+let g:NERDTreeDirArrows=0
+let g:NERDTreeIgnore=['\.pyc$', '\.o$']
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" My attempt at easy navigation/creation of windows:   "
+"   Ctrl-Cursor keys to navigate open windows          "
+"   Ctrl-F12 to close current window                   "
+" Also...                                              "
+"   F4 to navigate to next error in the error window   "
+"     (e.g. after :make)                               "
+"   F3 to navigate to next place in location list      "
+"     (e.g. SyntasticLint - but first invoke :Errors)  "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 function! WinMove(key)
   let t:curwin = winnr()
   exec "wincmd ".a:key
@@ -96,6 +108,10 @@ function! WinClose()
     bd
   endif
 endfunction
+
+" Unfortunately, normal key mappings don't work under Win/PuTTY,
+" so I have to create these messy Ctrl-v based mappings...
+
 if !has("gui_running")
     " XTerm
     noremap <silent> <Esc>[1;5B :call WinMove('j')<CR>
@@ -171,11 +187,17 @@ endif
 
 "
 " In cmd mode, + and - vertically enlarge/shrink a split
+" Their shifted versions (= and _) do it horizontally.
 "
 noremap  <silent> = :call WinMove('+')<CR>
 noremap  <silent> - :call WinMove('-')<CR>
 noremap  <silent> + :call WinMove('>')<CR>
 noremap  <silent> _ :call WinMove('<')<CR>
+
+"
+"when the vim window is resized resize the vsplit panes as well
+"
+au VimResized * exe "normal! \<c-w>="
 
 
 "
@@ -224,19 +246,7 @@ vnoremap > >gv
 "
 " Force Saving Files that Require Root Permission
 "
-cmap w!! %!sudo tee > /dev/null %
-
-
-"
-" Syntastic - Ignore 'too long lines' from flake8 report
-"
-"let g:syntastic_python_checker_args = "--ignore=E501,E225"
-
-
-"
-"when the vim window is resized resize the vsplit panes as well
-"
-au VimResized * exe "normal! \<c-w>="
+cnoremap w!! %!sudo tee > /dev/null %
 
 
 "
@@ -292,24 +302,17 @@ set statusline=%F%m%r%h%w[%L][%{&ff}]%y[%p%%][%04l,%04v]
 "              | +-- rodified flag in square brackets
 "              +-- full path to file in the buffer
 
+
 "
-" But we must be able to hide them if we want to
+" We must be able to show the 80 column limit with F9...
+" While we're at it, we'll also show TABs and trailing WS.
+" Hitting F9 again will toggle back to normal.
 "
 function! TabsAndColumn80AndNumbers ()
-    "
-    " tabs must be visible
-    "
-    set list!
-    if (&relativenumber == 1)
-        set number!
-    else
-        set relativenumber!
-    endif
     set listchars=tab:>-,trail:-
+    set list!
     if exists('+colorcolumn')
-        "
-        " Show me column 80
-        "
+        " Show column 80
         if &colorcolumn == ""
             set colorcolumn=80
         else
@@ -317,8 +320,12 @@ function! TabsAndColumn80AndNumbers ()
         endif
     endif
 endfunction
-nnoremap <Esc>[20~ :call TabsAndColumn80AndNumbers()<CR>
-nnoremap <F9> :call TabsAndColumn80AndNumbers()<CR>
+set relativenumber
+set number
+noremap  <silent> <Esc>[20~ :call TabsAndColumn80AndNumbers()<CR>
+noremap! <silent> <Esc>[20~ <ESC>:call TabsAndColumn80AndNumbers()<CR>
+noremap  <silent> <F9> :call TabsAndColumn80AndNumbers()<CR>
+noremap! <silent> <F9> <ESC> :call TabsAndColumn80AndNumbers()<CR>
 
 "
 " Smart backspace
@@ -332,7 +339,7 @@ set expandtab
 
 " SVN/GIT vimdiff hack:
 "
-" For SVN ...
+" For SVN:
 "
 " in ~/.subversion/config:
 "
@@ -345,8 +352,9 @@ set expandtab
 "    vimdiff "$6" "$7"
 "    exit 0
 "
+" (s/vimdiff/meld/ or whatever else you fancy...)
 "
-" For GIT ...
+" For GIT:
 "
 " in ~/.gitconfig:
 "
@@ -364,7 +372,9 @@ set expandtab
 "    vimdiff "$2" "$5"
 "    exit 0
 
-" When in vimdiff, enable wrap (visible diffs past 80 columns)
+" (s/vimdiff/meld/ or whatever else you fancy...)
+"
+" Inside vimdiff, enable wrap (visible diffs past 80 columns)
 " au FilterWritePre * if &diff | set wrap | endif
 
 " Set vimdiff to ignore whitespace
@@ -392,7 +402,7 @@ imap <C-@> <C-Space>
 set hidden
 
 "
-" Show command as I type it
+" Show keystrokes as I type (command mode)
 "
 set showcmd
 
@@ -402,7 +412,7 @@ set showcmd
 set t_Co=256
 
 "
-" After 'f' in normal mode, I always mistype 'search next' - use space for ;
+" After 'f' in normal mode, I always mistype 'search next' - use space for ';'
 "
 noremap <space> ;
 
@@ -411,17 +421,6 @@ noremap <space> ;
 "
 runtime ftplugin/man.vim
 noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
-
-"
-" Map SyntasticCheck to F6
-"
-noremap <silent> <F6> :SyntasticCheck<CR>
-noremap! <silent> <F6> <ESC>:SyntasticCheck<CR>
-
-let g:syntastic_mode_map = {
-    \ 'mode': 'active',
-    \ 'active_filetypes': [],
-    \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript', 'java'] }
 
 "
 " Now that I use the CtrlP plugin, a very useful shortcut is to open
@@ -453,10 +452,10 @@ endif
 "
 " Sacrilege: Make Ctrl-c act as 'Clipboard-copy' in visual select mode
 "
-vmap <C-c> "+y
+vnoremap <C-c> "+y
 
 "
-" Default to very magic (I prefer normal regexps)
+" Default to very magic (I prefer normal Perl-y regexps)
 "
 nnoremap / /\v
 vnoremap / /\v
@@ -464,21 +463,29 @@ vnoremap / /\v
 "
 " cd to the currently opened file's folder
 "
-command Cdd cd %:p:h
+command! Cdd cd %:p:h
+
+"""""""""""""""""""""""""""""""""""""""""""""
+"
+"       Language-specific section
+"
+"""""""""""""""""""""""""""""""""""""""""""""
 
 "
-" Language-specific section
+" Tell Syntastic which files should be passive
+" (and wait for user to press F7/F6 for validation)
 "
+let g:syntastic_mode_map = {
+    \ 'mode': 'active',
+    \ 'active_filetypes': [],
+    \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript', 'java'] }
 
 "
-" For C and C++
-"
-    
-" libclang use is mandatory now
+" For C and C++, use libclang, Luke.
 "
 let g:clang_use_library = 1
 
-" Cover CUDA .cu, too)
+" (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
 function! SetupCandCPPenviron()
     "
@@ -511,6 +518,7 @@ function! SetupCandCPPenviron()
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
+
 
 "
 " For Python
@@ -569,6 +577,18 @@ function! SetupPythonEnviron()
     " Flake8 is always at F7 - but syntastic must use pylint
     "
     let g:syntastic_python_checker = 'pylint'
+
+    "
+    " Syntastic - Ignore 'too long lines' and 'missing whitespace around op'
+    "
+    "let g:syntastic_python_checker_args = "--ignore=E501,E225"
+
+    "
+    " Map SyntasticCheck to F6
+    "
+    noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
+    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
+
 endfunction
 
 "
@@ -596,37 +616,67 @@ function! SetupJSEnviron()
     let g:syntastic_javascript_syntax_checker="jshint"
 endfunction
 
+"
+" Markdown
+"
 au BufNewFile,BufRead *.md call SetupMDEnviron()
 function! SetupMDEnviron()
     "
-    " Remap F7 to make
+    " Remap F7 to make (I use custom Makefiles for .md)
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
+"
+" LaTEX
+"
 au BufNewFile,BufRead *.tex call SetupTexEnviron()
 function! SetupTexEnviron()
     "
-    " Remap F7 to make
+    " Remap F7 to make (I use custom Makefiles for .tex)
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
+"
+" HTML
+"
 au BufNewFile,BufRead *.htm,*.html call SetupHTMLenviron()
 function! SetupHTMLenviron()
     "
     " I use custom Makefiles that do many things
-    " (tidy checks, etc)
+    " (e.g. rules that invoke tidy, etc)
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
-" XML (Read the related blog post at http://ttsiodras.github.io/regexp.html)
+" XML (Read my related blog post at http://ttsiodras.github.io/regexp.html)
 "
+" First, XSD-based autocompletion via ... erm... Eclim.
+" There's no better way, currently... (ashamed, cowers in corner)
+"
+function! CommonEclim(myfiletype)
+    "
+    " Step 1: Make the file known to Eclipse, by hiting F8 (with .xml/.java file open)
+    "
+    exec printf('noremap <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
+    exec printf('noremap! <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
+    "
+    " Step 2: Ctrl-x Ctrl-u is too difficult - for insert mode, map to TAB
+    "
+    inoremap <buffer> <Tab> <C-x><C-u>
+    "
+    " Step 3: Auto-close preview window when insertion cursor moves (usually,
+    "         by just hitting space) or escaping into normal mode.
+    "
+    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+endfunction
+
 " Use SAXCount to validate XMLs based on their .xsds ; provided that is,
 " that they have header lines on their top - indicating what .xsd they use.
 " e.g. files looking like this:
@@ -701,23 +751,6 @@ endfunction
 " Now all I have to do to validate my .xml files is hit F7, and navigate from
 " each error to the next with F4 (just as I do for my Python work, via pyflakes).
 "
-function! CommonEclim(myfiletype)
-    "
-    " Step 1: Make the file known to Eclipse, by hiting F8 (with .xml/.java file open)
-    "
-    exec printf('noremap <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
-    exec printf('noremap! <buffer> <F8> :ProjectCreate %%:p:h -n %s<CR>', a:myfiletype)
-    "
-    " Step 2: Ctrl-x Ctrl-u is too difficult - for insert mode, map to TAB
-    "
-    inoremap <buffer> <Tab> <C-x><C-u>
-    "
-    " Step 3: Auto-close preview window when insertion cursor moves (usually,
-    "         by just hitting space) or escaping into normal mode.
-    "
-    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-endfunction
 
 au BufNewFile,BufRead *.xml call SetupXMLEnviron()
 function! SetupXMLEnviron()
@@ -729,7 +762,7 @@ function! SetupXMLEnviron()
     " In visual mode (with multiple lines selected) use Leader followed by '=' 
     " to align attribute assignments so that they line up horizontally
     " vmap <buffer> <Leader>= :s,\v\s*(\w+)\s*\=\s*,@\1=,g<CR>gv:!column -t -s @<CR>
-    vmap <buffer> <Leader>= :Tabularize/\v\zs\w+\ze\=["']/l1l0<CR>
+    vnoremap <buffer> <Leader>= :Tabularize/\v\zs\w+\ze\=["']/l1l0<CR>
 
     " 
     " We sometimes need XSD-based autocompletion for .xml files
@@ -745,16 +778,25 @@ endfunction
 
 au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
 
+"
+" Java autocompletion - also via Eclim
+"
 au BufNewFile,BufRead *.java call SetupJavaEnviron()
 function! SetupJavaEnviron()
     call CommonEclim("java")
 endfunction
 
+"
+" Typescript - autocompletion via typescript-tools plugin
+" and custom Makefile-based builds...
+"
 let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
+set rtp+=$HOME/.vim/bundle/typescript-tools/
+
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
-    nnoremap <buffer> <F8> :set rtp+=$HOME/.vim/bundle/typescript-tools/<CR>:TSSstarthere<CR>
+    nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <F7> :make<CR>
     nnoremap <buffer> <C-]> :TSSdef<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
