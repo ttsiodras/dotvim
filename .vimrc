@@ -494,6 +494,32 @@ noremap χ x
 noremap υ y
 noremap ζ z
 
+noremap Α A
+noremap Β B
+noremap Ψ C
+noremap Δ D
+noremap Ε E
+noremap Φ F
+noremap Γ G
+noremap Η H
+noremap Ι I
+noremap Ξ J
+noremap Κ K
+noremap Λ L
+noremap Μ M
+noremap Ν N
+noremap Ο O
+noremap Π P
+noremap Ρ R
+noremap Σ S
+noremap Τ T
+noremap Θ U
+noremap Ω V
+noremap Σ W
+noremap Χ X
+noremap Υ Y
+noremap Ζ Z
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
