@@ -465,6 +465,35 @@ vnoremap / /\v
 "
 command! Cdd cd %:p:h
 
+"
+" Greek-locale normal maps
+"
+noremap α a
+noremap β b
+noremap ψ c
+noremap δ d
+noremap ε e
+noremap φ f
+noremap γ g
+noremap η h
+noremap ι i
+noremap ξ j
+noremap κ k
+noremap λ l
+noremap μ m
+noremap ν n
+noremap ο o
+noremap π p
+noremap ρ r
+noremap σ s
+noremap τ t
+noremap θ u
+noremap ω v
+noremap ς w
+noremap χ x
+noremap υ y
+noremap ζ z
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
