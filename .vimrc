@@ -706,6 +706,14 @@ function! SetupHTMLenviron()
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
+
+    "
+    " Map SyntasticCheck with local HTML5 validator to F6
+    "
+    let g:syntastic_html_validator_api="http://localhost:8888"
+    let g:syntastic_html_validator_parser="html5"
+    noremap <buffer> <silent> <F6> :SyntasticCheck validator<CR>
+    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck validator<CR>
 endfunction
 
 "
