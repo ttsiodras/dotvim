@@ -186,13 +186,16 @@ else
 endif
 
 "
-" In cmd mode, + and - vertically enlarge/shrink a split
+" In normal mode, + and - vertically enlarge/shrink a split
 " Their shifted versions (= and _) do it horizontally.
 "
-noremap  <silent> = :call WinMove('+')<CR>
-noremap  <silent> - :call WinMove('-')<CR>
-noremap  <silent> + :call WinMove('>')<CR>
-noremap  <silent> _ :call WinMove('<')<CR>
+" Note: this means that the usual gg=G will no longer indent;
+" use visual selection: ggVG= (or just map it to your own macro)
+"
+nnoremap  <silent> = :call WinMove('+')<CR>
+nnoremap  <silent> - :call WinMove('-')<CR>
+nnoremap  <silent> + :call WinMove('>')<CR>
+nnoremap  <silent> _ :call WinMove('<')<CR>
 
 "
 "when the vim window is resized resize the vsplit panes as well
