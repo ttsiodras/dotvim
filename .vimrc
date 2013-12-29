@@ -42,7 +42,7 @@ se nostartofline
 "
 se relativenumber
 
-if version >= 740
+if v:version >= 704
     "
     " ...but also show the absolute number of the current line.
     " Best of both worlds! (only for vim>=7.4)
