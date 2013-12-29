@@ -42,10 +42,13 @@ se nostartofline
 "
 se relativenumber
 
-"
-" ...yet show the absolute number of the current line. Best of both worlds!
-"
-set number
+if version >= 740
+    "
+    " ...but also show the absolute number of the current line.
+    " Best of both worlds! (only for vim>=7.4)
+    "
+    set number
+endif
 
 "
 " Better TAB completion for files (like the shell)
@@ -323,8 +326,7 @@ function! TabsAndColumn80AndNumbers ()
         endif
     endif
 endfunction
-set relativenumber
-set number
+
 noremap  <silent> <Esc>[20~ :call TabsAndColumn80AndNumbers()<CR>
 noremap! <silent> <Esc>[20~ <ESC>:call TabsAndColumn80AndNumbers()<CR>
 noremap  <silent> <F9> :call TabsAndColumn80AndNumbers()<CR>
