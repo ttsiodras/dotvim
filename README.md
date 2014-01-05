@@ -72,7 +72,7 @@ one with a python instance. Navigate to whatever function/class you want
 in VIM, and hit Ctrl-c Ctrl-c (i.e. Ctrl-c twice). This will send
 the function/class to the running python instance.
 
-You can then switch between VIM and python 'windows' via Alt-[ and Alt-]
+You can then switch between VIM and python 'windows' via Alt-1
 
 For XML
 -------

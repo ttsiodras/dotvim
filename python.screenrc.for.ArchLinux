@@ -1,9 +1,7 @@
 startup_message off
 # Bind Alt-[ and Alt-] to move amongst splits
-bindkey "]" focus down
-bindkey "[" focus up
-bindkey "Ý" focus down
-bindkey "Û" focus up
+bindkey "1" focus
+bindkey "±" focus
 sessionname PythonSlime
 split
 screen -t vim 0 vim
