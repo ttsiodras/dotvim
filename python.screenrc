@@ -9,5 +9,5 @@ sessionname PythonSlime
 split -v
 screen -t vim 0 vim
 focus
-screen -t python 0 python
+screen -t python 0 python2
 focus up
