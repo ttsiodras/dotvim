@@ -1,7 +1,10 @@
 startup_message off
-# Bind Alt-[ and Alt-] to move amongst splits
+# Bind Alt-1 to move amongst VIM and Python
 bindkey "1" focus
 bindkey "±" focus
+# Bind Alt-0 to quit it all
+bindkey "0" quit
+bindkey "°" quit
 sessionname PythonSlime
 split
 screen -t vim 0 vim
