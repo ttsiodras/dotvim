@@ -525,6 +525,11 @@ noremap Χ X
 noremap Υ Y
 noremap Ζ Z
 
+"
+" Use EasyMotion to go anywhere in the screen in normal mode, with just '!'
+"
+nmap ! H\\w
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
