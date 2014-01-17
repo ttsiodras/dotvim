@@ -869,3 +869,13 @@ function! SetupTSEnviron()
     nnoremap <buffer> <C-]> :TSSdef<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
+
+"
+" Work-related hell: People all around me use Windows,
+" and their stupid editors put ^M everywhere.
+" Hide them, when we are working with .stg files.
+"
+au BufNewFile,BufRead *.stg call SetupStringTemplateEnviron()
+function! SetupStringTemplateEnviron()
+    ed ++ff=dos %
+endfunction
