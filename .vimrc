@@ -537,6 +537,41 @@ nmap ! H\\w
 """""""""""""""""""""""""""""""""""""""""""""
 
 "
+" First, use session management
+" (From http://pm.veritablesoftware.com/slides/vim_for_perl_development/session_code.vimrc.html)
+"
+
+" Autoload and autosave sessions.                                                                                                     
+autocmd VimEnter * call AutoLoadSession()
+autocmd VimLeave * call AutoSaveSession()
+
+function! AutoLoadSession()
+    if argc() == 0
+        perl << EOD
+        use Digest::MD5 qw(md5_hex);
+        use Cwd;
+        my $session_md5_hash = md5_hex(cwd());
+        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
+        if (-e $session_path) {
+            VIM::DoCommand("silent source $session_path");
+        }
+EOD
+    endif
+endfunction
+
+function! AutoSaveSession()
+    if argc() == 0
+        perl << EOD
+        use Digest::MD5 qw(md5_hex);
+        use Cwd;
+        my $session_md5_hash = md5_hex(cwd());
+        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
+        VIM::DoCommand("silent mksession! $session_path");
+EOD
+    endif
+endfunction
+
+"
 " Tell Syntastic which files should be passive
 " (and wait for user to press F7/F6 for validation)
 "
