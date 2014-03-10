@@ -530,6 +530,11 @@ noremap Ζ Z
 "
 nmap ! H\\w
 
+"
+" Somehow, in my latest update, a big foldcolumn appeared. Nip it in the bud!
+"
+se foldcolumn=0
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
