@@ -919,3 +919,12 @@ au BufNewFile,BufRead *.stg call SetupStringTemplateEnviron()
 function! SetupStringTemplateEnviron()
     ed ++ff=dos %
 endfunction
+
+"
+" .rst files (ReSTructured text)
+"
+au BufNewFile,BufRead *.rst call SetupRSTEnviron()
+function! SetupRSTEnviron()
+    setlocal filetype=rst
+    nnoremap <buffer> <F7> :make html<CR>
+endfunction
