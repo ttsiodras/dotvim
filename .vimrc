@@ -535,6 +535,11 @@ nmap ! H\\w
 "
 se foldcolumn=0
 
+"
+" Reroute the :Ack to use the silver searcher - warp speed!
+"
+let g:ackprg = 'ag --nogroup --nocolor --column'
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
