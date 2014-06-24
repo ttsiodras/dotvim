@@ -9,5 +9,15 @@ sessionname PythonSlime
 split -v
 screen -t vim 0 vim
 focus
-screen -t python 0 python2
+# With ipythonVIM being in the PATH,
+# and containing something like this:
+# 
+#    $ cat ~/bin.local/ipythonVIM
+#    export LD_LIBRARY_PATH=/opt/mast/lib:/opt/oracle/lib
+#    /home/ttsiod/.virtualenvs/flask/bin/ipython
+#
+# i.e. setting up the env and running an ipython
+# from the virtualenv I will work from.
+#
+screen -t python 0 ipythonVIM
 focus up
