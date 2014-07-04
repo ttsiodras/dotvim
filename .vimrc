@@ -1,6 +1,3 @@
-"set runtimepath+=/home/ttsiod/.vim
-"runtime autoload/pathogen.vim
-
 call pathogen#infect()
 call pathogen#helptags()
 
