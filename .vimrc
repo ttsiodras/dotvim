@@ -1,3 +1,8 @@
+" These may be necessary to work inside the ipython-slime mode
+"
+"  set runtimepath+=/home/ttsiod/.vim
+"  runtime autoload/pathogen.vim
+
 call pathogen#infect()
 call pathogen#helptags()
 
@@ -915,6 +920,7 @@ set rtp+=$HOME/.vim/bundle/typescript-tools/
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
+    se makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <F7> :make<CR>
     nnoremap <buffer> <C-]> :TSSdef<CR>
