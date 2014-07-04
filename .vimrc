@@ -1,3 +1,6 @@
+"set runtimepath+=/home/ttsiod/.vim
+"runtime autoload/pathogen.vim
+
 call pathogen#infect()
 call pathogen#helptags()
 
@@ -787,6 +790,7 @@ function! CommonEclim(myfiletype)
     " Step 2: Ctrl-x Ctrl-u is too difficult - for insert mode, map to TAB
     "
     inoremap <buffer> <Tab> <C-x><C-u>
+    inoremap <buffer> <C-Space> <C-x><C-u>
     "
     " Step 3: Auto-close preview window when insertion cursor moves (usually,
     "         by just hitting space) or escaping into normal mode.
