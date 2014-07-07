@@ -727,6 +727,7 @@ endif
 
 au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
 function! SetupOCamlEnviron()
+    se shiftwidth=2
     "
     " Remap F7 to make if the file is an .ml one
     "
