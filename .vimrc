@@ -739,6 +739,8 @@ function! SetupOCamlEnviron()
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
     inoremap <buffer> <C-Space> <C-x><C-o>
+    noremap <buffer> <C-]> :Locate<CR>
+    inoremap <buffer> <C-]> <ESC>:Locate<CR>
 endfunction
 
 "
