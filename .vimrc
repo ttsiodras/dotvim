@@ -709,6 +709,17 @@ endfunction
 "
 " OCaml
 "
+
+"
+" Merlin
+"
+if executable('ocamlmerlin') && has('python')
+    let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/ocamlmerlin"
+    execute "set rtp+=".s:ocamlmerlin."/vim"
+    execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
+    let g:syntastic_ocaml_checkers = ['merlin']
+endif
+
 au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
 function! SetupOCamlEnviron()
     "
@@ -716,6 +727,13 @@ function! SetupOCamlEnviron()
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
+
+    "
+    " Thanks to Merlin
+    "
+    noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
+    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
+    inoremap <buffer> <C-Space> <C-x><C-o>
 endfunction
 
 "
