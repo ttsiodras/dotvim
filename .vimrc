@@ -720,6 +720,11 @@ if executable('ocamlmerlin') && has('python')
     let g:syntastic_ocaml_checkers = ['merlin']
 endif
 
+if executable('ocp-indent')
+    let $OCPPATHVIM = substitute(system('opam config var share'), '\n$', '', '''') . "/vim/syntax/ocp-indent.vim"
+    autocmd FileType ocaml source $OCPPATHVIM
+endif
+
 au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
 function! SetupOCamlEnviron()
     "
