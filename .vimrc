@@ -949,6 +949,7 @@ function! SetupTSEnviron()
     nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <F7> :make<CR>
     nnoremap <buffer> <C-]> :TSSdef<CR>
+    nnoremap <buffer> \t :TSSsymbol<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
 
