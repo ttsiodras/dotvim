@@ -104,3 +104,11 @@ How to add more plugins?
 ------------------------
 Just...
     git submodule add https://.... bundle/something
+
+How to uninstall a plugin?
+--------------------------
+Just...
+    git submodule deinit bundle/something
+    git rm bundle/something
+    git rm --cached bundle/something
+    rm -rf .git/modules/bundle/something
