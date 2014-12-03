@@ -69,3 +69,9 @@
 [submodule "bundle/typescript"]
 	path = bundle/typescript
 	url = https://github.com/ttsiodras/typescript-vim.git
+[submodule "bundle/vim-scala"]
+	path = bundle/vim-scala
+	url = https://github.com/derekwyatt/vim-scala.git
+[submodule "bundle/sbt-quickfix"]
+	path = bundle/sbt-quickfix
+	url = https://github.com/dscleaver/sbt-quickfix.git
