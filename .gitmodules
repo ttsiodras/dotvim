@@ -75,3 +75,9 @@
 [submodule "bundle/sbt-quickfix"]
 	path = bundle/sbt-quickfix
 	url = https://github.com/dscleaver/sbt-quickfix.git
+[submodule "bundle/vim-clojure-static"]
+	path = bundle/vim-clojure-static
+	url = https://github.com/guns/vim-clojure-static.git
+[submodule "bundle/vim-fireplace"]
+	path = bundle/vim-fireplace
+	url = https://github.com/tpope/vim-fireplace.git
