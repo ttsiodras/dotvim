@@ -1,6 +1,6 @@
 
 These are my VIM settings, mostly targeting development with C, C++ and Python.
-I wrote a blog post about them [here](http://users.softlab.ntua.gr/~ttsiod/vim.html).
+I wrote a blog post about them [here](https://www.thanassis.space/myvim.html).
 
 Here is a [Vimeo-hosted video](http://vimeo.com/37875339) showing some of
 the things I can do when I work in C or C++.
@@ -80,8 +80,7 @@ For XML
 F7 is mapped to SAXCount (the Xerces XML validator) and F4 navigates
 from each error (reported by SAXCount) to the next.
 
-I've written a blog post about how I did this, here:
-   http://ttsiodras.github.io/regexp.html
+Here's a [blog post](https://www.thanassis.space/regexp.html) I wrote about using these.
 
 Generic stuff
 -------------
@@ -98,7 +97,7 @@ I've mapped:
 
 Am I insane to use VIM?
 -----------------------
-[No,](http://www.viemu.com/a-why-vi-vim.html) I am [not](http://users.softlab.ntua.gr/~ttsiod/vim.html).
+[No,](http://www.viemu.com/a-why-vi-vim.html) I am [not](https://www.thanassis.space/myvim.html).
 
 How to add more plugins?
 ------------------------
