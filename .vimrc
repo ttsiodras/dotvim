@@ -326,6 +326,8 @@ function! TabsAndColumn80AndNumbers ()
         " Show column 80
         if &colorcolumn == ""
             set colorcolumn=80
+            set norelativenumber!
+            set number!
         else
             set colorcolumn=
         endif
