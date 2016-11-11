@@ -648,7 +648,7 @@ function! SetupPythonEnviron()
     "
     " flake8: ignore 'too long lines'
     "
-    "let g:flake8_ignore="E501,E225"
+    let g:flake8_ignore="E501,E225,C103"
 
     "
     " Function that sends individual Python classes or Python functions
@@ -701,13 +701,19 @@ function! SetupPythonEnviron()
     "
     " Syntastic - Ignore 'too long lines' and 'missing whitespace around op'
     "
-    "let g:syntastic_python_checker_args = "--ignore=E501,E225"
+    let g:syntastic_python_checker_args = "--ignore=E501,E225"
+    let g:syntastic_python_pylint_post_args = "--disable=C0103,C0301,W0212,C0111"
 
     "
     " Map SyntasticCheck to F6
     "
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
+
+    "
+    " Jedi auto-completion
+    "
+    :setlocal omnifunc=jedi#completions
 
 endfunction
 
