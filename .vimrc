@@ -1036,6 +1036,14 @@ function! SetupJavaEnviron()
 endfunction
 
 "
+" .acn files
+"
+au BufNewFile,BufRead *.acn call SetupACNEnviron()
+function! SetupACNEnviron()
+    se filetype=acn
+endfunction
+
+"
 " Now read machine-local customizations
 "
 if filereadable(glob("~/.vimrc.local")) 
