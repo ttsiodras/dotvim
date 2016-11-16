@@ -976,3 +976,31 @@ function! SetupRSTEnviron()
     setlocal filetype=rst
     nnoremap <buffer> <F7> :make html<CR>
 endfunction
+
+"
+" .clj files (Clojure)
+"
+" The Clojure workflow goes like this:
+" You 
+"    lein repl
+" and then you edit in VIM, where you
+"    :Connect
+" and attach to the port of your nrepl (shown during startup of 'lein repl')
+" After that, I have mapped F7 to :Eval the function you are in... i.e. send
+" it to the running repl, where you can call, inspect results, etc.
+" F6 sends the whole file.
+"
+au BufNewFile,BufRead *.clj call SetupCLJEnviron()
+function! SetupCLJEnviron()
+noremap <buffer> <silent> K :exe "Doc" expand('<cword>') <CR>
+vmap <buffer> <silent> <F7> :Eval<CR>
+nmap <F7> ?^(<CR>V%:Eval<CR>:nohlsearch<CR>
+nnoremap <buffer> <silent> <F6> ggVG:Eval<CR>
+endfunction
+
+"
+" Now read machine-local customizations
+"
+if filereadable(glob("~/.vimrc.local")) 
+    source ~/.vimrc.local
+endif
