@@ -326,6 +326,8 @@ function! TabsAndColumn80AndNumbers ()
         " Show column 80
         if &colorcolumn == ""
             set colorcolumn=80
+            set norelativenumber!
+            set number!
         else
             set colorcolumn=
         endif
@@ -548,6 +550,23 @@ se foldcolumn=0
 "
 let g:ackprg = 'ag --nogroup --nocolor --column'
 
+"
+" VIMDIFF is far more useful when ignoring whitespace
+"
+set diffopt+=iwhite
+set diffexpr=DiffW()
+function DiffW()
+  let opt = ""
+   if &diffopt =~ "icase"
+     let opt = opt . "-i "
+   endif
+   if &diffopt =~ "iwhite"
+     let opt = opt . "-w " " swapped vim's -b with -w
+   endif
+   silent execute "!diff -a --binary " . opt .
+     \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
@@ -647,7 +666,7 @@ function! SetupPythonEnviron()
     "
     " flake8: ignore 'too long lines'
     "
-    "let g:flake8_ignore="E501,E225"
+    let g:flake8_ignore="E501,E225,C103"
 
     "
     " Function that sends individual Python classes or Python functions
@@ -700,13 +719,19 @@ function! SetupPythonEnviron()
     "
     " Syntastic - Ignore 'too long lines' and 'missing whitespace around op'
     "
-    "let g:syntastic_python_checker_args = "--ignore=E501,E225"
+    let g:syntastic_python_checker_args = "--ignore=E501,E225"
+    let g:syntastic_python_pylint_post_args = "--disable=C0103,C0301,W0212,C0111"
 
     "
     " Map SyntasticCheck to F6
     "
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
+
+    "
+    " Jedi auto-completion
+    "
+    :setlocal omnifunc=jedi#completions
 
 endfunction
 
@@ -953,7 +978,7 @@ function! SetupTSEnviron()
     se makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <F7> :make<CR>
-    nnoremap <buffer> <C-]> :TSSdef<CR>
+    nnoremap <buffer> <C-]> :TsuquyomiDefinition<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
@@ -992,10 +1017,48 @@ endfunction
 "
 au BufNewFile,BufRead *.clj call SetupCLJEnviron()
 function! SetupCLJEnviron()
+se nohlsearch
 noremap <buffer> <silent> K :exe "Doc" expand('<cword>') <CR>
 vmap <buffer> <silent> <F7> :Eval<CR>
-nmap <F7> ?^(<CR>V%:Eval<CR>:nohlsearch<CR>
+nmap <F7> ?^(<CR>V%:Eval<CR>%
 nnoremap <buffer> <silent> <F6> ggVG:Eval<CR>
+endfunction
+
+"
+" .rs files (Rust)
+"
+au BufNewFile,BufRead *.rs call SetupRSEnviron()
+function! SetupRSEnviron()
+    "
+    " Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
+"
+" .java files (Java)
+"
+au BufNewFile,BufRead *.java call SetupJavaEnviron()
+function! SetupJavaEnviron()
+    setlocal omnifunc=javacomplete#Complete
+    nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
+    nmap <F5> <Plug>(JavaComplete-Imports-Add)
+    imap <F5> <Plug>(JavaComplete-Imports-Add)
+    nmap <F6> <Plug>(JavaComplete-Imports-AddMissing)
+    imap <F6> <Plug>(JavaComplete-Imports-AddMissing)
+    nmap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
+    imap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
+"
+" .acn files
+"
+au BufNewFile,BufRead *.acn call SetupACNEnviron()
+function! SetupACNEnviron()
+    se filetype=acn
 endfunction
 
 "
