@@ -946,6 +946,7 @@ let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
 set rtp+=$HOME/.vim/bundle/typescript-tools/
 
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
+au BufNewFile,BufRead *.tsx call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
     se makeprg=make
