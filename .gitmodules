@@ -53,7 +53,7 @@
 	url = https://github.com/michaeljsmith/vim-indent-object.git
 [submodule "bundle/mediawiki"]
 	path = bundle/mediawiki
-	url = git://github.com/chikamichi/mediawiki.vim.git
+	url = https://github.com/chikamichi/mediawiki.vim.git 
 [submodule "bundle/ultisnips"]
 	path = bundle/ultisnips
 	url = https://github.com/SirVer/ultisnips.git
