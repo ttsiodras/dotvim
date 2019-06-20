@@ -628,6 +628,13 @@ let g:clang_use_library = 1
 
 " (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
+
+fun! ShowFuncName()
+  echohl ModeMsg
+  echo getline(search("^[^ \t#/]\\{2}.*[^:]\s*$", 'bWn'))
+  echohl None
+endfun
+
 function! SetupCandCPPenviron()
     "
     " Search path for 'gf' command (e.g. open #include-d files)
@@ -658,6 +665,12 @@ function! SetupCandCPPenviron()
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
+
+    "
+    " Remap F3 to show function name
+    "
+    noremap <buffer> <special> <F3> :call ShowFuncName() <CR>
+    noremap <buffer> <Esc>OR :call ShowFuncName() <CR>
 endfunction
 
 
