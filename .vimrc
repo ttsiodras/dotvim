@@ -1078,6 +1078,25 @@ function! SetupACNEnviron()
 endfunction
 
 "
+" Cscope accelerators
+"
+if has("cscope")
+        set csto=0
+        set cst
+        set nocsverb
+        " add any database in current directory
+        if filereadable("cscope.out")
+            cs add cscope.out
+        " else add database pointed to by environment
+        elseif $CSCOPE_DB != ""
+            cs add $CSCOPE_DB
+        endif
+        set csverb
+endif
+
+map <C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
+
+"
 " Now read machine-local customizations
 "
 if filereadable(glob("~/.vimrc.local")) 
