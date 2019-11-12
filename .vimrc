@@ -1097,6 +1097,11 @@ endif
 map <C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
 
 "
+" Looks like I don't need tmux anymore...
+"
+noremap <C-n> :terminal bash<CR>
+
+"
 " Now read machine-local customizations
 "
 if filereadable(glob("~/.vimrc.local")) 
