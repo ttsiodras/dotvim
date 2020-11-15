@@ -1102,6 +1102,32 @@ map <C-\> :cs find 0 <C-R>=expand("<cword>")<CR><CR>
 noremap <C-n> :terminal bash<CR>
 
 "
+" VHDL files
+"
+au BufNewFile,BufRead *.vhd call SetupVHDL()
+function! SetupVHDL()
+    se shiftwidth=4
+    "
+    " Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
+"
+" .s assembly files
+"
+au BufNewFile,BufRead *.s call SetupASM()
+function! SetupASM()
+    se shiftwidth=4
+    "
+    " Remap F7 to make
+    "
+    noremap <buffer> <special> <F7> :make<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+endfunction
+
+"
 " Now read machine-local customizations
 "
 if filereadable(glob("~/.vimrc.local")) 
