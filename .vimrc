@@ -6,6 +6,16 @@
 call pathogen#infect()
 call pathogen#helptags()
 
+"""""""""
+" VimPlug
+"""""""""
+call plug#begin('~/.vim/plugged')
+Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
+     \'java','json', 'haskell', 'ts','sh', 'cs',
+     \'yaml', 'c', 'cpp', 'd', 'go',
+     \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
+call plug#end()
+
 """""""""""""""""""""""""""""
 " Generic, all buffer stuff
 """""""""""""""""""""""""""""
