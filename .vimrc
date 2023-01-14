@@ -10,10 +10,11 @@ call pathogen#helptags()
 " VimPlug
 """""""""
 call plug#begin('~/.vim/plugged')
-Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
-     \'java','json', 'haskell', 'ts','sh', 'cs',
-     \'yaml', 'c', 'cpp', 'd', 'go',
-     \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
+"      \'java','json', 'haskell', 'ts','sh', 'cs',
+"      \'yaml', 'c', 'cpp', 'd', 'go',
+"      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
+Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -830,6 +831,10 @@ function! SetupPythonEnviron()
     "
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
+
+    " Somehow, ts for python files is autoset to 4. 
+    " Only sts should be 4, nothing else.
+    set ts=8
 
     "
     " Jedi auto-completion
