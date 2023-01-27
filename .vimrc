@@ -715,6 +715,7 @@ let g:syntastic_mode_map = {
 " For C and C++, use libclang, Luke.
 "
 let g:clang_use_library = 1
+let g:clang_library_path = "/lib/x86_64-linux-gnu"
 
 " (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
