@@ -15,6 +15,8 @@ call plug#begin('~/.vim/plugged')
 "      \'yaml', 'c', 'cpp', 'd', 'go',
 "      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
 
 """""""""""""""""""""""""""""
