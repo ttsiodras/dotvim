@@ -528,10 +528,10 @@ noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
 " Now that I use the CtrlP plugin, a very useful shortcut is to open
 " an XTerm in the folder of the currently opened file:
 "
-" noremap <silent> <F2> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
+" noremap <silent> <F5> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
 " noremap <silent> <Esc>OQ :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
-noremap <silent> <F2> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
-noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
+noremap <silent> <F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
+"noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_max_files=0
@@ -761,6 +761,16 @@ function! SetupCandCPPenviron()
     "
     noremap <buffer> <special> <F3> :call ShowFuncName() <CR>
     noremap <buffer> <Esc>OR :call ShowFuncName() <CR>
+
+    "
+    " Use the tags, Luke
+    "
+    noremap <buffer> <C-]> :tag <C-R>=expand('<cword>')<CR><CR>
+
+    "
+    " Use Coc to rename, Luke (with F2)
+    "
+    noremap <buffer> <silent> <F2> :CocCommand document.renameCurrentWord<CR>
 endfunction
 
 
