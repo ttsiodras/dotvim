@@ -733,6 +733,13 @@ function! SetupCandCPPenviron()
     "set path+=/usr/include/c++/**
 
     "
+    " For the ':A' (plugin) that swaps between header and impl file (C/C++)
+    let g:alternateExtensions_cc = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_CC = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_cpp = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
+
+    "
     " Tags
     "
     " If I ever need to generate tags on the fly, I uncomment this:
