@@ -421,81 +421,10 @@ set completeopt=menuone,longest,preview
 "             \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
 " imap <C-@> <C-Space>
 
-"
-" coc.nvim and LSP stuff. Mostly copied from here:
-"    https://github.com/neoclide/coc.nvim#example-vim-configuration
-"
-
-" Show me what you know about the symbol under the cursor
-nnoremap <silent> <leader>h :call CocActionAsync('doHover')<cr>
-
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call ShowDocumentation()<CR>
 
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
-" Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
 
 
 "
@@ -557,6 +486,8 @@ if has("gui_running")
     colorscheme evening
 endif
 
+" Toggle wrap/nowrap
+nnoremap <silent> <leader>w :windo set wrap!<cr>
 "
 " Sacrilege: Make Ctrl-c act as 'Clipboard-copy' in visual select mode
 "
@@ -673,34 +604,34 @@ endfunction
 "
 "
 " Autoload and autosave sessions.                                                                                                     
-"autocmd VimEnter * call AutoLoadSession()
-"autocmd VimLeave * call AutoSaveSession()
-"
-"function! AutoLoadSession()
-"    if argc() == 0
-"        perl << EOD
-"        use Digest::MD5 qw(md5_hex);
-"        use Cwd;
-"        my $session_md5_hash = md5_hex(cwd());
-"        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
-"        if (-e $session_path) {
-"            VIM::DoCommand("silent source $session_path");
-"        }
-"EOD
-"    endif
-"endfunction
-"
-"function! AutoSaveSession()
-"    if argc() == 0
-"        perl << EOD
-"        use Digest::MD5 qw(md5_hex);
-"        use Cwd;
-"        my $session_md5_hash = md5_hex(cwd());
-"        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
-"        VIM::DoCommand("silent mksession! $session_path");
-"EOD
-"    endif
-"endfunction
+autocmd VimEnter * call AutoLoadSession()
+autocmd VimLeave * call AutoSaveSession()
+
+function! AutoLoadSession()
+    if argc() == 0
+        perl << EOD
+        use Digest::MD5 qw(md5_hex);
+        use Cwd;
+        my $session_md5_hash = md5_hex(cwd());
+        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
+        if (-e $session_path) {
+            VIM::DoCommand("silent source $session_path");
+        }
+EOD
+    endif
+endfunction
+
+function! AutoSaveSession()
+    if argc() == 0
+        perl << EOD
+        use Digest::MD5 qw(md5_hex);
+        use Cwd;
+        my $session_md5_hash = md5_hex(cwd());
+        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
+        VIM::DoCommand("silent mksession! $session_path");
+EOD
+    endif
+endfunction
 
 "
 " Tell Syntastic which files should be passive
@@ -716,9 +647,37 @@ let g:syntastic_mode_map = {
 "
 let g:clang_use_library = 1
 let g:clang_library_path = "/lib/x86_64-linux-gnu"
+"
+" Auto-format on save is sometimes wanted and sometimes not.
+"
+"
+let g:clang_format_on_save = 1
+
+function ToggleFormatOnSave()
+    if g:clang_format_on_save == 1
+        let g:clang_format_on_save = 0
+        echo "Auto-format on save disabled"
+    else
+        let g:clang_format_on_save = 1
+        echo "Auto-format on save ENABLED"
+    endif
+endfunction
+
+function AutoSaveMaybe()
+    if g:clang_format_on_save == 1
+        echo "Formating ".line('$')." lines..."
+        silent! execute ':ClangFormat'
+    endif
+endfunction
 
 " (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
+au BufWritePost *.cpp call AutoSaveMaybe()
+au BufWritePost *.cc  call AutoSaveMaybe()
+au BufWritePost *.c   call AutoSaveMaybe()
+au BufWritePost *.cu  call AutoSaveMaybe()
+au BufWritePost *.h   call AutoSaveMaybe()
+au BufWritePost *.hpp call AutoSaveMaybe()
 
 fun! ShowFuncName()
   echohl ModeMsg
@@ -759,6 +718,16 @@ function! SetupCandCPPenviron()
     noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
 
     "
+    " F5 to toggle using clang-format to update on save - or not!
+    " "
+    noremap <silent> <F5> :call ToggleFormatOnSave()<CR>
+
+    "
+    " F6 to see the CocDiagnostics output
+    "
+    noremap <silent> <F6> :CocDiagnostics<CR>
+
+    "
     " Remap F7 to make
     "
     noremap <buffer> <special> <F7> :make<CR>
@@ -779,6 +748,87 @@ function! SetupCandCPPenviron()
     " Use Coc to rename, Luke (with F2)
     "
     noremap <buffer> <silent> <F2> :CocCommand document.renameCurrentWord<CR>
+    "
+    " Work prefers these settings.
+    " After using them for quite a while, I guess I like them too :-)
+    "
+    se shiftwidth=2
+    se sts=2
+
+    "
+    " coc.nvim and LSP stuff. Mostly copied from here:
+    "    https://github.com/neoclide/coc.nvim#example-vim-configuration
+    "
+
+    " Show me what you know about the symbol under the cursor
+    nnoremap <silent> <leader>h :call CocActionAsync('doHover')<cr>
+
+    " Refresh the clang diagnostics shown by Coc
+    nnoremap <silent> <leader>r :CocRestart<cr>
+
+    " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+    " delays and poor user experience
+    set updatetime=300
+
+    " Always show the signcolumn, otherwise it would shift the text each time
+    " diagnostics appear/become resolved
+    set signcolumn=yes
+
+    function! CheckBackspace() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use tab for trigger completion with characters ahead and navigate
+    " NOTE: There's always complete item selected by default, you may want to enable
+    " no select by `"suggest.noselect": true` in your configuration file
+    " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+    " other plugin before putting this into your config
+    inoremap <silent><expr> <TAB>
+          \ coc#pum#visible() ? coc#pum#next(1) :
+          \ CheckBackspace() ? "\<Tab>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+
+    " Use <c-space> to trigger completion
+    if has('nvim')
+      inoremap <silent><expr> <c-space> coc#refresh()
+    else
+      inoremap <silent><expr> <c-@> coc#refresh()
+    endif
+
+    " Use `[g` and `]g` to navigate diagnostics
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+    nmap <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+    " GoTo code navigation
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+
+    function! ShowDocumentation()
+      if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
+      else
+        call feedkeys('K', 'in')
+      endif
+    endfunction
+
+    " Remap <C-f> and <C-b> to scroll float windows/popups
+    if has('nvim-0.4.0') || has('patch-8.2.0750')
+      nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+      nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+      inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+      inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+      vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+      vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+    endif
 endfunction
 
 
