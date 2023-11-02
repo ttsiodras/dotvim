@@ -672,12 +672,12 @@ endfunction
 
 " (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.cc,*.cpp,*.h,*.cu call SetupCandCPPenviron()
-au BufWritePost *.cpp call AutoSaveMaybe()
-au BufWritePost *.cc  call AutoSaveMaybe()
-au BufWritePost *.c   call AutoSaveMaybe()
-au BufWritePost *.cu  call AutoSaveMaybe()
-au BufWritePost *.h   call AutoSaveMaybe()
-au BufWritePost *.hpp call AutoSaveMaybe()
+au BufWritePre *.cpp call AutoSaveMaybe()
+au BufWritePre *.cc  call AutoSaveMaybe()
+au BufWritePre *.c   call AutoSaveMaybe()
+au BufWritePre *.cu  call AutoSaveMaybe()
+au BufWritePre *.h   call AutoSaveMaybe()
+au BufWritePre *.hpp call AutoSaveMaybe()
 
 fun! ShowFuncName()
   echohl ModeMsg
