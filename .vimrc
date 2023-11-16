@@ -596,6 +596,13 @@ endfunction
 "
 let g:gitgutter_preview_win_floating = 1
 
+"
+" Gitgutter easier diff/stage/unstage
+"
+nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
+nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
+nnoremap <silent> <leader>u :GitGutterPreviewHunk<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
