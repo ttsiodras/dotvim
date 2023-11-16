@@ -81,3 +81,6 @@
 [submodule "bundle/vim-clang-format"]
 	path = bundle/vim-clang-format
 	url = https://github.com/rhysd/vim-clang-format.git
+[submodule "bundle/vim-gitgutter"]
+	path = bundle/vim-gitgutter
+	url = https://github.com/airblade/vim-gitgutter

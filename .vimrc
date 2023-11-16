@@ -591,6 +591,11 @@ function DiffW()
      \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
 endfunction
 
+"
+" Gitgutter use popup windows
+"
+let g:gitgutter_preview_win_floating = 1
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
