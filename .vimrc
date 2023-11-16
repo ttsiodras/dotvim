@@ -284,7 +284,7 @@ noremap <S-Tab> :bp<CR>
 " Syntax-coloring of files
 "
 syntax on
-colorscheme elflord
+colorscheme catppuccin-mocha
 
 "
 " Disable cursors (force myself to learn VI moves)
