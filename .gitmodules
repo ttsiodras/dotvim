@@ -84,3 +84,6 @@
 [submodule "bundle/vim-gitgutter"]
 	path = bundle/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
+[submodule "bundle/catppuccin"]
+	path = bundle/catppuccin
+	url = https://github.com/catppuccin/nvim
