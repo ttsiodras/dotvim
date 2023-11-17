@@ -139,12 +139,12 @@ if !has("gui_running")
     noremap <silent> <Esc>[1;5A :call WinMove('k')<CR>
     noremap <silent> <Esc>[1;5D :call WinMove('h')<CR>
     noremap <silent> <Esc>[1;5C :call WinMove('l')<CR>
-    noremap <silent> <Esc>[24;5~ :call WinClose()<CR>
+    noremap <silent> <Esc>[24~ :call WinClose()<CR>
     noremap! <silent> <Esc>[1;5B <ESC>:call WinMove('j')<CR>
     noremap! <silent> <Esc>[1;5A <ESC>:call WinMove('k')<CR>
     noremap! <silent> <Esc>[1;5D <ESC>:call WinMove('h')<CR>
     noremap! <silent> <Esc>[1;5C <ESC>:call WinMove('l')<CR>
-    noremap! <silent> <Esc>[24;5~ <ESC>:call WinClose()<CR>
+    noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
     noremap <silent>  <Esc>OS :cn<CR>
     noremap! <silent> <Esc>OS <ESC>:cn<CR>
     noremap <silent> <Esc>OR :lnext<CR>
@@ -192,12 +192,12 @@ else
     noremap <silent> <C-Up>    :call WinMove('k')<CR>
     noremap <silent> <C-Left>  :call WinMove('h')<CR>
     noremap <silent> <C-Right> :call WinMove('l')<CR>
-    noremap <silent> <C-F12>   :call WinClose()<CR>
+    noremap <silent> <F12>   :call WinClose()<CR>
     noremap! <silent> <C-Down>  <ESC>:call WinMove('j')<CR>
     noremap! <silent> <C-Up>    <ESC>:call WinMove('k')<CR>
     noremap! <silent> <C-Left>  <ESC>:call WinMove('h')<CR>
     noremap! <silent> <C-Right> <ESC>:call WinMove('l')<CR>
-    noremap! <silent> <C-F12>   <ESC>:call WinClose()<CR>
+    noremap! <silent> <F12>   <ESC>:call WinClose()<CR>
     noremap <silent> <F4> :cn<CR>
     noremap! <silent> <F4> <ESC>:cn<CR>
     noremap <silent> <F3> :ln<CR>
