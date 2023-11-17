@@ -284,6 +284,9 @@ noremap <S-Tab> :bp<CR>
 " Syntax-coloring of files
 "
 syntax on
+" colorscheme default
+" colorscheme elflord
+" colorscheme desert
 colorscheme catppuccin-mocha
 
 "
@@ -697,6 +700,23 @@ fun! ShowFuncName()
   echohl None
 endfun
 
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
+
 function! SetupCandCPPenviron()
     "
     " Search path for 'gf' command (e.g. open #include-d files)
@@ -778,18 +798,9 @@ function! SetupCandCPPenviron()
     " Refresh the clang diagnostics shown by Coc
     nnoremap <silent> <leader>r :CocRestart<cr>
 
-    " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-    " delays and poor user experience
-    set updatetime=300
-
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
     set signcolumn=yes
-
-    function! CheckBackspace() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~# '\s'
-    endfunction
 
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
@@ -824,14 +835,6 @@ function! SetupCandCPPenviron()
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
-
-    function! ShowDocumentation()
-      if CocAction('hasProvider', 'hover')
-        call CocActionAsync('doHover')
-      else
-        call feedkeys('K', 'in')
-      endif
-    endfunction
 
     " Remap <C-f> and <C-b> to scroll float windows/popups
     if has('nvim-0.4.0') || has('patch-8.2.0750')
