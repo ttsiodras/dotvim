@@ -260,6 +260,10 @@ vnoremap > >gv
 "nnoremap <silent> * *zz
 "nnoremap <silent> # #zz
 
+" Horizontally center cursor position.
+" Does not move the cursor itself (except for 'sidescrolloff' at the window
+" border).
+nnoremap <leader>z :<C-u>normal! zszH<CR>
 
 "
 " Make Y behave like other capitals
@@ -605,6 +609,7 @@ let g:gitgutter_preview_win_floating = 1
 nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
 nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
 nnoremap <silent> <leader>u :GitGutterPreviewHunk<CR>
+nnoremap <silent> <F1> :GitGutterNextHunk<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
@@ -1288,6 +1293,7 @@ function! SetupVHDL()
     "
     " Remap F7 to make
     "
+    set colorcolumn=80
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
