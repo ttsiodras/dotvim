@@ -84,3 +84,6 @@
 [submodule "bundle/catppuccin"]
 	path = bundle/catppuccin
 	url = https://github.com/catppuccin/nvim
+[submodule "bundle/vim-markdown"]
+	path = bundle/vim-markdown
+	url = https://github.com/preservim/vim-markdown

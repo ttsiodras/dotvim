@@ -291,7 +291,8 @@ syntax on
 " colorscheme default
 " colorscheme elflord
 " colorscheme desert
-colorscheme catppuccin-mocha
+" colorscheme catppuccin-mocha
+colorscheme evening
 
 "
 " Disable cursors (force myself to learn VI moves)
@@ -740,7 +741,7 @@ function! SetupCandCPPenviron()
     "
     " If I ever need to generate tags on the fly, I uncomment this:
     " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-    set tags+=/usr/include/tags
+    " set tags+=/usr/include/tags
 
     "
     " Toggle TagList window with F8
@@ -988,6 +989,9 @@ endfunction
 "
 " Markdown
 "
+let g:vim_markdown_folding_disabled = 1
+set conceallevel=2
+
 au BufNewFile,BufRead *.md call SetupMDEnviron()
 function! SetupMDEnviron()
     "
