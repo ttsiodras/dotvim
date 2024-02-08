@@ -992,6 +992,16 @@ endfunction
 let g:vim_markdown_folding_disabled = 1
 set conceallevel=2
 
+function ToggleConcealLevel()
+    if &conceallevel == 2
+        set conceallevel=0
+        echo "conceallevel DISABLED"
+    else
+        set conceallevel=2
+        echo "conceallevel ENABLED"
+    endif
+endfunction
+
 au BufNewFile,BufRead *.md call SetupMDEnviron()
 function! SetupMDEnviron()
     "
@@ -999,6 +1009,7 @@ function! SetupMDEnviron()
     "
     noremap <buffer> <special> <F7> :make<CR>
     noremap! <buffer> <special> <F7> <ESC>:make<CR>
+    noremap <silent> <F6> :call ToggleConcealLevel()<CR>
 endfunction
 
 "
