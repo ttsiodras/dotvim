@@ -6,5 +6,6 @@
             "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
         }
     },
-    "diagnostic.checkCurrentLine": true
+    "diagnostic.checkCurrentLine": true,
+    "inlayHint.display": false
 }

@@ -774,8 +774,8 @@ function! SetupCandCPPenviron()
     "
     " Remap F3 to show function name
     "
-    noremap <buffer> <special> <F3> :call ShowFuncName() <CR>
-    noremap <buffer> <Esc>OR :call ShowFuncName() <CR>
+    noremap <buffer> <special> <F3> :CocCommand document.toggleInlayHint<CR>
+    noremap <buffer> <Esc>OR :CocCommand document.toggleInlayHint<CR>
 
     "
     " Use the tags, Luke
