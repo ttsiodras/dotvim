@@ -609,7 +609,7 @@ let g:gitgutter_preview_win_floating = 1
 "
 nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
 nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
-nnoremap <silent> <leader>u :GitGutterPreviewHunk<CR>
+nnoremap <silent> <leader>u :GitGutterUndoHunk<CR>
 nnoremap <silent> <F1> :GitGutterNextHunk<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""
