@@ -805,6 +805,9 @@ function! SetupCandCPPenviron()
     " Refresh the clang diagnostics shown by Coc
     nnoremap <silent> <leader>r :CocRestart<cr>
 
+    " Apply clang-tidy fixes to C++ code
+    nnoremap <leader>f :execute ':!clang-tidy -p ' . shellescape(getcwd()) . ' --checks=modernize-type-traits --fix % -- -std=c++20 -x c++'<cr>
+
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
     set signcolumn=yes
@@ -1341,4 +1344,9 @@ endfunction
 "
 if filereadable(glob("~/.vimrc.local")) 
     source ~/.vimrc.local
+endif
+
+if has("gui_running")
+let $GVIMCFG = $HOME . '/.gvimrc'
+source $GVIMCFG
 endif
