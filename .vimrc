@@ -340,6 +340,9 @@ set statusline=%F%m%r%h%w[%L][%{&ff}]%y[%p%%][%04l,%04v]
 " While we're at it, we'll also show TABs and trailing WS.
 " Hitting F9 again will toggle back to normal.
 "
+" Default: no column
+set colorcolumn=
+
 function! TabsAndColumn80AndNumbers ()
     set listchars=tab:>-,trail:-
     set list!
