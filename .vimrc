@@ -1343,6 +1343,16 @@ function! SetupASM()
 endfunction
 
 "
+" For YAML
+"
+au BufNewFile,BufRead *.py call SetupYamlEnviron()
+function! SetupYamlEnviron()
+    " Whoever thought that indenting the line the moment I add a '#' in front
+    " is a good idea, is... mistaken.
+    se noautoindent
+endfunction
+
+"
 " Now read machine-local customizations
 "
 if filereadable(glob("~/.vimrc.local")) 
