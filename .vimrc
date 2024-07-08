@@ -233,6 +233,10 @@ se hlsearch
 noremap <C-l> :nohlsearch<CR><C-l>
 noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 
+"
+" Use FZF history
+"
+noremap <leader>h :History<CR>
 
 "
 " Fix insert-mode cursor keys in FreeBSD
@@ -614,6 +618,11 @@ nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
 nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
 nnoremap <silent> <leader>u :GitGutterUndoHunk<CR>
 nnoremap <silent> <F1> :GitGutterNextHunk<CR>
+"
+" Auto comment/uncomment
+"
+nnoremap <silent> <leader>c :Commentary<CR>
+vnoremap <silent> <leader>c :Commentary<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
@@ -803,7 +812,7 @@ function! SetupCandCPPenviron()
     "
 
     " Show me what you know about the symbol under the cursor
-    nnoremap <silent> <leader>h :call CocActionAsync('doHover')<cr>
+    nnoremap <silent> <leader>i :call CocActionAsync('doHover')<cr>
 
     " Refresh the clang diagnostics shown by Coc
     nnoremap <silent> <leader>r :CocRestart<cr>
@@ -1363,3 +1372,14 @@ if has("gui_running")
 let $GVIMCFG = $HOME . '/.gvimrc'
 source $GVIMCFG
 endif
+
+
+function! ShowLeaderBindings()
+  redir @a
+  silent map <Leader>
+  redir END
+  new
+  put a
+endfunction
+
+command! ShowLeaderBindings call ShowLeaderBindings()
