@@ -298,7 +298,7 @@ syntax on
 " colorscheme catppuccin-mocha
 colorscheme evening
 " colorscheme delek " from home
-" se nowrap
+" se nowrap " from home
 
 "
 " Disable cursors (force myself to learn VI moves)
@@ -861,9 +861,6 @@ function! SetupCandCPPenviron()
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
-
-    nmap <silent> gx <Plug>(coc-fix-current)
-
 
     " Remap <C-f> and <C-b> to scroll float windows/popups
     if has('nvim-0.4.0') || has('patch-8.2.0750')
