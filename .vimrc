@@ -297,6 +297,8 @@ syntax on
 " colorscheme desert
 " colorscheme catppuccin-mocha
 colorscheme evening
+" colorscheme delek " from home
+" se nowrap
 
 "
 " Disable cursors (force myself to learn VI moves)
@@ -817,8 +819,10 @@ function! SetupCandCPPenviron()
     " Refresh the clang diagnostics shown by Coc
     nnoremap <silent> <leader>r :CocRestart<cr>
 
-    " Apply clang-tidy fixes to C++ code
-    nnoremap <leader>f :execute ':!clang-tidy -p ' . shellescape(getcwd()) . ' --checks=modernize-type-traits --fix % -- -std=c++20 -x c++'<cr>
+    " DEPRECATED Apply clang-tidy fixes to C++ code
+    " nnoremap <leader>f :execute ':!clang-tidy -p ' . shellescape(getcwd()) . ' --checks=modernize-type-traits --fix % -- -std=c++20 -x c++'<cr>
+    " Better yet, choose one of the available actions from the LSP.
+    nnoremap <leader>f <Plug>(coc-codeaction-cursor)
 
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
@@ -857,6 +861,9 @@ function! SetupCandCPPenviron()
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
+
+    nmap <silent> gx <Plug>(coc-fix-current)
+
 
     " Remap <C-f> and <C-b> to scroll float windows/popups
     if has('nvim-0.4.0') || has('patch-8.2.0750')
