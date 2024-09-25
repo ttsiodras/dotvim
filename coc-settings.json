@@ -1,7 +1,9 @@
 {
+    "coc.preferences.previewAutoClose": false,
+    "coc.preferences.previewSize": 35,
     "languageserver": {
         "clangd": {
-            "command": "clangd",
+            "command": "clangd-mine",
             "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
             "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
         }
