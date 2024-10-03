@@ -73,7 +73,7 @@ endif
 "
 if has("wildmenu")
     set wildmenu
-    set wildmode=longest,list
+    set wildmode=longest:list,full
     " Ignore stuff (for TAB autocompletion)
     set wildignore+=*.a,*.o
     set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png
@@ -298,6 +298,7 @@ syntax on
 " colorscheme catppuccin-mocha
 colorscheme evening
 " colorscheme delek " from home
+" colorscheme catppuccin-latte
 " se nowrap " from home
 
 "
