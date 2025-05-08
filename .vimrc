@@ -886,7 +886,8 @@ function! SetupCPPenviron()
 endfunction
 
 "
-" For Python
+" For Python:
+" CocInstall coc-pyright 
 "
 au BufNewFile,BufRead *.py call SetupPythonEnviron()
 function! SetupPythonEnviron()
