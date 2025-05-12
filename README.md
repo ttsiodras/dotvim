@@ -1,3 +1,7 @@
+Update: the `Dockerfile` in folder `contrib` creates a standalone image, that works via
+the associated `contrib/myvim.sh` to provide C/C++ and Python language-server-based
+navigation/autocompletion WITHOUT external network access. It was the only way I could
+see to trust these node/npm-based things.
 
 These are my VIM settings, mostly targeting development with C, C++ and Python.
 I wrote a blog post about them [here](https://www.thanassis.space/myvim.html).
