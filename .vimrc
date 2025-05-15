@@ -891,6 +891,8 @@ endfunction
 "
 au BufNewFile,BufRead *.py call SetupPythonEnviron()
 function! SetupPythonEnviron()
+    set autoindent
+
     "
     " flake8: ignore 'too long lines'
     "
@@ -1377,7 +1379,7 @@ endfunction
 "
 " For YAML
 "
-au BufNewFile,BufRead *.py call SetupYamlEnviron()
+au BufNewFile,BufRead *.yaml call SetupYamlEnviron()
 function! SetupYamlEnviron()
     " Whoever thought that indenting the line the moment I add a '#' in front
     " is a good idea, is... mistaken.
