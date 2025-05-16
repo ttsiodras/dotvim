@@ -1,16 +1,14 @@
-# Use Debian 12 Bookworm
 FROM debian:12
 
-# avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y locales ca-certificates wget gnupg
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-ENV LANG=en_US.UTF-8  
-ENV LANGUAGE=en_US:en  
-ENV LC_ALL=en_US.UTF-8    
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 RUN wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 
@@ -21,11 +19,9 @@ RUN apt-get update \
     && apt-get install -y git exuberant-ctags wget xz-utils libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# allow passing in host UID/GID
 ARG USER_UID
 ARG USER_GID
 
-# create group & user matching host
 RUN groupadd --gid ${USER_GID} dev \
  && useradd --uid ${USER_UID} --gid dev --shell /bin/bash --create-home dev
 
