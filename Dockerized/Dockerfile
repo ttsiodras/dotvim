@@ -25,6 +25,11 @@ ARG USER_GID
 RUN groupadd --gid ${USER_GID} dev \
  && useradd --uid ${USER_UID} --gid dev --shell /bin/bash --create-home dev
 
+WORKDIR /usr/local/bin
+RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/node node
+RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/npm npm
+RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/npx npx
+
 USER dev
 WORKDIR /home/dev
 
@@ -51,3 +56,5 @@ RUN bash -c 'echo "exec /usr/bin/clangd-19 -header-insertion=never" > bin.local/
 RUN chmod +x bin.local/clangd-mine
 
 RUN /home/dev/local/bin/vim +PlugInstall +qall
+
+RUN /home/dev/local/bin/vim +"CocInstall -sync coc-pyright" +qall
