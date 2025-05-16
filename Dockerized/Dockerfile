@@ -1,5 +1,7 @@
 FROM debian:12
 
+ARG DEV_PKGS
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y locales ca-certificates wget gnupg
@@ -14,9 +16,8 @@ RUN wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 
 RUN echo 'deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-19 main' > /etc/apt/sources.list.d/archive_uri-http_apt_llvm_org_bookworm_-bookworm.list
 
-RUN apt-get update \
-    && apt-get install -y clang-format-19 clangd-19 \
-    && apt-get install -y git exuberant-ctags wget xz-utils libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev ca-certificates \
+RUN apt-get install -y clang-format-19 clangd-19 \
+    && apt-get install -y git exuberant-ctags wget xz-utils libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev ca-certificates silversearcher-ag ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID
