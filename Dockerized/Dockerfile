@@ -1,4 +1,4 @@
-FROM debian:12
+FROM debian:12-slim
 
 ARG DEV_PKGS
 
