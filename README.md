@@ -20,14 +20,22 @@ Installation
 In any new machine/account I need to work on, I clone from the repository:
 
     cd
-    git clone https://github.com/ttsiodras/dotvim .vim
+    git clone --no-recurse-submodules https://github.com/ttsiodras/dotvim .vim
     cd .vim
     git submodule init
-    git submodule update
+    git submodule update --init --recursive --force --remote 
     cd ..
     ln -s .vim/.vimrc
 
 I therefore use the same VIM environment in all my machines.
+
+UPDATE, 2025/May: I added a Dockerized folder where you just issue "make"
+and get a nice Docker image that DOESNT ALLOW NETWORK ACCESS; you then use
+Dockerized/myvim.sh and edit as you normally would, with fully operational
+language servers for C/C++/Python; but WITHOUT ANY NETWORK ACCESS.
+
+Translation: yeah, I need language servers - but that doesn't mean I should
+be trusting them :-)
 
 For C/C++ development
 ---------------------
