@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# ~/.bin.local/vim — run Vim in Docker with no external network
+# run Vim in Docker with no external network visible. 
+# Translation: lessen the trust in the language servers.
 
 HOST_PWD="$(pwd -P)"
 
@@ -10,6 +11,3 @@ docker run --rm -it \
   -u "$(id -u):$(id -g)" \
   vim-ttsiodras:latest \
   /bin/bash -c "/home/user/bin.local/vim \"$@\""
-
-#  -v "${HOME}/.vimrc:/home/dev/.vimrc:ro" \
-#  -v "${HOME}/.vim:/home/dev/.vim:ro" \
