@@ -23,39 +23,42 @@ RUN apt-get install -y clang-format-19 clangd-19 \
 ARG USER_UID
 ARG USER_GID
 
-RUN groupadd --gid ${USER_GID} dev \
- && useradd --uid ${USER_UID} --gid dev --shell /bin/bash --create-home dev
+# Then create the user with the right UID
+RUN getent group ${USER_GID} || groupadd --gid ${USER_GID} user
+RUN useradd --uid ${USER_UID} --gid ${USER_GID} --shell /bin/bash --create-home user
 
 WORKDIR /usr/local/bin
-RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/node node
-RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/npm npm
-RUN ln -s /home/dev/node-v16.19.0-linux-x64/bin/npx npx
+RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/node node
+RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/npm npm
+RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/npx npx
 
-USER dev
-WORKDIR /home/dev
+USER user
 
-RUN git clone --recurse-submodules https://github.com/ttsiodras/dotvim .vim
+WORKDIR /home/user
+RUN git clone https://github.com/ttsiodras/dotvim .vim
 RUN ln -s .vim/.vimrc
+WORKDIR /home/user/.vim
+RUN git submodule init
+RUN git submodule update --init --recursive --force --remote
 
+WORKDIR /home/user
 RUN wget -q -O- https://nodejs.org/dist/v16.19.0/node-v16.19.0-linux-x64.tar.xz | tar -Jxvf -
 RUN wget -q -O- https://github.com/vim/vim/archive/refs/tags/v9.1.1382.tar.gz | tar -zxvf -
-WORKDIR /home/dev/vim-9.1.1382
-RUN CC=gcc-11 ./configure --enable-python3interp=dynamic --enable-perlinterp=dynamic --prefix=/home/dev/local
+WORKDIR /home/user/vim-9.1.1382
+RUN CC=gcc-11 ./configure --enable-python3interp=dynamic --enable-perlinterp=dynamic --prefix=/home/user/local
 RUN make -j
 RUN make install
 
-WORKDIR /home/dev
-
+WORKDIR /home/user
 RUN mkdir bin.local
-RUN bash -c 'echo "export PATH=/home/dev/node-v16.19.0-linux-x64/bin:/home/dev/bin.local:$PATH" > bin.local/vim'
-RUN bash -c 'echo "/home/dev/local/bin/vim \"\$@\"" >>  bin.local/vim'
+RUN bash -c 'echo "export PATH=/home/user/node-v16.19.0-linux-x64/bin:/home/user/bin.local:$PATH" > bin.local/vim'
+RUN bash -c 'echo "/home/user/local/bin/vim \"\$@\"" >>  bin.local/vim'
 RUN chmod +x bin.local/vim
-RUN ln -s /usr/bin/clangd-19 /home/dev/bin.local/clangd
-
+RUN ln -s /usr/bin/clangd-19 /home/user/bin.local/clangd
 RUN bash -c 'echo "#!/bin/bash" > bin.local/clangd-mine'
 RUN bash -c 'echo "exec /usr/bin/clangd-19 -header-insertion=never" > bin.local/clangd-mine'
 RUN chmod +x bin.local/clangd-mine
 
-RUN /home/dev/local/bin/vim +PlugInstall +qall
+RUN /home/user/local/bin/vim +PlugInstall +qall
 
-RUN /home/dev/local/bin/vim +"CocInstall -sync coc-pyright" +qall
+RUN /home/user/local/bin/vim +"CocInstall -sync coc-pyright" +qall

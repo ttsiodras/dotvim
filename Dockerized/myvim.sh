@@ -9,7 +9,7 @@ docker run --rm -it \
   -w "${HOST_PWD}" \
   -u "$(id -u):$(id -g)" \
   vim-ttsiodras:latest \
-  /bin/bash -c "/home/dev/bin.local/vim \"$@\""
+  /bin/bash -c "/home/user/bin.local/vim \"$@\""
 
 #  -v "${HOME}/.vimrc:/home/dev/.vimrc:ro" \
 #  -v "${HOME}/.vim:/home/dev/.vim:ro" \
