@@ -45,9 +45,6 @@
 [submodule "bundle/vim-indent-object"]
 	path = bundle/vim-indent-object
 	url = https://github.com/michaeljsmith/vim-indent-object.git
-[submodule "bundle/mediawiki"]
-	path = bundle/mediawiki
-	url = https://github.com/chikamichi/mediawiki.vim.git 
 [submodule "bundle/nerdcommenter"]
 	path = bundle/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter.git
