@@ -39,6 +39,7 @@
 [submodule "bundle/vim-powerline"]
 	path = bundle/vim-powerline
 	url = https://github.com/Lokaltog/vim-powerline.git
+        ignore = untracked
 [submodule "bundle/ctrlp"]
 	path = bundle/ctrlp
 	url = https://github.com/kien/ctrlp.vim.git
@@ -72,9 +73,11 @@
 [submodule "bundle/vim-clojure-static"]
 	path = bundle/vim-clojure-static
 	url = https://github.com/guns/vim-clojure-static.git
+        ignore = untracked
 [submodule "bundle/vim-clang-format"]
 	path = bundle/vim-clang-format
-	url = https://github.com/rhysd/vim-clang-format.git
+        url = https://github.com/rhysd/vim-clang-format.git
+        ignore = dirty
 [submodule "bundle/vim-gitgutter"]
 	path = bundle/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter
