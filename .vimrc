@@ -736,6 +736,9 @@ function! ShowDocumentation()
   endif
 endfunction
 
+noremap <silent> <F8> :se wrap!<CR>
+noremap! <silent> <F8> :se wrap!<CR>
+
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
 set updatetime=300
@@ -763,9 +766,9 @@ function! SetupCandCPPenviron()
     "
     " Toggle TagList window with F8
     "
-    noremap <buffer> <silent> <F8> :TlistToggle<CR>
-    noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
-    let g:Tlist_Use_Right_Window = 1
+    " noremap <buffer> <silent> <F8> :TlistToggle<CR>
+    " noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
+    " let g:Tlist_Use_Right_Window = 1
 
     "
     " Especially for C and C++, use section 3 of the manpages
