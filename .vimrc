@@ -684,11 +684,16 @@ let g:syntastic_mode_map = {
 "
 let g:clang_use_library = 1
 let g:clang_library_path = "/lib/x86_64-linux-gnu"
+let g:clang_format#command = "clang-format-19"
+let g:clang_format#extra_args = "-style=file"
+
+
 "
 " Auto-format on save is sometimes wanted and sometimes not.
 "
 "
 let g:clang_format_on_save = 1
+let g:clang_format#detect_style_file = 1
 
 function ToggleFormatOnSave()
     if g:clang_format_on_save == 1
