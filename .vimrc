@@ -871,6 +871,7 @@ function! SetupCandCPPenviron()
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
+    nmap <silent> gx <Plug>(coc-fix-current)
 
     " Remap <C-f> and <C-b> to scroll float windows/popups
     if has('nvim-0.4.0') || has('patch-8.2.0750')
@@ -975,7 +976,7 @@ function! SetupPythonEnviron()
     "
     :setlocal omnifunc=jedi#completions
 
-        " Use tab for trigger completion with characters ahead and navigate
+    " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
     " no select by `"suggest.noselect": true` in your configuration file
     " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
