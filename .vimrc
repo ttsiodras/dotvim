@@ -505,8 +505,6 @@ if has("gui_running")
     colorscheme evening
 endif
 
-" Toggle wrap/nowrap
-nnoremap <silent> <leader>w :windo set wrap!<cr>
 "
 " Sacrilege: Make Ctrl-c act as 'Clipboard-copy' in visual select mode
 "
@@ -743,6 +741,10 @@ endfunction
 
 noremap <silent> <F8> :se wrap!<CR>
 noremap! <silent> <F8> :se wrap!<CR>
+" Toggle wrap/nowrap via leader
+nnoremap <silent> <leader>w :windo set wrap!<cr>
+" ...but default to nowrap
+se nowrap
 
 " Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
 " delays and poor user experience
