@@ -712,7 +712,7 @@ endfunction
 
 " (for CUDA .cu, too)
 au BufNewFile,BufRead *.c,*.h call SetupCenviron()
-au BufNewFile,BufRead *.cc,*.cpp,*.hh,*.cu call SetupCPPenviron()
+au BufNewFile,BufRead *.cc,*.cpp,*.hh,*hpp,*.cu call SetupCPPenviron()
 au BufWritePre *.cpp call AutoSaveMaybe()
 au BufWritePre *.cc  call AutoSaveMaybe()
 au BufWritePre *.c   call AutoSaveMaybe()
