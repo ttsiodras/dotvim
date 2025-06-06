@@ -620,6 +620,12 @@ nnoremap <silent> <F1> :GitGutterNextHunk<CR>
 nnoremap <silent> <leader>c :Commentary<CR>
 vnoremap <silent> <leader>c :Commentary<CR>
 
+"
+" F7 invokes make.
+"
+noremap <buffer> <special> <F7> :make -j $(nproc)<CR>
+noremap! <buffer> <special> <F7> <ESC>:make -j $(nproc)<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
@@ -789,8 +795,8 @@ function! SetupCandCPPenviron()
     "
     " Remap F7 to make
     "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
+    noremap <buffer> <special> <F7> :make -j $(nproc)<CR>
+    noremap! <buffer> <special> <F7> <ESC>:make -j $(nproc)<CR>
 
     "
     " Remap F3 to show function name
