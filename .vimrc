@@ -18,6 +18,8 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf', { 'do': './install --all' } | Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf.vim'
+Plug 'ggml-org/llama.vim'
+Plug 'tpope/vim-abolish'
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -623,8 +625,17 @@ vnoremap <silent> <leader>c :Commentary<CR>
 "
 " F7 invokes make.
 "
-noremap <buffer> <special> <F7> :make -j $(nproc)<CR>
-noremap! <buffer> <special> <F7> <ESC>:make -j $(nproc)<CR>
+function! ThanassisMake()
+
+  if filereadable("Makefile.thanassis")
+    execute "make -f Makefile.thanassis -j" . system('nproc')->trim()
+  else
+    execute "make -j" . system('nproc')->trim()
+  endif
+endfunction
+
+noremap <special> <F7> :call ThanassisMake()<CR>
+noremap! <special> <F7> <ESC> :call ThanassisMake()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
@@ -791,12 +802,6 @@ function! SetupCandCPPenviron()
     " F6 to see the CocDiagnostics output
     "
     noremap <silent> <F6> :CocDiagnostics<CR>
-
-    "
-    " Remap F7 to make
-    "
-    noremap <buffer> <special> <F7> :make -j $(nproc)<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make -j $(nproc)<CR>
 
     "
     " Remap F3 to show function name
@@ -1018,11 +1023,6 @@ endif
 au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
 function! SetupOCamlEnviron()
     se shiftwidth=2
-    "
-    " Remap F7 to make if the file is an .ml one
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 
     "
     " Thanks to Merlin
@@ -1065,24 +1065,7 @@ endfunction
 
 au BufNewFile,BufRead *.md call SetupMDEnviron()
 function! SetupMDEnviron()
-    "
-    " Remap F7 to make (I use custom Makefiles for .md)
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
     noremap <silent> <F6> :call ToggleConcealLevel()<CR>
-endfunction
-
-"
-" LaTEX
-"
-au BufNewFile,BufRead *.tex call SetupTexEnviron()
-function! SetupTexEnviron()
-    "
-    " Remap F7 to make (I use custom Makefiles for .tex)
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
@@ -1090,13 +1073,6 @@ endfunction
 "
 au BufNewFile,BufRead *.htm,*.html call SetupHTMLenviron()
 function! SetupHTMLenviron()
-    "
-    " I use custom Makefiles that do many things
-    " (e.g. rules that invoke tidy, etc)
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
-
     "
     " Map SyntasticCheck with local HTML5 validator to F6
     "
@@ -1209,8 +1185,6 @@ au BufNewFile,BufRead *.xml call SetupXMLEnviron()
 function! SetupXMLEnviron()
     se errorformat=%E,%C%.%#Error\ at\ file\ %f%.\ line\ %l%.\ char\ %c,%C\ \ Message:\ %m,%Z,%-G%f:\ %*[0-9]\ ms\ %.%#
     se makeprg=SAXCount\ -n\ -s\ -f\ %
-    noremap <buffer> <F7> :make<CR>
-    noremap! <buffer> <F7> :make<CR>
 
     " In visual mode (with multiple lines selected) use Leader followed by '=' 
     " to align attribute assignments so that they line up horizontally
@@ -1252,7 +1226,6 @@ function! SetupTSEnviron()
     setlocal filetype=typescript
     se makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
-    nnoremap <buffer> <F7> :make<CR>
     nnoremap <buffer> <C-]> :TsuquyomiDefinition<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
@@ -1300,18 +1273,6 @@ nnoremap <buffer> <silent> <F6> ggVG:Eval<CR>
 endfunction
 
 "
-" .rs files (Rust)
-"
-au BufNewFile,BufRead *.rs call SetupRSEnviron()
-function! SetupRSEnviron()
-    "
-    " Remap F7 to make
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
-endfunction
-
-"
 " .java files (Java)
 "
 au BufNewFile,BufRead *.java call SetupJavaEnviron()
@@ -1324,8 +1285,6 @@ function! SetupJavaEnviron()
     imap <F6> <Plug>(JavaComplete-Imports-AddMissing)
     nmap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
     imap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
@@ -1366,12 +1325,7 @@ noremap <C-n> :terminal bash<CR>
 au BufNewFile,BufRead *.vhd call SetupVHDL()
 function! SetupVHDL()
     se shiftwidth=4
-    "
-    " Remap F7 to make
-    "
     set colorcolumn=80
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
@@ -1380,11 +1334,6 @@ endfunction
 au BufNewFile,BufRead *.s call SetupASM()
 function! SetupASM()
     se shiftwidth=4
-    "
-    " Remap F7 to make
-    "
-    noremap <buffer> <special> <F7> :make<CR>
-    noremap! <buffer> <special> <F7> <ESC>:make<CR>
 endfunction
 
 "
