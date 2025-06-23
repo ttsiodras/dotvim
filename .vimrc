@@ -18,7 +18,7 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf', { 'do': './install --all' } | Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf.vim'
-Plug 'ggml-org/llama.vim'
+" Plug 'ggml-org/llama.vim'
 Plug 'tpope/vim-abolish'
 call plug#end()
 
@@ -240,6 +240,7 @@ noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 " Use FZF history
 "
 noremap <leader>h :History<CR>
+let g:fzf_layout = { 'window': { 'width': 1.0, 'height': 0.5 } }
 
 "
 " Fix insert-mode cursor keys in FreeBSD
@@ -480,7 +481,7 @@ noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
 "
 " noremap <silent> <F5> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
 " noremap <silent> <Esc>OQ :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
-noremap <silent> <F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
+noremap <silent> <S-F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 "noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 
 noremap <C-p> :Files<CR>
@@ -773,6 +774,8 @@ function! SetupCandCPPenviron()
     let g:alternateExtensions_CC = "inc,h,H,HPP,hpp"
     let g:alternateExtensions_cpp = "inc,h,H,HPP,hpp"
     let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_hpp = "cc,cpp"
+    let g:alternateExtensions_hPP = "cc,cpp"
 
     "
     " Tags
