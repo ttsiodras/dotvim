@@ -58,9 +58,6 @@
 [submodule "bundle/vim-scala"]
 	path = bundle/vim-scala
 	url = https://github.com/derekwyatt/vim-scala.git
-[submodule "bundle/sbt-quickfix"]
-	path = bundle/sbt-quickfix
-	url = https://github.com/dscleaver/sbt-quickfix.git
 [submodule "bundle/vim-orgmode"]
 	path = bundle/vim-orgmode
 	url = https://github.com/jceb/vim-orgmode.git
