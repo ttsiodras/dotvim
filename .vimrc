@@ -242,6 +242,36 @@ noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 noremap <leader>h :History<CR>
 let g:fzf_layout = { 'window': { 'width': 1.0, 'height': 0.5 } }
 
+
+" Custom FZF function that adds .. to the file list
+function! FzfWithParent(...)
+  let l:current_listing_dir = a:0 > 0 ? a:1 : expand('%:p:h')
+  
+  call fzf#run(fzf#wrap({
+    \ 'source': '(echo ".." && cd ' . shellescape(l:current_listing_dir) . ' && find . -maxdepth 1 -type f -o -type d | grep -v "^\.$" | sed "s|^\./||" | sort)',
+    \ 'sink': function('s:HandleSelection', [l:current_listing_dir]),
+    \ 'options': ['--prompt', 'Files> ']
+  \ }))
+endfunction
+
+function! s:HandleSelection(current_dir, selection)
+  if a:selection == '..'
+    " Navigate to parent directory and run FZF again
+    let l:parent_dir = fnamemodify(a:current_dir, ':h')
+    call FzfWithParent(l:parent_dir)
+  elseif isdirectory(a:current_dir . '/' . a:selection)
+    " Navigate into directory and run FZF again  
+    let l:new_dir = a:current_dir . '/' . a:selection
+    call FzfWithParent(l:new_dir)
+  else
+    " Open the file
+    execute 'edit ' . fnameescape(a:current_dir . '/' . a:selection)
+  endif
+endfunction
+
+" Map <leader>f to use the custom function
+nnoremap <silent> <leader>o :call FzfWithParent()<CR>
+
 "
 " Fix insert-mode cursor keys in FreeBSD
 "
