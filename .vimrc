@@ -16,7 +16,7 @@ call plug#begin('~/.vim/plugged')
 "      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf', { 'do': './install --all' } | Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 " Plug 'ggml-org/llama.vim'
 Plug 'tpope/vim-abolish'
