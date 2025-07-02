@@ -616,7 +616,14 @@ se foldcolumn=0
 "
 " Reroute the :Ack to use the silver searcher - warp speed!
 "
-let g:ackprg = 'ag --nogroup --nocolor --column'
+"let g:ackprg = 'ag --nogroup --nocolor --column'
+let g:ackprg = 'rg --vimgrep --smart-case'
+
+"
+" Ignore case unless using caps
+"
+se ignorecase
+se smartcase
 
 "
 " VIMDIFF is far more useful when ignoring whitespace
