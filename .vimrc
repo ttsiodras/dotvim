@@ -725,6 +725,7 @@ let g:syntastic_mode_map = {
     \ 'mode': 'active',
     \ 'active_filetypes': [],
     \ 'passive_filetypes': ['python', 'cpp', 'c', 'typescript', 'java'] }
+let g:syntastic_sh_checkers = ['shellcheck']
 
 "
 " For C and C++, use libclang, Luke.
