@@ -37,6 +37,25 @@ coc-settings.json setup:
 }
 ```
 
+or even more bare-bones:
+
+```
+{
+  "clangd.arguments": [
+    "--log=verbose",
+    "--header-insertion=never",
+    "--query-driver=/usr/lib/ccache/g++-11",
+    "--background-index=0"
+  ],
+  "clangd.trace.server": "verbose",
+  "coc.preferences.rootPatterns": [
+    "compile_commands.json",
+    "compile_flags.txt",
+    ".clangd"
+  ]
+}
+```
+
 ...and then, after launching vim, `:CocInstall coc-clangd` and `:CocRestart`, I was able to issue:
 
 ```
