@@ -666,9 +666,9 @@ vnoremap <silent> <leader>c :Commentary<CR>
 function! ThanassisMake()
 
   if filereadable("Makefile.thanassis")
-    execute "make -f Makefile.thanassis -j" . system('nproc')->trim()
+    execute "!clear | make -f Makefile.thanassis -j" . system('nproc')->trim()
   else
-    execute "make -j" . system('nproc')->trim()
+    execute "!clear | make -j" . system('nproc')->trim()
   endif
 endfunction
 
