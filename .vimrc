@@ -269,7 +269,7 @@ function! s:HandleSelection(current_dir, selection)
   endif
 endfunction
 
-" Map <leader>f to use the custom function
+" Map <leader>o to use the custom function to open files in the same folder
 nnoremap <silent> <leader>o :call FzfWithParent()<CR>
 
 "
