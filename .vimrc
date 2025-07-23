@@ -872,7 +872,7 @@ function! SetupCandCPPenviron()
     "
 
     " Show me what you know about the symbol under the cursor
-    nnoremap <silent> <leader>i :call CocActionAsync('doHover')<cr>
+    nnoremap <silent> <leader>\ :call CocActionAsync('doHover')<cr>
 
     " Refresh the clang diagnostics shown by Coc
     nnoremap <silent> <leader>r :CocRestart<cr>
