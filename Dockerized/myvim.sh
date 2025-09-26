@@ -4,6 +4,14 @@
 
 HOST_PWD="$(pwd -P)"
 
+# If your YAML files are using external schemas, you may 
+# need to enable the network:
+#
+# docker run --rm -it \
+#  --add-host gitlab.someurl:172.17.0.1 \
+#  -v "${HOST_PWD}:${HOST_PWD}" \
+#  ...
+
 docker run --rm -it \
   --network none \
   -v "${HOST_PWD}:${HOST_PWD}" \
