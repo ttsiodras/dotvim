@@ -808,45 +808,7 @@ se nowrap
 " delays and poor user experience
 set updatetime=300
 
-function! SetupCandCPPenviron()
-    "
-    " Search path for 'gf' command (e.g. open #include-d files)
-    "
-    "set path+=/usr/include/c++/**
-
-    "
-    " For the ':A' (plugin) that swaps between header and impl file (C/C++)
-    let g:alternateExtensions_cc = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_CC = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_cpp = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_hpp = "cc,cpp"
-    let g:alternateExtensions_hPP = "cc,cpp"
-
-    "
-    " Tags
-    "
-    " If I ever need to generate tags on the fly, I uncomment this:
-    " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-    " set tags+=/usr/include/tags
-
-    "
-    " Toggle TagList window with F8
-    "
-    " noremap <buffer> <silent> <F8> :TlistToggle<CR>
-    " noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
-    " let g:Tlist_Use_Right_Window = 1
-
-    "
-    " Especially for C and C++, use section 3 of the manpages
-    "
-    noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
-
-    "
-    " F5 to toggle using clang-format to update on save - or not!
-    " "
-    noremap <silent> <F5> :call ToggleFormatOnSave()<CR>
-
+function! LS()
     "
     " F6 to see the CocDiagnostics output
     "
@@ -859,20 +821,9 @@ function! SetupCandCPPenviron()
     noremap <buffer> <Esc>OR :CocCommand document.toggleInlayHint<CR>
 
     "
-    " Use the tags, Luke
-    "
-    noremap <buffer> <C-]> :tag <C-R>=expand('<cword>')<CR><CR>
-
-    "
     " Use Coc to rename, Luke (with F2)
     "
     noremap <buffer> <silent> <F2> :CocCommand document.renameCurrentWord<CR>
-    "
-    " Work prefers these settings.
-    " After using them for quite a while, I guess I like them too :-)
-    "
-    se shiftwidth=2
-    se sts=2
 
     "
     " coc.nvim and LSP stuff. Mostly copied from here:
@@ -942,6 +893,61 @@ function! SetupCandCPPenviron()
       vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
       vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
     endif
+
+endfunction
+
+function! SetupCandCPPenviron()
+    "
+    " Search path for 'gf' command (e.g. open #include-d files)
+    "
+    "set path+=/usr/include/c++/**
+
+    "
+    " For the ':A' (plugin) that swaps between header and impl file (C/C++)
+    let g:alternateExtensions_cc = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_CC = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_cpp = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
+    let g:alternateExtensions_hpp = "cc,cpp"
+    let g:alternateExtensions_hPP = "cc,cpp"
+
+    "
+    " Tags
+    "
+    " If I ever need to generate tags on the fly, I uncomment this:
+    " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+    " set tags+=/usr/include/tags
+
+    "
+    " Toggle TagList window with F8
+    "
+    " noremap <buffer> <silent> <F8> :TlistToggle<CR>
+    " noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
+    " let g:Tlist_Use_Right_Window = 1
+
+    "
+    " Especially for C and C++, use section 3 of the manpages
+    "
+    noremap <buffer> <silent> K :exe "Man" 3 expand('<cword>') <CR>
+
+    "
+    " F5 to toggle using clang-format to update on save - or not!
+    " "
+    noremap <silent> <F5> :call ToggleFormatOnSave()<CR>
+
+    "
+    " Use the tags, Luke
+    "
+    noremap <buffer> <C-]> :tag <C-R>=expand('<cword>')<CR><CR>
+
+    "
+    " Work prefers these settings.
+    " After using them for quite a while, I guess I like them too :-)
+    "
+    se shiftwidth=2
+    se sts=2
+
+    call LS()
 endfunction
 
 function! SetupCenviron()
@@ -1396,6 +1402,7 @@ au BufNewFile,BufRead *.yaml call SetupYamlEnviron()
 function! SetupYamlEnviron()
     " Whoever thought that indenting the line the moment I add a '#' in front
     " is a good idea, is... mistaken.
+    call LS()
     se noautoindent
 endfunction
 
