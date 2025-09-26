@@ -6,6 +6,26 @@
             "command": "clangd-mine",
             "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
             "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
+        },
+       "yamlls": {
+            "command": "yaml-language-server",
+            "args": ["--stdio"],
+            "filetypes": ["yaml", "yml"],
+            "rootPatterns": [".git/"],
+            "initializationOptions": {
+                "yaml": {
+                    "validate": true,
+                    "hover": true,
+                    "completion": true,
+                    "format": { "enable": true },
+                    "schemaStore": {
+                        "enable": true
+                    },
+                    "schemas": {
+                    },
+                    "yamlVersion": "1.2"
+                }
+            }
         }
     },
     "diagnostic.checkCurrentLine": true,

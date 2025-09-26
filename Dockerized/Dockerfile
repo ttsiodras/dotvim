@@ -84,7 +84,7 @@ RUN wget -q -O- https://nodejs.org/dist/v16.19.0/node-v16.19.0-linux-x64.tar.xz 
 
 WORKDIR /home/user
 RUN mkdir bin.local
-RUN bash -c 'echo "export PATH=/home/user/node-v16.19.0-linux-x64/bin:/home/user/bin.local:$PATH" > bin.local/vim'
+RUN bash -c 'echo "export PATH=/home/user/.local/node_modules/.bin:/home/user/node-v16.19.0-linux-x64/bin:/home/user/bin.local:$PATH" > bin.local/vim'
 RUN bash -c 'echo "/home/user/local/bin/vim \"\$@\"" >>  bin.local/vim'
 RUN chmod +x bin.local/vim
 RUN ln -s /usr/bin/clangd-19 /home/user/bin.local/clangd
@@ -95,3 +95,4 @@ RUN chmod +x bin.local/clangd-mine
 RUN /home/user/local/bin/vim +PlugInstall +qall
 
 RUN /home/user/local/bin/vim +"CocInstall -sync coc-pyright" +qall
+RUN bash -c 'npm install --prefix ~/.local yaml-language-server'
