@@ -20,6 +20,7 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 " Plug 'ggml-org/llama.vim'
 Plug 'tpope/vim-abolish'
+Plug 'szw/vim-maximizer'
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -242,6 +243,10 @@ noremap! <C-l> <ESC>:nohlsearch<CR><C-l>
 noremap <leader>h :History<CR>
 let g:fzf_layout = { 'window': { 'width': 1.0, 'height': 0.5 } }
 
+"
+" Toggle between full screen and previous layout
+"
+noremap <leader>m :MaximizerToggle<CR>
 
 " Custom FZF function that adds .. to the file list
 function! FzfWithParent(...)
