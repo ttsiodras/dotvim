@@ -904,12 +904,13 @@ function! SetupCandCPPenviron()
 
     "
     " For the ':A' (plugin) that swaps between header and impl file (C/C++)
-    let g:alternateExtensions_cc = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_CC = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_cpp = "inc,h,H,HPP,hpp"
-    let g:alternateExtensions_CPP = "inc,h,H,HPP,hpp"
+    "
+    let g:alternateExtensions_cc = "inc,h,hpp"
+    let g:alternateExtensions_CC = "INC,H,HPP"
+    let g:alternateExtensions_cpp = "inc,h,hpp"
+    let g:alternateExtensions_CPP = "INC,H,HPP"
     let g:alternateExtensions_hpp = "cc,cpp"
-    let g:alternateExtensions_hPP = "cc,cpp"
+    let g:alternateExtensions_HPP = "CC,CPP"
 
     "
     " Tags
