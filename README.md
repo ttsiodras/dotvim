@@ -23,7 +23,8 @@ In any new machine/account I need to work on, I clone from the repository:
     git clone --no-recurse-submodules https://github.com/ttsiodras/dotvim .vim
     cd .vim
     git submodule init
-    git submodule update --init --recursive --force --remote 
+    git submodule update
+    git submodule foreach --recursive git reset --hard
     cd ..
     ln -s .vim/.vimrc
 
