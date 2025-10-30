@@ -5,6 +5,7 @@ import shlex
 import subprocess
 
 IMAGE = os.environ.get("VIM_DOCKER_IMAGE", "vim-ttsiodras:latest")
+RESTRICTED_NET = "restricted_net"
 
 def real(p: str) -> str:
     """Expand ~ and resolve symlinks to a canonical absolute path."""
@@ -66,7 +67,17 @@ def build_vim_args(raw_args):
                 out.append(a)
     return out
 
+def make_docker_network():
+    for line in os.popen("docker network ls"):
+        if f"{RESTRICTED_NET}" in line:
+            break
+    else:
+        os.system(f"docker network create --subnet 172.30.0.0/24 {RESTRICTED_NET}")
+
 def main():
+    # We'll isolate everything, expect 172.
+    make_docker_network()
+
     raw_args = sys.argv[1:]
 
     # Figure out volumes to mount
@@ -76,6 +87,22 @@ def main():
     docker_cmd = [
         "docker", "run", "--rm", "-it",
         "--network=none",
+
+        # Or, if you need access to localhost-provided services, you make a hole in the restricted_net:
+        #
+        # sudo iptables -N RESTRICTED_NET 2>/dev/null || true
+        # sudo iptables -F RESTRICTED_NET
+        # sudo iptables -A RESTRICTED_NET -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        # sudo iptables -A RESTRICTED_NET -d 172.17.0.1 -j ACCEPT
+        # sudo iptables -A RESTRICTED_NET -j DROP
+        #
+        # Attach the chain to Docker's global pre-container hook
+        # (DOCKER-USER is evaluated for all container traffic)
+        # sudo iptables -I DOCKER-USER -s 172.30.0.0/24 -j RESTRICTED_NET
+        #
+        # f"--network={RESTRICTED_NET}",
+        # "--add-host", "someHOSTNAME:172.17.0.1",
+
         "-u", f"{os.getuid()}:{os.getgid()}",
     ]
 
