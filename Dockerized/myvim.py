@@ -109,6 +109,7 @@ def main():
     # Mount each discovered directory to the same absolute path in the container
     for d in mount_dirs:
         docker_cmd += ["-v", f"{d}:{d}"]
+    docker_cmd += ['-v', f'{real("~/.vim/sessions")}:/home/user/.vim/sessions']
 
     # Working directory remains the real PWD so relative paths behave
     docker_cmd += ["-w", real(os.getcwd())]
