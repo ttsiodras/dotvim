@@ -52,17 +52,8 @@ RUN wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 RUN echo 'deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-19 main' > /etc/apt/sources.list.d/archive_uri-http_apt_llvm_org_bookworm_-bookworm.list
 
 RUN apt-get install -y \
-    clang-format-19 clangd-19 g++-11 gcc-11 make bear libboost-dev \
-    libboost-filesystem-dev libboost-program-options-dev libc6-dev libcap-dev \
-    libcurl4-openssl-dev libdrm-dev libdw-dev libelf-dev libffi-dev libgtest-dev \
-    libjpeg-dev libjson-glib-dev libmariadb-dev libncurses5-dev libncurses-dev \
-    libnl-3-dev libnl-route-3-dev libnl-route-3-dev libopencv-core-dev libperl-dev \
-    libpfm4-dev libpng-dev libprotoc-dev libpython3-dev libpython3-dev \
-    librdmacm-dev libssl-dev libsystemd-dev libtiff5-dev libtool libudev-dev \
-    libyaml-dev linux-libc-dev moreutils ocl-icd-dev ocl-icd-opencl-dev pkg-config \
-    pkg-config protobuf-compiler rapidjson-dev uuid-dev uuid-dev zlib1g-dev \
-    python3-yaml \
-    && apt-get install -y git exuberant-ctags wget xz-utils libpython3.11 libperl5.36 libncurses6 ca-certificates silversearcher-ag ${DEV_PKGS} \
+    clang-format-19 clangd-19 g++-11 gcc-11 make bear \
+    python3-yaml git exuberant-ctags wget xz-utils libpython3.11 libperl5.36 libncurses6 ca-certificates ripgrep ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID
@@ -83,7 +74,7 @@ USER user
 COPY --from=builder --chown=user:user /home/user/local /home/user/local
 
 WORKDIR /home/user
-RUN git clone https://github.com/ttsiodras/dotvim .vim
+RUN git clone --recursive https://github.com/ttsiodras/dotvim .vim
 RUN ln -s .vim/.vimrc
 WORKDIR /home/user/.vim
 RUN git submodule init
