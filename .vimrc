@@ -4,7 +4,7 @@
 "  runtime autoload/pathogen.vim
 
 call pathogen#infect()
-call pathogen#helptags()
+" call pathogen#helptags()
 
 """""""""
 " VimPlug
