@@ -12,7 +12,7 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get install -y wget libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev \
+RUN apt-get install -y wget perl python3 libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID
