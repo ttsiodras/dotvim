@@ -72,7 +72,12 @@ def make_docker_network():
         if f"{RESTRICTED_NET}" in line:
             break
     else:
-        os.system(f"docker network create --subnet 172.30.0.0/24 {RESTRICTED_NET}")
+        os.system(
+            "docker network create "
+            "--driver bridge "
+            "--subnet 172.30.0.0/24 "
+            f"--opt com.docker.network.bridge.name={RESTRICTED_NET} "
+            f"{RESTRICTED_NET}")
 
 def main():
     # We'll isolate everything, expect 172.
@@ -89,6 +94,12 @@ def main():
         "--network=none",
 
         # Or, if you need access to localhost-provided services, you make a hole in the restricted_net:
+        #
+        # docker network create \
+        #    --driver bridge \
+        #    --subnet 172.30.0.0/24 \
+        #    --opt com.docker.network.bridge.name=restricted_net \
+        #    restricted_net
         #
         # sudo iptables -N RESTRICTED_NET 2>/dev/null || true
         # sudo iptables -F RESTRICTED_NET
