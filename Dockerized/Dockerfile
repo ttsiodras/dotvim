@@ -94,6 +94,7 @@ RUN bash -c 'echo "exec /usr/bin/clangd-19 -header-insertion=never" > bin.local/
 RUN chmod +x bin.local/clangd-mine
 
 RUN /home/user/local/bin/vim +PlugInstall +qall
+RUN /home/user/local/bin/vim +":runtime autoload/pathogen.vim" +"call pathogen#helptags()" +q
 
 RUN /home/user/local/bin/vim +"CocInstall -sync coc-pyright" +qall
 RUN bash -c 'npm install --prefix ~/.local yaml-language-server'
