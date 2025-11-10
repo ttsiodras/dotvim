@@ -11,6 +11,25 @@ def real(p: str) -> str:
     """Expand ~ and resolve symlinks to a canonical absolute path."""
     return os.path.realpath(os.path.expanduser(p))
 
+def get_mount_point_for_path(p: str) -> str:
+    """
+    Calculate the mount point for a path, accounting for '..' traversal.
+    If the path contains '..', we mount from a higher level to preserve
+    the relative structure.
+    """
+    expanded = os.path.expanduser(p)
+    real_path = os.path.realpath(expanded)
+ 
+    # Count '..' segments in the original path
+    parts = os.path.normpath(expanded).split(os.sep)
+    dotdot_count = parts.count('..')
+
+    # Go up 'dotdot_count' levels from the real path's directory
+    mount_point = os.path.dirname(real_path) if os.path.isfile(real_path) else real_path
+    for _ in range(dotdot_count):
+        mount_point = os.path.dirname(mount_point)
+    return mount_point
+
 def is_option(arg: str) -> bool:
     # Vim options often start with '-' (e.g., -u NONE) or '+' (e.g., +G, +999)
     return arg.startswith("-") or arg.startswith("+")
@@ -29,10 +48,11 @@ def collect_mount_dirs(args):
         if is_option(a):
             continue
         expanded = os.path.expanduser(a)
-        # If it exists, resolve to real path and mount its directory (or itself if it's a dir)
+        # If it exists, find the appropriate mount point accounting for '..' traversal
         if os.path.exists(expanded):
-            rp = os.path.realpath(expanded)
-            mdir = rp if os.path.isdir(rp) else os.path.dirname(rp)
+            # rp = os.path.realpath(expanded)
+            # mdir = rp if os.path.isdir(rp) else os.path.dirname(rp)
+            mdir = get_mount_point_for_path(a)
             if mdir:
                 mounts.add(mdir)
     return dedupe_subpaths(mounts)
