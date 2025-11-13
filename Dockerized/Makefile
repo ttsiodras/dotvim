@@ -8,7 +8,7 @@ DEV_PKGS = \
     librdmacm-dev libssl-dev libsystemd-dev libtiff5-dev libtool libudev-dev \
     libyaml-dev linux-libc-dev moreutils ocl-icd-dev ocl-icd-opencl-dev pkg-config \
     pkg-config protobuf-compiler rapidjson-dev uuid-dev uuid-dev zlib1g-dev \
-    nlohmann-json3-dev
+    nlohmann-json3-dev ripgrep silversearcher-ag shellcheck
 
 # Use "docker build --no-cache" to rebuild the layers involving network (git clone, etc)
 
