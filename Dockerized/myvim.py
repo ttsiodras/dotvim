@@ -144,6 +144,7 @@ def main():
 
     # Working directory remains the real PWD so relative paths behave
     docker_cmd += ["-w", real(os.getcwd())]
+    docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
 
     docker_cmd += [IMAGE]
 
