@@ -11,12 +11,39 @@ def real(p: str) -> str:
     """Expand ~ and resolve symlinks to a canonical absolute path."""
     return os.path.realpath(os.path.expanduser(p))
 
+def get_mount_point_relative_to_home(p: str) -> str:
+    """
+    Return the topmost directory just below $HOME for the given path.
+    For example, if the real path is $HOME/foo/bar/file, returns $HOME/foo.
+    """
+    expanded = os.path.expanduser(p)
+    real_path = os.path.realpath(expanded)
+    home = os.path.expanduser("~")
+
+    # Ensure the path is under HOME
+    if not real_path.startswith(home + os.sep):
+        raise ValueError(f"Path {real_path} is not under HOME directory {home}")
+
+    # Get the relative path from HOME
+    rel_path = os.path.relpath(real_path, home)
+
+    # Get the first component (topmost directory below HOME)
+    first_component = rel_path.split(os.sep)[0]
+
+    # Return HOME + first component
+    return os.path.join(home, first_component)
+
+
 def get_mount_point_for_path(p: str) -> str:
     """
     Calculate the mount point for a path, accounting for '..' traversal.
     If the path contains '..', we mount from a higher level to preserve
     the relative structure.
     """
+    try:
+        return get_mount_point_relative_to_home(p)
+    except:
+        pass
     expanded = os.path.expanduser(p)
     real_path = os.path.realpath(expanded)
  
@@ -79,7 +106,7 @@ def build_vim_args(raw_args):
         if is_option(a):
             out.append(a)
         else:
-            expanded = os.path.expanduser(a)
+            expanded = os.path.realpath(os.path.expanduser(a))
             if os.path.exists(expanded):
                 out.append(os.path.realpath(expanded))
             else:
