@@ -59,7 +59,7 @@ RUN apt-get install -y \
     clang-format-19 clangd-19 g++-11 gcc-11 make bear \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
     libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
-    libxt6 ripgrep silversearcher-ag shellcheck \
+    libxt6 ripgrep silversearcher-ag shellcheck ccache curl \
     ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
@@ -78,7 +78,7 @@ RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/npx npx
 USER user
 
 # Copy the vim build from the builder. No need for gcc stuff in the final image.
-COPY --from=builder --chown=user:user /home/user/local /home/user/local
+COPY --from=builder --chown=${USER_UID}:${USER_GID} /home/user/local /home/user/local
 
 WORKDIR /home/user
 RUN git clone --recursive https://github.com/ttsiodras/dotvim .vim

@@ -18,7 +18,7 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 " Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-" Plug 'ggml-org/llama.vim'
+Plug 'ggml-org/llama.vim'
 Plug 'tpope/vim-abolish'
 Plug 'szw/vim-maximizer'
 call plug#end()
@@ -1408,6 +1408,10 @@ function! SetupYamlEnviron()
     call LS()
     se noautoindent
 endfunction
+
+if isdirectory(expand('~/.vim/plugged/llama.vim'))
+  let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
+endif
 
 "
 " Now read machine-local customizations

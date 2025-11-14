@@ -136,23 +136,28 @@ def make_docker_network():
             f"{RESTRICTED_NET}")
 
 
-def add_SSHD_X11_socat_fwd(display):
+def launch_socat_for_fwding(port):
+    """
+    Launch socat to tunnel traffic from inside the container (i.e. going
+    to 172.17.0.1:port) to the corresponding listening port on the localhost I/F.
+    """
+    result = subprocess.run(
+            ['pgrep', '-f', f'socat.*{port}.*172.17.0.1'], capture_output=True)
+    if result.returncode == 0:
+        return
+    subprocess.Popen([
+        'socat',
+        f'TCP-LISTEN:{port},reuseaddr,fork,bind=172.17.0.1',
+        f'TCP:localhost:{port}'],
+    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
+    start_new_session=True)
 
-    def socat():
-        """
-        Launch socat to tunnel the X11 traffic from inside the SSH-ed container
-        to the X11-forwarded listening port (localhost:6010)
-        """
-        result = subprocess.run(['pgrep', '-f', 'socat.*6010.*172.17.0.1'], capture_output=True)
-        if result.returncode == 0:
-            # print("socat already running")
-            return
-        subprocess.Popen([
-            'socat',
-            'TCP-LISTEN:6010,reuseaddr,fork,bind=172.17.0.1',
-            'TCP:localhost:6010'],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
-        start_new_session=True)
+
+def launch_socat_for_SSHD_X11_fwding(display):
+    """
+    Launch socat to tunnel the X11 traffic from inside the SSH-ed container
+    to the X11-forwarded listening port (localhost:6010)
+    """
     try:
         docker_display = '172.17.0.1:10'
         # Remove the magic cookie, if any (e.g. old ones from older SSH X11 sessions)
@@ -170,7 +175,7 @@ def add_SSHD_X11_socat_fwd(display):
         print(f"Successfully added X11 auth for {docker_display}")
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
-    return socat()
+    return launch_socat_for_fwding(6010)
 
 
 def main():
@@ -224,6 +229,9 @@ def main():
     # Allow shellcheck to include sourced files
     docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
 
+    # llama-cpp
+    launch_socat_for_fwding(8012)
+
     # X11
     docker_display_map = "DISPLAY"
     docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
@@ -236,7 +244,7 @@ def main():
         if r:
             target = f"172.17.0.1:{r.group(1)}"
             docker_display_map = f"DISPLAY={target}"
-            add_SSHD_X11_socat_fwd(display)
+            launch_socat_for_SSHD_X11_fwding(display)
 
     docker_cmd += ["-e", docker_display_map]
 
