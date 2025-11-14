@@ -4,6 +4,8 @@ ARG DEV_PKGS
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN echo 'Acquire::http { Proxy "http://172.17.0.1:3142"; }' > /etc/apt/apt.conf.d/01proxy
+
 RUN apt-get update && apt-get install -y locales ca-certificates wget
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
@@ -40,6 +42,7 @@ ARG DEV_PKGS
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN echo 'Acquire::http { Proxy "http://172.17.0.1:3142"; }' > /etc/apt/apt.conf.d/01proxy
 RUN apt-get update && apt-get install -y locales ca-certificates wget gnupg
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen

@@ -19,6 +19,7 @@ all:
 	  --build-arg USER_UID=$$(id -u)     \
 	  --build-arg USER_GID=$$(id -g)     \
 	  --build-arg DEV_PKGS="$(DEV_PKGS)" \
+	  --build-arg APT_PROXY=http://172.17.0.1:3142 \
 	  -t vim-ttsiodras:latest .
 	echo "To remove the non-necessary wasted Docker space:"
 	echo "    docker builder prune" 
