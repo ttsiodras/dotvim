@@ -1015,7 +1015,9 @@ function! SetupPythonEnviron()
         :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
         :call Send_to_Screen(@r)
     endfunction
-    noremap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
+    
+    "Obsoleted: I no longer use this
+    "noremap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
 
     "
     " Flake8 is always at F7 - but syntastic must use pylint
