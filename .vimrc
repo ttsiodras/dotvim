@@ -24,7 +24,6 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " Local LLMs safely accessed from inside Docker
-let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
 Plug 'ggml-org/llama.vim'
 
 " Capitalization
@@ -1443,3 +1442,6 @@ function! ShowLeaderBindings()
 endfunction
 
 command! ShowLeaderBindings call ShowLeaderBindings()
+
+let g:llama_config = get(g:, 'llama_config', {})
+let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
