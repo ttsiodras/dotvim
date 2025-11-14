@@ -1409,7 +1409,7 @@ function! SetupYamlEnviron()
     se noautoindent
 endfunction
 
-if isdirectory(expand('~/.vim/plugged/llama.vim'))
+if exists('g:llama_config')
   let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
 endif
 
