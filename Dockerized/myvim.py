@@ -155,10 +155,9 @@ def add_SSHD_X11_socat_fwd(display):
         start_new_session=True)
     try:
         docker_display = '172.17.0.1:10'
-        result = subprocess.run(['xauth', 'list', docker_display], capture_output=True, text=True)
-        if result.stdout.strip():
-            # X11 auth for docker_display already exists. Just launch socat
-            return socat()
+        # Remove the magic cookie, if any (e.g. old ones from older SSH X11 sessions)
+        result = subprocess.run(['xauth', 'remove', docker_display], capture_output=True, text=True)
+        # Get the current magic cookie for our X11 DISPLAY
         result = subprocess.run(['xauth', 'list', display], capture_output=True, text=True, check=True)
         parts = result.stdout.strip().split()
         if len(parts) >= 3:
@@ -166,6 +165,7 @@ def add_SSHD_X11_socat_fwd(display):
         else:
             print("Could not parse xauth output")
             return
+        # Add it to the docker display (i.e. the 172.17.0.1:10)
         subprocess.run(['xauth', 'add', docker_display, 'MIT-MAGIC-COOKIE-1', cookie], check=True)
         print(f"Successfully added X11 auth for {docker_display}")
     except subprocess.CalledProcessError as e:
