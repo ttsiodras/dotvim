@@ -55,6 +55,14 @@ RUN wget -q -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 
 RUN echo 'deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-19 main' > /etc/apt/sources.list.d/archive_uri-http_apt_llvm_org_bookworm_-bookworm.list
 
+# Why the clang stuff? Because we want language-aware autocompletion and navigation for C/C++
+# Why the gcc stuff? Because when clang sees the compile_commands.json file he needs to see the
+# compiler that was used to build. That's why ccache is here, too.
+# Why the libraries? Because our vim was compiled against them (including the X11 ones, 
+# so we can have a working X11 clipboard).
+# Why the fast grep-ers? Because I have bindings to them (e.g. ":Ack")
+# Why shellcheck? Because I want someone to watch over me when I write shell code.
+# etc, etc...
 RUN apt-get install -y \
     clang-format-19 clangd-19 g++-11 gcc-11 make bear \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \

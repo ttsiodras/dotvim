@@ -10,17 +10,29 @@ call pathogen#infect()
 " VimPlug
 """""""""
 call plug#begin('~/.vim/plugged')
+
+" Best autocompletion as of 2025
+
 " Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
 "      \'java','json', 'haskell', 'ts','sh', 'cs',
 "      \'yaml', 'c', 'cpp', 'd', 'go',
 "      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+
+" Fuzzy friends
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+" Local LLMs safely accessed from inside Docker
+let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
 Plug 'ggml-org/llama.vim'
+
+" Capitalization
 Plug 'tpope/vim-abolish'
+
+" Ctrl-w _
 Plug 'szw/vim-maximizer'
+
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -1408,10 +1420,6 @@ function! SetupYamlEnviron()
     call LS()
     se noautoindent
 endfunction
-
-if exists('g:llama_config')
-  let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
-endif
 
 "
 " Now read machine-local customizations
