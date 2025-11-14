@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 import os
+import re
 import sys
 import shlex
 import subprocess
 
+
 IMAGE = os.environ.get("VIM_DOCKER_IMAGE", "vim-ttsiodras:latest")
 RESTRICTED_NET = "restricted_net"
+
 
 def real(p: str) -> str:
     """Expand ~ and resolve symlinks to a canonical absolute path."""
     return os.path.realpath(os.path.expanduser(p))
+
 
 def get_mount_point_relative_to_home(p: str) -> str:
     """
@@ -46,7 +50,7 @@ def get_mount_point_for_path(p: str) -> str:
         pass
     expanded = os.path.expanduser(p)
     real_path = os.path.realpath(expanded)
- 
+
     # Count '..' segments in the original path
     parts = os.path.normpath(expanded).split(os.sep)
     dotdot_count = parts.count('..')
@@ -57,9 +61,11 @@ def get_mount_point_for_path(p: str) -> str:
         mount_point = os.path.dirname(mount_point)
     return mount_point
 
+
 def is_option(arg: str) -> bool:
     # Vim options often start with '-' (e.g., -u NONE) or '+' (e.g., +G, +999)
     return arg.startswith("-") or arg.startswith("+")
+
 
 def collect_mount_dirs(args):
     """
@@ -84,6 +90,7 @@ def collect_mount_dirs(args):
                 mounts.add(mdir)
     return dedupe_subpaths(mounts)
 
+
 def dedupe_subpaths(paths):
     """
     Remove redundant subpaths (keep the shortest parent when another path lies under it).
@@ -94,6 +101,7 @@ def dedupe_subpaths(paths):
         if not any(p != k and p.startswith(k + "/") for k in kept):
             kept.append(p)
     return kept
+
 
 def build_vim_args(raw_args):
     """
@@ -114,6 +122,7 @@ def build_vim_args(raw_args):
                 out.append(a)
     return out
 
+
 def make_docker_network():
     for line in os.popen("docker network ls"):
         if f"{RESTRICTED_NET}" in line:
@@ -125,6 +134,44 @@ def make_docker_network():
             "--subnet 172.30.0.0/24 "
             f"--opt com.docker.network.bridge.name={RESTRICTED_NET} "
             f"{RESTRICTED_NET}")
+
+
+def add_SSHD_X11_socat_fwd(display):
+
+    def socat():
+        """
+        Launch socat to tunnel the X11 traffic from inside the SSH-ed container
+        to the X11-forwarded listening port (localhost:6010)
+        """
+        result = subprocess.run(['pgrep', '-f', 'socat.*6010.*172.17.0.1'], capture_output=True)
+        if result.returncode == 0:
+            # print("socat already running")
+            return
+        subprocess.Popen([
+            'socat',
+            'TCP-LISTEN:6010,reuseaddr,fork,bind=172.17.0.1',
+            'TCP:localhost:6010'],
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
+        start_new_session=True)
+    try:
+        docker_display = '172.17.0.1:10'
+        result = subprocess.run(['xauth', 'list', docker_display], capture_output=True, text=True)
+        if result.stdout.strip():
+            # X11 auth for docker_display already exists. Just launch socat
+            return socat()
+        result = subprocess.run(['xauth', 'list', display], capture_output=True, text=True, check=True)
+        parts = result.stdout.strip().split()
+        if len(parts) >= 3:
+            cookie = parts[2]
+        else:
+            print("Could not parse xauth output")
+            return
+        subprocess.run(['xauth', 'add', docker_display, 'MIT-MAGIC-COOKIE-1', cookie], check=True)
+        print(f"Successfully added X11 auth for {docker_display}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+    return socat()
+
 
 def main():
     # We'll isolate everything, expect 172.
@@ -138,9 +185,15 @@ def main():
     # Build docker run cmd
     docker_cmd = [
         "docker", "run", "--rm", "-it",
-        "--network=none",
 
-        # Or, if you need access to localhost-provided services, you make a hole in the restricted_net:
+        # You can use...
+        #
+        # "--network=none",
+        #
+        # ...to stop ANYTHING going out.
+        #
+        # Or, if you need access to services provided or proxied or routed via localhost,
+        # you can make a docker network, and punch a hole through it:
         #
         # docker network create \
         #    --driver bridge \
@@ -148,17 +201,13 @@ def main():
         #    --opt com.docker.network.bridge.name=restricted_net \
         #    restricted_net
         #
-        # sudo iptables -N RESTRICTED_NET 2>/dev/null || true
-        # sudo iptables -F RESTRICTED_NET
-        # sudo iptables -A RESTRICTED_NET -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-        # sudo iptables -A RESTRICTED_NET -d 172.17.0.1 -j ACCEPT
-        # sudo iptables -A RESTRICTED_NET -j DROP
-        #
-        # Attach the chain to Docker's global pre-container hook
-        # (DOCKER-USER is evaluated for all container traffic)
+        # Execute the iptables commands inside rc.local.vim (exists in the same folder as this script)
+        # The commands there end with this one, attaching the chain to Docker's global pre-container hook:
         # sudo iptables -I DOCKER-USER -s 172.30.0.0/24 -j RESTRICTED_NET
         #
-        # f"--network={RESTRICTED_NET}",
+        f"--network={RESTRICTED_NET}",
+
+        # ...and you can add an /etc/hosts entry for the one and only interface allowed:
         # "--add-host", "someHOSTNAME:172.17.0.1",
 
         "-u", f"{os.getuid()}:{os.getgid()}",
@@ -168,12 +217,28 @@ def main():
     for d in mount_dirs:
         docker_cmd += ["-v", f"{d}:{d}"]
     docker_cmd += ['-v', f'{real("~/.vim/sessions")}:/home/user/.vim/sessions']
-    docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
 
     # Working directory remains the real PWD so relative paths behave
     docker_cmd += ["-w", real(os.getcwd())]
+
+    # Allow shellcheck to include sourced files
     docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
-    docker_cmd += ["-e", "DISPLAY"]
+
+    # X11
+    docker_display_map = "DISPLAY"
+    docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
+    if os.getenv("SSH_CLIENT"):
+        home = os.path.expanduser("~")
+        docker_cmd += ['-v' , f'{home}/.Xauthority:/home/user/.Xauthority']
+        docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
+        display = os.getenv("DISPLAY", "")
+        r = re.match(r"^localhost:(\d+).\d+", display)
+        if r:
+            target = f"172.17.0.1:{r.group(1)}"
+            docker_display_map = f"DISPLAY={target}"
+            add_SSHD_X11_socat_fwd(display)
+
+    docker_cmd += ["-e", docker_display_map]
 
     docker_cmd += [IMAGE]
 
@@ -186,6 +251,7 @@ def main():
     # Execute
     try:
         # Inherit the current environment (useful for TERM)
+        # print("\n".join(docker_cmd))
         subprocess.run(docker_cmd, check=True)
     except subprocess.CalledProcessError as e:
         print(f"[myvim] docker run failed with exit code {e.returncode}", file=sys.stderr)
