@@ -232,13 +232,17 @@ def main():
     # llama-cpp
     launch_socat_for_fwding(8012)
 
+    # The C/C++ include paths
+    docker_cmd += ['-v' , '/usr/include:/usr/include']
+    docker_cmd += ['-v' , '/usr/lib/gcc:/usr/lib/gcc']
+
     # X11
     docker_display_map = "DISPLAY"
     docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
+    home = os.path.expanduser("~")
+    docker_cmd += ['-v' , f'{home}/.Xauthority:/home/user/.Xauthority']
+    docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
     if os.getenv("SSH_CLIENT"):
-        home = os.path.expanduser("~")
-        docker_cmd += ['-v' , f'{home}/.Xauthority:/home/user/.Xauthority']
-        docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
         display = os.getenv("DISPLAY", "")
         r = re.match(r"^localhost:(\d+).\d+", display)
         if r:

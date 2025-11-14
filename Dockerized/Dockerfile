@@ -14,7 +14,7 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get install -y wget perl python3 libpython3-dev libperl-dev gcc-11 g++-11 make \
+RUN apt-get install -y wget perl python3 libpython3-dev libperl-dev gcc-11 make \
     libncurses-dev libx11-dev libxmu-dev libxfixes-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -58,16 +58,16 @@ RUN echo 'deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-19 main' > /
 # Why the clang stuff? Because we want language-aware autocompletion and navigation for C/C++
 # Why the gcc stuff? Because when clang sees the compile_commands.json file he needs to see the
 # compiler that was used to build. That's why ccache is here, too.
-# Why the libraries? Because our vim was compiled against them (including the X11 ones, 
+# Why the libraries? Because our vim was compiled against them (including the X11 ones,
 # so we can have a working X11 clipboard).
 # Why the fast grep-ers? Because I have bindings to them (e.g. ":Ack")
 # Why shellcheck? Because I want someone to watch over me when I write shell code.
 # etc, etc...
 RUN apt-get install -y \
-    clang-format-19 clangd-19 g++-11 gcc-11 make bear \
+    clang-format-19 clangd-19 \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
     libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
-    libxt6 ripgrep silversearcher-ag shellcheck ccache curl \
+    libxt6 ripgrep silversearcher-ag shellcheck curl \
     ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
