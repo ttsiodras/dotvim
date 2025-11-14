@@ -12,7 +12,8 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN apt-get install -y wget perl python3 libpython3-dev libperl-dev gcc-11 g++-11 make libncurses-dev \
+RUN apt-get install -y wget perl python3 libpython3-dev libperl-dev gcc-11 g++-11 make \
+    libncurses-dev libx11-dev libxmu-dev libxfixes-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID
@@ -27,7 +28,7 @@ USER user
 WORKDIR /home/user
 RUN wget -q -O- https://github.com/vim/vim/archive/refs/tags/v9.1.1382.tar.gz | tar -zxvf -
 WORKDIR /home/user/vim-9.1.1382
-RUN CC=gcc-11 ./configure --enable-python3interp=dynamic --enable-perlinterp=dynamic --prefix=/home/user/local
+RUN CC=gcc-11 ./configure --enable-python3interp=dynamic --enable-perlinterp=dynamic --prefix=/home/user/local --with-x
 RUN make -j "$(nproc)"
 RUN make install
 
@@ -53,7 +54,10 @@ RUN echo 'deb http://apt.llvm.org/bookworm/ llvm-toolchain-bookworm-19 main' > /
 
 RUN apt-get install -y \
     clang-format-19 clangd-19 g++-11 gcc-11 make bear \
-    python3-yaml git exuberant-ctags wget xz-utils libpython3.11 libperl5.36 libncurses6 ca-certificates ripgrep ${DEV_PKGS} \
+    python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
+    libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
+    libxt6 ripgrep silversearcher-ag shellcheck \
+    ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID

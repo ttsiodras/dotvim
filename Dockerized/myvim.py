@@ -168,10 +168,12 @@ def main():
     for d in mount_dirs:
         docker_cmd += ["-v", f"{d}:{d}"]
     docker_cmd += ['-v', f'{real("~/.vim/sessions")}:/home/user/.vim/sessions']
+    docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
 
     # Working directory remains the real PWD so relative paths behave
     docker_cmd += ["-w", real(os.getcwd())]
     docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
+    docker_cmd += ["-e", "DISPLAY"]
 
     docker_cmd += [IMAGE]
 
