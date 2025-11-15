@@ -59,7 +59,7 @@ or even more bare-bones:
 ...and then, after launching vim, `:CocInstall coc-clangd` and `:CocRestart`, I was able to issue:
 
 ```
-:CocCommand workspace.showOutput clangd
+:CocCommand workspace.showOutput
 ```
 
-...and that's where I saw that I was loading two compilation databases.
+...and choose clangd; that's where I saw that I was loading two compilation databases.
