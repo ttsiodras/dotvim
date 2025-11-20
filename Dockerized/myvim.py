@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+import glob
 import shlex
 import subprocess
 
@@ -235,6 +236,12 @@ def main():
     # The C/C++ include paths
     docker_cmd += ['-v' , '/usr/include:/usr/include']
     docker_cmd += ['-v' , '/usr/lib/gcc:/usr/lib/gcc']
+    docker_cmd += ['-v' , '/usr/lib/ccache:/usr/lib/ccache']
+    docker_cmd += ['-v' , '/home/thanassis:/home/thanassis']
+    for f in glob.glob("/usr/bin/gcc*"):
+        docker_cmd += ['-v', f+":"+f]
+    for f in glob.glob("/usr/bin/g++*"):
+        docker_cmd += ['-v', f+":"+f]
 
     # X11
     docker_display_map = "DISPLAY"
