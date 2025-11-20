@@ -288,6 +288,9 @@ endfunction
 " Map <leader>o to use the custom function to open files in the same folder
 nnoremap <silent> <leader>o :call FzfWithParent()<CR>
 
+" Map <leader>l to open with fzf
+nnoremap <silent> <leader>l :FZF<CR>
+
 " Search the word under cursor with Ack when you hit <leader>f
 nnoremap <silent> <leader>f :Ack! <C-R><C-W><CR>
 
