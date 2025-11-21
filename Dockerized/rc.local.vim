@@ -28,20 +28,23 @@ iptables -N RESTRICTED_NET 2>/dev/null || true
 # Flush it - remove all that may already exist in there
 iptables -F RESTRICTED_NET
 
-# Allow established flows
+# Allow ONLY the host's Docker IP as a target (e.g. new connections to local nginx)
+iptables -A RESTRICTED_NET -d 172.17.0.1 -j ACCEPT
+
+# Allow established flows (responses from nginx)
 iptables -A RESTRICTED_NET -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-# Allow ONLY the host's Docker IP as a target.
-iptables -A RESTRICTED_NET -d 172.17.0.1 -j ACCEPT
+# Allow inter-container traffic on the restricted_net.
+iptables -A RESTRICTED_NET -s 172.30.0.0/24 -d 172.30.0.0/24 -j ACCEPT
 
 # Anything going anywhere else, drop it
 iptables -A RESTRICTED_NET -j DROP
 
-# Flush every existing rule in your DOCKER-USER chain
+# Flush every existing rule in the DOCKER-USER chain
 iptables -F DOCKER-USER
 
 # Now attach the RESTRICTED_NET chain to Docker's global pre-container hook
-# DOCKER-USER is evaluated for all container traffic.
+# DOCKER-USER is evaluated for all container traffic; and we're adding at the top (-I)
 iptables -I DOCKER-USER -s 172.30.0.0/24 -j RESTRICTED_NET
 
 # Flush every existing rule in your INPUT chain
