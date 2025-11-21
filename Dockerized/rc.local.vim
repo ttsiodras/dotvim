@@ -1,5 +1,26 @@
 #!/bin/bash
-export PATH=/usr/sbin:$PATH
+export PATH=/usr/sbin:/usr/bin:$PATH
+
+[ $(id -u) -ne 0 ] && {
+    echo "[x] You need to be root."
+    exit 1
+}
+
+systemctl is-active --quiet docker || {
+    echo "[x] You need to start docker first."
+    exit 1
+}
+
+docker network list | grep restricted_net >/dev/null || {
+    docker network create \
+        --driver bridge \
+        --subnet 172.30.0.0/24 \
+        --opt com.docker.network.bridge.name=restricted_net restricted_net \
+        || {
+            echo "[x] Failed to create the restricted_net docker network..." ; \
+            exit 1 ; \
+        }
+}
 
 # Create a small chain for readability (idempotent)
 iptables -N RESTRICTED_NET 2>/dev/null || true

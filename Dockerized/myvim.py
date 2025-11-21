@@ -6,6 +6,8 @@ import glob
 import shlex
 import subprocess
 
+from pathlib import Path
+SCRIPT_DIR = Path(__file__).resolve().parent
 
 IMAGE = os.environ.get("VIM_DOCKER_IMAGE", "vim-ttsiodras:latest")
 RESTRICTED_NET = "restricted_net"
@@ -129,12 +131,9 @@ def make_docker_network():
         if f"{RESTRICTED_NET}" in line:
             break
     else:
-        os.system(
-            "docker network create "
-            "--driver bridge "
-            "--subnet 172.30.0.0/24 "
-            f"--opt com.docker.network.bridge.name={RESTRICTED_NET} "
-            f"{RESTRICTED_NET}")
+        print(f"[x] The {RESTRICTED_NET} does not exist. "
+              f"Run {SCRIPT_DIR}/rc.local.vim")
+        sys.exit(1)
 
 
 def launch_socat_for_fwding(port):
