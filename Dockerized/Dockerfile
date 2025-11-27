@@ -116,7 +116,7 @@ RUN bash -c 'echo "exec /usr/bin/clangd-19 -header-insertion=never" > bin.local/
 RUN chmod +x bin.local/clangd-mine
 
 RUN mkdir -p /home/user/.config/clangd
-RUN bash -c 'echo -e "Diagnostics:\n  Suppress:\n    - builtin_definition\n" > config.yaml'
+RUN bash -c 'echo -e "Diagnostics:\n  Suppress:\n    - builtin_definition\n" > /home/user/.config/clangd/config.yaml'
 
 RUN /home/user/local/bin/vim +PlugInstall +qall
 RUN /home/user/local/bin/vim +":runtime autoload/pathogen.vim" +"call pathogen#helptags()" +q
