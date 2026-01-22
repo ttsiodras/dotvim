@@ -11,6 +11,9 @@ DEV_PKGS = \
     #pkg-config protobuf-compiler rapidjson-dev uuid-dev uuid-dev zlib1g-dev \
     #nlohmann-json3-dev libsdl1.2-dev
 
+# or better, just define them here - so no git modifications show up :-)
+-include Makefile.site
+
 # Use "docker build --no-cache" to rebuild the layers involving network (git clone, etc)
 
 all:
