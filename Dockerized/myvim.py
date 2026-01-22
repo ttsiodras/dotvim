@@ -136,6 +136,17 @@ def make_docker_network():
         sys.exit(1)
 
 
+def is_listening(port, host="127.0.0.1", timeout=1):
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(timeout)
+        try:
+            s.connect((host, port))
+            return True
+        except (ConnectionRefusedError, socket.timeout):
+            return False
+
+
 def launch_socat_for_fwding(port):
     """
     Launch socat to tunnel traffic from inside the container (i.e. going
@@ -229,13 +240,17 @@ def main():
     # Allow shellcheck to include sourced files
     docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
 
-    # llama-cpp
-    launch_socat_for_fwding(8012)
+    # llama.vim - autocompleting from my llama.cpp offline models.
+    if is_listening(8012):
+        launch_socat_for_fwding(8012)
 
+    # Map the entire home tree. The user is almost certainly editing things in here,
+    # so mapping $HOME allows editing anything they want (e.g. via ":e path/to/file")
     home = os.getenv('HOME', '')
     docker_cmd += ['-v' , home + ":" + home]
 
-    # X11
+    # X11. In the case of remote X forwarding, needs to launch socat
+    # to redirect over the restricted_net.
     docker_display_map = "DISPLAY"
     docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
     home = os.path.expanduser("~")
