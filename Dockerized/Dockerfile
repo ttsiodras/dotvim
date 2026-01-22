@@ -74,7 +74,7 @@ RUN apt-get install -y \
     clang-format-19 clangd-19 \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
     libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
-    libxt6 ripgrep silversearcher-ag shellcheck curl \
+    libxt6 ripgrep silversearcher-ag shellcheck curl make \
     ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
@@ -118,8 +118,14 @@ RUN chmod +x bin.local/clangd-mine
 RUN mkdir -p /home/user/.config/clangd
 RUN bash -c 'echo -e "Diagnostics:\n  Suppress:\n    - builtin_definition\n" > /home/user/.config/clangd/config.yaml'
 
-RUN /home/user/local/bin/vim +PlugInstall +qall
-RUN /home/user/local/bin/vim +":runtime autoload/pathogen.vim" +"call pathogen#helptags()" +q
-
-RUN /home/user/local/bin/vim +"CocInstall -sync coc-pyright" +qall
+RUN /home/user/local/bin/vim -Nu /home/user/.vimrc -n -es -i NONE \
+    +'silent! PlugInstall --sync' \
+    +'qa!' < /dev/null
+RUN /home/user/local/bin/vim -Nu /home/user/.vimrc -n -es -i NONE \
+    +":runtime autoload/pathogen.vim" \
+    +"call pathogen#helptags()" \
+    +'qa!' < /dev/null
+RUN /home/user/local/bin/vim -Nu /home/user/.vimrc -n -es -i NONE \
+    +"CocInstall -sync coc-pyright" \
+    +'qa!' < /dev/null
 RUN bash -c 'npm install --prefix ~/.local yaml-language-server'
