@@ -1,7 +1,5 @@
 FROM debian:12-slim AS builder
 
-ARG DEV_PKGS
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN set -eux;                                                                                \
     if timeout 1 bash -c 'echo > /dev/tcp/172.17.0.1/3142' 2>/dev/null; then                 \
@@ -40,7 +38,7 @@ RUN make install
 
 # The real thing
 
-FROM debian:12-slim
+FROM debian:12
 
 ARG DEV_PKGS
 
