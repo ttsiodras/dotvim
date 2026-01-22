@@ -1448,4 +1448,4 @@ endfunction
 command! ShowLeaderBindings call ShowLeaderBindings()
 
 let g:llama_config = get(g:, 'llama_config', {})
-let g:llama_config.endpoint = "http://172.17.0.1:8012/infill"
+let g:llama_config.endpoint_fim = "http://172.17.0.1:8012/infill"
