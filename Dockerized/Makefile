@@ -1,17 +1,5 @@
-# Packages needed for your current development needs. This is mine :-)
-DEV_PKGS = \
-
-    #libboost-dev libboost-filesystem-dev libboost-program-options-dev libc6-dev libcap-dev \
-    #libcurl4-openssl-dev libdrm-dev libdw-dev libelf-dev libffi-dev libgtest-dev \
-    #libjpeg-dev libjson-glib-dev libmariadb-dev libncurses5-dev libncurses-dev \
-    #libnl-3-dev libnl-route-3-dev libnl-route-3-dev libopencv-core-dev libperl-dev \
-    #libpfm4-dev libpng-dev libprotoc-dev libpython3-dev libpython3-dev \
-    #librdmacm-dev libssl-dev libsystemd-dev libtiff5-dev libtool libudev-dev \
-    #libyaml-dev linux-libc-dev moreutils ocl-icd-dev ocl-icd-opencl-dev pkg-config \
-    #pkg-config protobuf-compiler rapidjson-dev uuid-dev uuid-dev zlib1g-dev \
-    #nlohmann-json3-dev libsdl1.2-dev
-
-# or better, just define them here - so no git modifications show up :-)
+# Packages needed for your current development needs are defined in Makefile.site
+# See Makefile.site.example
 -include Makefile.site
 
 # Use "docker build --no-cache" to rebuild the layers involving network (git clone, etc)
