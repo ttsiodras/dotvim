@@ -24,7 +24,7 @@ Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " Local LLMs safely accessed from inside Docker
-Plug 'ggml-org/llama.vim'
+" Plug 'ggml-org/llama.vim'
 
 " Capitalization
 Plug 'tpope/vim-abolish'
