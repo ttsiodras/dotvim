@@ -254,7 +254,6 @@ def main():
     docker_display_map = "DISPLAY"
     docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
     home = os.path.expanduser("~")
-    docker_cmd += ['-v' , f'{home}/.Xauthority:/home/user/.Xauthority']
     docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
     if os.getenv("SSH_CLIENT"):
         display = os.getenv("DISPLAY", "")
@@ -272,6 +271,24 @@ def main():
     # Use /bin/bash -lc to allow our quoting and keep $TERM behavior etc.
     vim_args = build_vim_args(raw_args)
     vim_cmdline = "/home/user/bin.local/vim " + shlex.join(vim_args)
+
+    # Prepend the xauth cookie...
+
+    # First, grab the right one from the host
+    cookie = os.popen(
+        "xauth list 2>/dev/null | grep \"$(hostname)\" | awk \'{print $3}\'").readlines()[0].strip()
+
+    # Then, once inside the container, add it in!
+    xauth_fix = (
+        'COOKIE=' + cookie + '; ' +
+        'if [ -n "$COOKIE" ]; then '
+        '  touch /home/user/.Xauthority; '
+        '  xauth add "$(hostname)/unix:0" MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
+        '  xauth add "$(hostname):0"      MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
+        'fi; '
+    )
+    vim_cmdline = xauth_fix + vim_cmdline
+
     docker_cmd += ["/bin/bash", "-lc", vim_cmdline]
 
     # Execute
