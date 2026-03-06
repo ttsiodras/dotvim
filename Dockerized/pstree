@@ -1,0 +1,26 @@
+for pid in /proc/[0-9]*; do
+  p=${pid##*/}
+  ppid=$(awk '/^PPid:/{print $2}' $pid/status 2>/dev/null)
+  user=$(awk '/^Uid:/{print $2}' $pid/status 2>/dev/null)
+  cmdline=$(tr '\0' ' ' < /proc/$p/cmdline 2>/dev/null | sed 's/ $//')
+  comm=$(cat /proc/$p/comm 2>/dev/null)
+  echo "$ppid $p $user ${cmdline:-$comm}"
+done | sort -n | awk '
+{
+  ppid=$1; pid=$2; user=$3
+  cmd=$4; for(i=5;i<=NF;i++) cmd=cmd" "$i
+  par[pid]=ppid; children[ppid]=children[ppid] pid " "
+  full[pid]=cmd; usr[pid]=user
+}
+END {
+  printf "%-6s %-10s %s\n", "PID", "USER", "COMMAND"
+  stack[0]=1; depth[0]=0; top=1
+  while(top>0){
+    top--; p=stack[top]; ind=depth[top]
+    prefix=""
+    for(i=0;i<ind;i++) prefix=prefix"  "
+    printf "%-6s %-10s %s\n", p, usr[p], prefix (full[p]?full[p]:"?")
+    n=split(children[p],a," ")
+    for(i=n;i>=1;i--){c=a[i]; if(c!=""){stack[top]=c; depth[top]=ind+1; top++}}
+  }
+}'

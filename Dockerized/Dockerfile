@@ -72,7 +72,7 @@ RUN apt-get install -y \
     clang-format-19 clangd-19 \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
     libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
-    libxt6 ripgrep silversearcher-ag shellcheck curl make \
+    libxt6 ripgrep silversearcher-ag shellcheck curl make busybox-static \
     ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
@@ -87,7 +87,8 @@ WORKDIR /usr/local/bin
 RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/node node
 RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/npm npm
 RUN ln -s /home/user/node-v16.19.0-linux-x64/bin/npx npx
-
+RUN busybox --list | while read app; do [ ! -e "$app" ] && ln -s $(which busybox) $app ; done 
+COPY pstree .
 USER user
 
 # Copy the vim build from the builder. No need for gcc stuff in the final image.
