@@ -4,8 +4,17 @@ Launch Vim inside a network-isolated Docker container, mounting only the
 directories needed for the files being edited. X11 and optional local
 services (e.g. llama.cpp) are tunnelled via socat through the restricted
 bridge network defined in rc.local.vim.
+
+Each user gets a thin per-user image (vim-ttsiodras:<username>) built on
+top of a shared 'base' stage that holds all the heavy tooling. The per-user
+layer only adds a matching useradd, so all users share the same underlying
+Docker layer cache — disk and build time are paid once.
+
+On first run the image is built automatically. Subsequent runs by the same
+user skip the build entirely.
 """
 import os
+import pwd
 import re
 import sys
 import shlex
@@ -14,8 +23,16 @@ import subprocess
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-IMAGE = os.environ.get("VIM_DOCKER_IMAGE", "vim-ttsiodras:latest")
 RESTRICTED_NET = "restricted_net"
+
+
+def _default_image() -> str:
+    """Return the per-user image tag, e.g. 'vim-ttsiodras:alice'."""
+    username = pwd.getpwuid(os.getuid()).pw_name
+    return f"vim-ttsiodras:{username}"
+
+
+IMAGE = os.environ.get("VIM_DOCKER_IMAGE", _default_image())
 
 
 def real(p: str) -> str:
@@ -76,7 +93,7 @@ def collect_mount_dirs(args: list[str]) -> list[str]:
     Note: non-existent paths are skipped intentionally — vim can create
     new files, and those paths don't need a mount point pre-established.
     """
-    mounts = set()
+    mounts: set[str] = set()
     mounts.add(real(os.getcwd()))
     for a in args:
         if is_option(a):
@@ -113,7 +130,7 @@ def build_vim_args(raw_args: list[str]) -> list[str]:
     - for paths, pass canonical absolute paths
       (so they match mounted locations)
     """
-    out = []
+    out: list[str] = []
     for a in raw_args:
         if is_option(a):
             out.append(a)
@@ -137,6 +154,32 @@ def assert_docker_network_exists() -> None:
         print(f"[x] The '{RESTRICTED_NET}' network does not exist. "
               f"Run {SCRIPT_DIR}/rc.local.vim")
         sys.exit(1)
+
+
+def ensure_image_exists(image: str) -> None:
+    """
+    Build the per-user image if it doesn't already exist.
+    The heavy 'base' stage is shared across all users via Docker's layer
+    cache, so only the first ever build (for any user) is slow.
+    """
+    result = subprocess.run(
+        ["docker", "image", "inspect", image],
+        capture_output=True, check=False,
+    )
+    if result.returncode == 0:
+        return
+    print(f"[myvim] Image {image!r} not found — building (base layers "
+          f"are cached if another user has built before)...")
+    e = pwd.getpwuid(os.getuid())
+    subprocess.run([
+        "docker", "build",
+        "--build-arg", f"USER_UID={e.pw_uid}",
+        "--build-arg", f"USER_GID={e.pw_gid}",
+        "--build-arg", f"USERNAME={e.pw_name}",
+        "--target", "final",
+        "-t", image,
+        str(SCRIPT_DIR),
+    ], check=True)
 
 
 def is_listening(port: int, host: str = "127.0.0.1", timeout: int = 1) -> bool:
@@ -236,7 +279,7 @@ def build_xauth_container_setup(cookie: str, suffix: str) -> list[str]:
     """
     Return the list of shell commands (as strings) that should run inside
     the container to install the X11 magic cookie before vim starts.
-    These are joined with ' && ' / ';' by the caller.
+    These are joined with ';' by the caller.
     """
     hostname_unix = f'"$(hostname)/unix{suffix}"'
     hostname_bare = f'"$(hostname){suffix}"'
@@ -250,7 +293,7 @@ def build_xauth_container_setup(cookie: str, suffix: str) -> list[str]:
         '. /home/user/.venv/bin/activate',
         (
             'if [ -n "$COOKIE" ]; then '
-            '  touch /home/user/.Xauthority; '
+            '  touch ~/.Xauthority; '
             f'  xauth add {hostname_unix}'
             ' MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
             f'  xauth add {hostname_bare}'
@@ -292,7 +335,10 @@ def get_host_xauth_cookie(ssh_display: str | None) -> tuple[str, str]:
     return '', ':0'
 
 
-def build_docker_cmd(mount_dirs: list[str], display_env: str) -> list[str]:
+def build_docker_cmd(
+    mount_dirs: list[str],
+    display_env: str,
+) -> list[str]:
     """
     Assemble the `docker run` argument list up to (but not including)
     the image name and the command to execute inside the container.
@@ -311,17 +357,19 @@ def build_docker_cmd(mount_dirs: list[str], display_env: str) -> list[str]:
     for d in mount_dirs:
         docker_cmd += ["-v", f"{d}:{d}"]
 
-    docker_cmd += ['-v', f'{real("~/.vim/sessions")}:/home/user/.vim/sessions']
     docker_cmd += ["-w", real(os.getcwd())]
     docker_cmd += ["-e", "SHELLCHECK_OPTS=-x"]
 
-    # Mount the entire home tree so `:e path/to/file` works anywhere
+    # Mount the entire home tree so `:e path/to/file` works anywhere.
+    # The container's HOME stays at /home/user (where all tooling lives);
+    # the caller's real home is mounted at its real path for file access.
     home = str(Path.home())
     docker_cmd += ['-v', f'{home}:{home}']
+    docker_cmd += ["-e", "HOME=/home/user"]
 
     # X11
     docker_cmd += ['-v', '/tmp/.X11-unix:/tmp/.X11-unix']
-    docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
+    docker_cmd += ["-e", f"XAUTHORITY=/home/user/.Xauthority"]
     docker_cmd += ["-e", display_env]
 
     return docker_cmd
@@ -331,6 +379,7 @@ def main(dry_run: bool = False) -> None:
     """Parse arguments, build the Docker command, and exec Vim in a container.
     """
     assert_docker_network_exists()
+    ensure_image_exists(IMAGE)
 
     raw_args = sys.argv[1:]
     if raw_args and raw_args[0] == '--dry-run':
@@ -359,11 +408,11 @@ def main(dry_run: bool = False) -> None:
     if is_listening(8012):
         launch_socat_for_fwding(8012)
 
-    # --- Build docker command ---
     docker_cmd = build_docker_cmd(mount_dirs, display_env)
     docker_cmd += [IMAGE]
 
     # --- Build the shell command to run inside the container ---
+    # Get xauth cookie safely (no shell injection)
     try:
         cookie, suffix = get_host_xauth_cookie(ssh_display)
     except (ValueError, subprocess.CalledProcessError) as e:
@@ -373,7 +422,8 @@ def main(dry_run: bool = False) -> None:
 
     container_setup = build_xauth_container_setup(cookie, suffix)
     vim_invocation = (
-        '/home/user/bin.local/vim ' + shlex.join(build_vim_args(raw_args))
+        '/home/user/bin.local/vim '
+        + shlex.join(build_vim_args(raw_args))
     )
     container_cmd = ' ; '.join(container_setup) + ' ; ' + vim_invocation
 
@@ -390,8 +440,9 @@ def main(dry_run: bool = False) -> None:
     try:
         subprocess.run(docker_cmd, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"[myvim] docker run failed with exit code {e.returncode}",
-              file=sys.stderr)
+        print(
+            f"[myvim] docker run failed with exit code {e.returncode}",
+            file=sys.stderr)
         sys.exit(e.returncode)
 
 
