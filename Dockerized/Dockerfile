@@ -73,7 +73,7 @@ RUN apt-get install -y \
     python3-yaml git exuberant-ctags wget xz-utils libpython3.11 \
     libperl5.36 libncurses6 ca-certificates libx11-6 libsm6 \
     libxt6 ripgrep silversearcher-ag shellcheck curl make busybox-static \
-    ${DEV_PKGS} \
+    python3-venv ${DEV_PKGS} \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_UID
@@ -106,13 +106,27 @@ RUN wget -q -O- https://nodejs.org/dist/v16.19.0/node-v16.19.0-linux-x64.tar.xz 
 
 WORKDIR /home/user
 RUN mkdir bin.local
-RUN bash -c 'echo "export PATH=/home/user/.local/node_modules/.bin:/home/user/node-v16.19.0-linux-x64/bin:/home/user/bin.local:$PATH" > bin.local/vim'
+RUN bash -c 'echo "export PATH=/home/user/.venv/bin:/home/user/.local/node_modules/.bin:/home/user/node-v16.19.0-linux-x64/bin:/home/user/bin.local:$PATH" > bin.local/vim'
 RUN bash -c 'echo "/home/user/local/bin/vim \"\$@\"" >>  bin.local/vim'
 RUN chmod +x bin.local/vim
 RUN ln -s /usr/bin/clangd-19 /home/user/bin.local/clangd
 RUN bash -c 'echo "#!/bin/bash" > bin.local/clangd-mine'
 RUN bash -c 'echo "exec /usr/bin/clangd-19 -header-insertion=never" > bin.local/clangd-mine'
 RUN chmod +x bin.local/clangd-mine
+
+RUN python3 -m venv .venv && \
+    .venv/bin/pip install --upgrade pip && \
+    .venv/bin/pip install pylint flake8 mypy
+
+RUN cat >> .bashrc << EOF
+source /home/user/.venv/bin/activate
+EOF
+
+RUN cat >> .profile << EOF
+source /home/user/.venv/bin/activate
+EOF
+
+ENV PATH="/home/user/.venv/bin:$PATH"
 
 RUN mkdir -p /home/user/.config/clangd
 RUN bash -c 'echo -e "Diagnostics:\n  Suppress:\n    - builtin_definition\n" > /home/user/.config/clangd/config.yaml'
