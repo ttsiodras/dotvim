@@ -2,7 +2,6 @@
 import os
 import re
 import sys
-import glob
 import shlex
 import subprocess
 
@@ -153,7 +152,7 @@ def launch_socat_for_fwding(port):
     to 172.17.0.1:port) to the corresponding listening port on the localhost I/F.
     """
     result = subprocess.run(
-            ['pgrep', '-f', f'socat.*{port}.*172.17.0.1'], capture_output=True)
+            ['pgrep', '-f', f'socat.*{port}.*172.17.0.1.*TCP:localhost:{port}'], capture_output=True)
     if result.returncode == 0:
         return
     subprocess.Popen([
@@ -169,8 +168,9 @@ def launch_socat_for_SSHD_X11_fwding(display):
     Launch socat to tunnel the X11 traffic from inside the SSH-ed container
     to the X11-forwarded listening port (localhost:6010)
     """
+    suffix = os.popen("echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'").readlines()[0].strip()
     try:
-        docker_display = '172.17.0.1:10'
+        docker_display = f'172.17.0.1{suffix}'
         # Remove the magic cookie, if any (e.g. old ones from older SSH X11 sessions)
         result = subprocess.run(['xauth', 'remove', docker_display], capture_output=True, text=True)
         # Get the current magic cookie for our X11 DISPLAY
@@ -186,7 +186,7 @@ def launch_socat_for_SSHD_X11_fwding(display):
         print(f"Successfully added X11 auth for {docker_display}")
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
-    return launch_socat_for_fwding(6010)
+    return launch_socat_for_fwding(6000+int(suffix[1:]))
 
 
 def main():
@@ -275,17 +275,26 @@ def main():
     # Prepend the xauth cookie...
 
     # First, grab the right one from the host
-    cookie = os.popen(
-        "xauth list 2>/dev/null | grep \"$(hostname)\" | awk \'{print $3}\'").readlines()[0].strip()
+    if os.getenv("SSH_CLIENT"):
+        suffix = os.popen("echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'").readlines()[0].strip()
+        cookie = os.popen(
+            "xauth list 2>/dev/null | grep \"$(hostname)\"/unix" + suffix + "| awk \'{print $3}\'").readlines()[0].strip()
+    else:
+        suffix = ":0"
+        cookie = os.popen(
+            "xauth list 2>/dev/null | grep \"$(hostname)\" | awk \'{print $3}\'").readlines()[0].strip()
 
     # Then, once inside the container, add it in!
     xauth_fix = (
         'COOKIE=' + cookie + '; ' +
         'if [ -n "$COOKIE" ]; then '
         '  touch /home/user/.Xauthority; '
-        '  xauth add "$(hostname)/unix:0" MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
-        '  xauth add "$(hostname):0"      MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
+        f'  xauth add "$(hostname)/unix{suffix}" MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
+        f'  xauth add "$(hostname){suffix}"      MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
+        f'xauth add 172.17.0.1{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; '
+        f'xauth add 172.17.0.1/unix{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; '
         'fi; '
+        '. /home/user/.venv/bin/activate ; '
     )
     vim_cmdline = xauth_fix + vim_cmdline
 
