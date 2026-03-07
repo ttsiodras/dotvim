@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import shlex
+import socket
 import subprocess
 
 from pathlib import Path
@@ -28,7 +29,8 @@ def get_mount_point_relative_to_home(p: str) -> str:
 
     # Ensure the path is under HOME
     if not real_path.startswith(home + os.sep):
-        raise ValueError(f"Path {real_path} is not under HOME directory {home}")
+        raise ValueError(
+            f"Path {real_path} is not under HOME directory {home}")
 
     # Get the relative path from HOME
     rel_path = os.path.relpath(real_path, home)
@@ -48,7 +50,7 @@ def get_mount_point_for_path(p: str) -> str:
     """
     try:
         return get_mount_point_relative_to_home(p)
-    except:
+    except Exception:  # pylint: disable=broad-exception-caught
         pass
     expanded = os.path.expanduser(p)
     real_path = os.path.realpath(expanded)
@@ -58,7 +60,10 @@ def get_mount_point_for_path(p: str) -> str:
     dotdot_count = parts.count('..')
 
     # Go up 'dotdot_count' levels from the real path's directory
-    mount_point = os.path.dirname(real_path) if os.path.isfile(real_path) else real_path
+    mount_point = \
+        os.path.dirname(real_path) \
+        if os.path.isfile(real_path) \
+        else real_path
     for _ in range(dotdot_count):
         mount_point = os.path.dirname(mount_point)
     return mount_point
@@ -83,7 +88,8 @@ def collect_mount_dirs(args):
         if is_option(a):
             continue
         expanded = os.path.expanduser(a)
-        # If it exists, find the appropriate mount point accounting for '..' traversal
+        # If it exists, find the appropriate mount point
+        # accounting for '..' traversal
         if os.path.exists(expanded):
             # rp = os.path.realpath(expanded)
             # mdir = rp if os.path.isdir(rp) else os.path.dirname(rp)
@@ -95,9 +101,14 @@ def collect_mount_dirs(args):
 
 def dedupe_subpaths(paths):
     """
-    Remove redundant subpaths (keep the shortest parent when another path lies under it).
+    Remove redundant subpaths (keep the shortest parent when another path
+    lies under it).
     """
-    norm = sorted({p.rstrip("/") or "/" for p in paths}, key=lambda x: (x.count("/"), len(x)))
+    norm = sorted(
+        {
+            p.rstrip("/") or "/"
+            for p in paths
+        }, key=lambda x: (x.count("/"), len(x)))
     kept = []
     for p in norm:
         if not any(p != k and p.startswith(k + "/") for k in kept):
@@ -109,7 +120,8 @@ def build_vim_args(raw_args):
     """
     Build the argument list to pass to vim inside the container:
     - keep options (+/-) verbatim
-    - for paths, pass canonical absolute paths so they match mounted locations
+    - for paths, pass canonical absolute paths
+      (so they match mounted locations)
     """
     out = []
     for a in raw_args:
@@ -120,7 +132,7 @@ def build_vim_args(raw_args):
             if os.path.exists(expanded):
                 out.append(os.path.realpath(expanded))
             else:
-                # Non-existent paths: user said this isn't their use case; leave as-is
+                # Non-existent paths: leave as-is
                 out.append(a)
     return out
 
@@ -136,7 +148,6 @@ def make_docker_network():
 
 
 def is_listening(port, host="127.0.0.1", timeout=1):
-    import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(timeout)
         try:
@@ -149,18 +160,27 @@ def is_listening(port, host="127.0.0.1", timeout=1):
 def launch_socat_for_fwding(port):
     """
     Launch socat to tunnel traffic from inside the container (i.e. going
-    to 172.17.0.1:port) to the corresponding listening port on the localhost I/F.
+    to 172.17.0.1:port) to the corresponding listening port
+    on the localhost I/F.
     """
-    result = subprocess.run(
-            ['pgrep', '-f', f'socat.*{port}.*172.17.0.1.*TCP:localhost:{port}'], capture_output=True)
+    result = subprocess.run([
+        'pgrep',
+        '-f',
+        f'socat.*{port}.*172.17.0.1.*TCP:localhost:{port}'
+    ], capture_output=True, check=False)
     if result.returncode == 0:
         return
-    subprocess.Popen([
-        'socat',
-        f'TCP-LISTEN:{port},reuseaddr,fork,bind=172.17.0.1',
-        f'TCP:localhost:{port}'],
-    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
-    start_new_session=True)
+    # pylint: disable=consider-using-with
+    subprocess.Popen(
+        [
+            'socat',
+            f'TCP-LISTEN:{port},reuseaddr,fork,bind=172.17.0.1',
+            f'TCP:localhost:{port}'
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        stdin=subprocess.DEVNULL,
+        start_new_session=True)
 
 
 def launch_socat_for_SSHD_X11_fwding(display):
@@ -168,13 +188,23 @@ def launch_socat_for_SSHD_X11_fwding(display):
     Launch socat to tunnel the X11 traffic from inside the SSH-ed container
     to the X11-forwarded listening port (localhost:6010)
     """
-    suffix = os.popen("echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'").readlines()[0].strip()
+    cmd = "echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'"
+    suffix = os.popen(cmd).readlines()[0].strip()
     try:
         docker_display = f'172.17.0.1{suffix}'
-        # Remove the magic cookie, if any (e.g. old ones from older SSH X11 sessions)
-        result = subprocess.run(['xauth', 'remove', docker_display], capture_output=True, text=True)
+        # Remove the magic cookie, if any (e.g. old ones from
+        # older SSH X11 sessions)
+        result = subprocess.run(
+            ['xauth', 'remove', docker_display],
+            capture_output=True,
+            text=True,
+            check=False)
         # Get the current magic cookie for our X11 DISPLAY
-        result = subprocess.run(['xauth', 'list', display], capture_output=True, text=True, check=True)
+        result = subprocess.run(
+            ['xauth', 'list', display],
+            capture_output=True,
+            text=True,
+            check=True)
         parts = result.stdout.strip().split()
         if len(parts) >= 3:
             cookie = parts[2]
@@ -182,11 +212,13 @@ def launch_socat_for_SSHD_X11_fwding(display):
             print("Could not parse xauth output")
             return
         # Add it to the docker display (i.e. the 172.17.0.1:10)
-        subprocess.run(['xauth', 'add', docker_display, 'MIT-MAGIC-COOKIE-1', cookie], check=True)
+        subprocess.run(
+            ['xauth', 'add', docker_display, 'MIT-MAGIC-COOKIE-1', cookie],
+            check=True)
         print(f"Successfully added X11 auth for {docker_display}")
     except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
-    return launch_socat_for_fwding(6000+int(suffix[1:]))
+    launch_socat_for_fwding(6000+int(suffix[1:]))
 
 
 def main():
@@ -202,14 +234,17 @@ def main():
     docker_cmd = [
         "docker", "run", "--rm", "-it",
 
+        # Use rc.local.vim. To understand the rationale behind it:
+        #
         # You can use...
         #
-        # "--network=none",
+        #    "--network=none",
         #
         # ...to stop ANYTHING going out.
         #
-        # Or, if you need access to services provided or proxied or routed via localhost,
-        # you can make a docker network, and punch a hole through it:
+        # Or, if you need access to services provided or proxied or routed
+        # via localhost, you can make a docker network, and punch a hole
+        # through it:
         #
         # docker network create \
         #    --driver bridge \
@@ -217,19 +252,20 @@ def main():
         #    --opt com.docker.network.bridge.name=restricted_net \
         #    restricted_net
         #
-        # Execute the iptables commands inside rc.local.vim (exists in the same folder as this script)
-        # The commands there end with this one, attaching the chain to Docker's global pre-container hook:
+        # Execute the iptables commands inside rc.local.vim (exists in the
+        # same folder as this script). The commands there end with this one,
+        # attaching the chain to Docker's global pre-container hook:
         # sudo iptables -I DOCKER-USER -s 172.30.0.0/24 -j RESTRICTED_NET
         #
         f"--network={RESTRICTED_NET}",
 
-        # ...and you can add an /etc/hosts entry for the one and only interface allowed:
+        # ...and you can add an /etc/hosts entry for the one and only
+        # interface allowed:
         # "--add-host", "someHOSTNAME:172.17.0.1",
-
         "-u", f"{os.getuid()}:{os.getgid()}",
     ]
 
-    # Mount each discovered directory to the same absolute path in the container
+    # Mount each discovered directory to the same abs path in the container
     for d in mount_dirs:
         docker_cmd += ["-v", f"{d}:{d}"]
     docker_cmd += ['-v', f'{real("~/.vim/sessions")}:/home/user/.vim/sessions']
@@ -244,15 +280,16 @@ def main():
     if is_listening(8012):
         launch_socat_for_fwding(8012)
 
-    # Map the entire home tree. The user is almost certainly editing things in here,
-    # so mapping $HOME allows editing anything they want (e.g. via ":e path/to/file")
+    # Map the entire home tree. The user is almost certainly editing things
+    # in here, so mapping $HOME allows editing anything they want
+    # (e.g. via ":e path/to/file")
     home = os.getenv('HOME', '')
-    docker_cmd += ['-v' , home + ":" + home]
+    docker_cmd += ['-v', home + ":" + home]
 
     # X11. In the case of remote X forwarding, needs to launch socat
     # to redirect over the restricted_net.
     docker_display_map = "DISPLAY"
-    docker_cmd += ['-v' , '/tmp/.X11-unix:/tmp/.X11-unix']
+    docker_cmd += ['-v', '/tmp/.X11-unix:/tmp/.X11-unix']
     home = os.path.expanduser("~")
     docker_cmd += ["-e", "XAUTHORITY=/home/user/.Xauthority"]
     if os.getenv("SSH_CLIENT"):
@@ -269,31 +306,40 @@ def main():
 
     # Build the vim command line to execute inside the container.
     # Use /bin/bash -lc to allow our quoting and keep $TERM behavior etc.
-    vim_args = build_vim_args(raw_args)
-    vim_cmdline = "/home/user/bin.local/vim " + shlex.join(vim_args)
+    vim_cmdline = \
+        "export PATH=/home/user/.venv/bin:$PATH ; " + \
+        "/home/user/bin.local/vim " + \
+        shlex.join(build_vim_args(raw_args))
 
     # Prepend the xauth cookie...
 
     # First, grab the right one from the host
     if os.getenv("SSH_CLIENT"):
-        suffix = os.popen("echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'").readlines()[0].strip()
-        cookie = os.popen(
-            "xauth list 2>/dev/null | grep \"$(hostname)\"/unix" + suffix + "| awk \'{print $3}\'").readlines()[0].strip()
+        cmd = "echo $DISPLAY | sed 's,^localhost,,;s,\\.0$,,'"
+        suffix = os.popen(cmd).readlines()[0].strip()
+        cmd = "xauth list 2>/dev/null | grep \"$(hostname)\"/unix" + suffix
+        cmd += "| awk \'{print $3}\'"
+        cookie = os.popen(cmd).readlines()[0].strip()
     else:
         suffix = ":0"
-        cookie = os.popen(
-            "xauth list 2>/dev/null | grep \"$(hostname)\" | awk \'{print $3}\'").readlines()[0].strip()
+        cmd = "xauth list 2>/dev/null | grep \"$(hostname)\" | "
+        cmd += "awk \'{print $3}\'"
+        cookie = os.popen(cmd).readlines()[0].strip()
 
     # Then, once inside the container, add it in!
     xauth_fix = (
         'COOKIE=' + cookie + '; ' +
-        'if [ -n "$COOKIE" ]; then '
-        '  touch /home/user/.Xauthority; '
-        f'  xauth add "$(hostname)/unix{suffix}" MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
-        f'  xauth add "$(hostname){suffix}"      MIT-MAGIC-COOKIE-1 "$COOKIE" 2>/dev/null; '
-        f'xauth add 172.17.0.1{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; '
-        f'xauth add 172.17.0.1/unix{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; '
-        'fi; '
+        'export PATH=/home/user/.venv/bin:$PATH; ' +
+        'export VIRTUAL_ENV=/home/user/.venv; ' +
+        'if [ -n "$COOKIE" ]; then ' +
+        '  touch /home/user/.Xauthority; ' +
+        f'  xauth add "$(hostname)/unix{suffix}" MIT-MAGIC-COOKIE-1 ' +
+        '"$COOKIE" 2>/dev/null; ' +
+        f'  xauth add "$(hostname){suffix}"      MIT-MAGIC-COOKIE-1 ' +
+        '"$COOKIE" 2>/dev/null; ' +
+        f'xauth add 172.17.0.1{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; ' +
+        f'xauth add 172.17.0.1/unix{suffix} MIT-MAGIC-COOKIE-1 "$COOKIE"; ' +
+        'fi; ' +
         '. /home/user/.venv/bin/activate ; '
     )
     vim_cmdline = xauth_fix + vim_cmdline
@@ -306,8 +352,10 @@ def main():
         # print("\n".join(docker_cmd))
         subprocess.run(docker_cmd, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"[myvim] docker run failed with exit code {e.returncode}", file=sys.stderr)
+        print(f"[myvim] docker run failed with exit code {e.returncode}",
+              file=sys.stderr)
         sys.exit(e.returncode)
+
 
 if __name__ == "__main__":
     main()
