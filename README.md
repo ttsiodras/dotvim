@@ -1,18 +1,14 @@
-Update: the `Dockerfile` in folder `contrib` creates a standalone image, that works via
-the associated `contrib/myvim.sh` to provide C/C++ and Python language-server-based
-navigation/autocompletion WITHOUT external network access. It was the only way I could
-see to trust these node/npm-based things.
-
+Intro
+-----
 These are my VIM settings, mostly targeting development with C, C++ and Python.
-I wrote a blog post about them [here](https://www.thanassis.space/myvim.html).
+I wrote a detailed blog post about why I use VIM [here](https://www.thanassis.space/myvim.html).
 
-Here is a [Vimeo-hosted video](http://vimeo.com/37875339) showing some of
-the things I can do when I work in C or C++.
+I use a small number of plugins, that keeps increasing over the years :-)
+I also did some minor customization for keyboard shortcuts.
 
-I use a small number of plugins, and did some minor customization for
-keyboard shortcuts. The plugins are maintained with pathogen, and
-are placed under bundle/ via Git submodules (so I always have the latest
-plugin versions).
+The plugins are maintained with pathogen, and
+are placed under bundle/ via Git submodules (so I always have control over
+what plugin versions I use).
 
 Installation
 -------------
@@ -32,14 +28,14 @@ I therefore use the same VIM environment in all my machines.
 
 UPDATE, 2025/May: I added a Dockerized folder where you just issue "make"
 and get a nice Docker image that DOESNT ALLOW NETWORK ACCESS; you then use
-Dockerized/myvim.sh and edit as you normally would, with fully operational
-language servers for C/C++/Python; but WITHOUT ANY NETWORK ACCESS.
+Dockerized/myvim.py as your vim (alias it) and you edit as you normally would,
+with fully operational language servers for C/C++/Python; but WITHOUT ANY NETWORK ACCESS.
 
 Translation: yeah, I need language servers - but that doesn't mean I should
 be trusting them :-)
 
-For C/C++ development
----------------------
+Older, deprecated stuff for C/C++ development - DONT READ EXCEPT FOR HISTORY LESSONS
+------------------------------------------------------------------------------------
 
 I first create /usr/include/tags:
 
@@ -103,7 +99,7 @@ I've mapped:
 - NERDTreeToggle to F10, for direct access to "file manager" interface
 - TAB and Shift-TAB (in normal mode) cycle buffers
 - Ctrl-cursors to navigate windows (or create them, if missing)
-- Ctrl-L to clear search results (hate seeing yellow stuff after search)
+- Ctrl-l to clear search results (hate seeing yellow stuff after search)
 - Ctrl-F12 to quickly close "window" (buffer)
 - I've also installed the easymotion plugin, so I can navigate to any place in the screen
   with a simple \\\\w followed by a character. Amazing plugin.
