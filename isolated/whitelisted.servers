@@ -1,0 +1,7 @@
+# Hosts that vim (and its plugins/LSPs) are allowed to reach.
+# One entry per line: hostname or IP address.
+# Lines starting with # are ignored, as are blank lines.
+#
+# Examples:
+#   company.intranet
+#   1.2.3.4

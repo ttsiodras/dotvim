@@ -1,0 +1,174 @@
+#!/bin/bash
+# vim-netns: Manage the vim-isolated network namespace (MODE B).
+#
+# Usage:
+#   sudo vim-netns start [path/to/whitelisted.servers]
+#   sudo vim-netns stop
+#
+# start — creates the namespace, veth pair, and iptables whitelist rules.
+#         Safe to re-run: tears down any existing state first.
+#
+# stop  — removes iptables rules, veth pair, and the named namespace.
+#         Typically run at logout or to refresh the whitelist.
+
+set -euo pipefail
+
+NETNS="vim-isolated"
+VETH_HOST="vim-veth0"
+VETH_NS="vim-veth1"
+NS_IP="10.200.200.2"
+HOST_IP="10.200.200.1"
+PREFIX="24"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+die()  { echo "[vim-netns] ERROR: $*" >&2; exit 1; }
+log()  { echo "[vim-netns] $*"; }
+
+[[ $(id -u) -eq 0 ]] || die "Must be run as root (use sudo)."
+
+# ── stop ─────────────────────────────────────────────────────────────────────
+
+cmd_stop() {
+    # ── Remove iptables rules ─────────────────────────────────────────────────
+    # Loop until -D (delete) fails, meaning no more matching rules remain.
+
+    iptables -t nat -D POSTROUTING -s "${NS_IP}/${PREFIX}" -j MASQUERADE 2>/dev/null \
+        && log "Removed NAT MASQUERADE rule." || true
+
+    while iptables -t filter -D FORWARD -i "$VETH_HOST" -j DROP 2>/dev/null; do :; done
+    while iptables -t filter -D FORWARD -i "$VETH_HOST" 2>/dev/null; do :; done
+    while iptables -t filter -D FORWARD -o "$VETH_HOST" 2>/dev/null; do :; done
+    iptables -t filter -D FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || true
+    log "Removed FORWARD rules for $VETH_HOST."
+
+    # ── Remove veth pair ──────────────────────────────────────────────────────
+    # Deleting the host side automatically removes the peer inside the namespace.
+
+    ip link delete "$VETH_HOST" 2>/dev/null \
+        && log "Removed veth pair ($VETH_HOST + peer)." || true
+
+    # ── Delete the named namespace ────────────────────────────────────────────
+    # 'ip netns delete' removes the bind mount at /run/netns/vim-isolated.
+    # Once gone and no process holds it open, the kernel destroys it.
+
+    if ip netns list | grep -qw "$NETNS"; then
+        ip netns delete "$NETNS"
+        log "Deleted namespace '$NETNS'."
+    else
+        log "Namespace '$NETNS' was not present."
+    fi
+
+    log "Done."
+}
+
+# ── start ─────────────────────────────────────────────────────────────────────
+
+cmd_start() {
+    local WHITELIST_FILE="${1:-$SCRIPT_DIR/whitelisted.servers}"
+
+    command -v ip       >/dev/null 2>&1 || die "'ip' (iproute2) not found."
+    command -v iptables >/dev/null 2>&1 || die "'iptables' not found."
+    [[ -d /proc/self/ns ]]     || die "Kernel has no namespace support (/proc/self/ns missing)."
+    [[ -e /proc/self/ns/net ]] || die "Kernel does not support network namespaces."
+
+    # ── Idempotency: tear down stale state first ──────────────────────────────
+
+    if ip netns list | grep -qw "$NETNS"; then
+        log "Namespace '$NETNS' already exists — removing stale one first."
+        ip link delete "$VETH_HOST" 2>/dev/null || true
+        ip netns delete "$NETNS"
+    fi
+
+    # ── Create the named namespace ────────────────────────────────────────────
+    # 'ip netns add' creates the namespace AND a bind mount at /run/netns/NETNS,
+    # which keeps the namespace alive independently of any process being inside it.
+
+    ip netns add "$NETNS"
+    log "Created network namespace '$NETNS'."
+
+    # ── Bring up loopback inside the namespace ────────────────────────────────
+
+    ip netns exec "$NETNS" ip link set lo up
+    log "lo is up inside '$NETNS'."
+
+    # ── Create veth pair ──────────────────────────────────────────────────────
+    # A veth pair is like a pipe with two ends:
+    #   vim-veth0  lives in the host namespace
+    #   vim-veth1  gets moved into the vim-isolated namespace
+
+    ip link add "$VETH_HOST" type veth peer name "$VETH_NS"
+    ip link set "$VETH_NS" netns "$NETNS"
+
+    ip addr add "${HOST_IP}/${PREFIX}" dev "$VETH_HOST"
+    ip link set "$VETH_HOST" up
+
+    ip netns exec "$NETNS" ip addr add "${NS_IP}/${PREFIX}" dev "$VETH_NS"
+    ip netns exec "$NETNS" ip link set "$VETH_NS" up
+    ip netns exec "$NETNS" ip route add default via "$HOST_IP"
+
+    log "veth pair up: host=$VETH_HOST ($HOST_IP) <-> ns=$VETH_NS ($NS_IP)."
+
+    # ── Enable IP forwarding ──────────────────────────────────────────────────
+
+    sysctl -qw net.ipv4.ip_forward=1
+
+    # ── iptables: whitelist-only egress ──────────────────────────────────────
+    #
+    # FORWARD chain (filter table):
+    #   [1] -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT  ← return traffic
+    #   [2..N] -i vim-veth0 -d <whitelist_ip> -j ACCEPT
+    #   [last] -i vim-veth0 -j DROP  ← default deny
+    #
+    # NAT POSTROUTING: MASQUERADE outbound traffic from the namespace.
+
+    # Clean up any stale rules from a previous run
+    iptables -t nat    -D POSTROUTING -s "${NS_IP}/${PREFIX}" -j MASQUERADE 2>/dev/null || true
+    iptables -t filter -D FORWARD     -i "$VETH_HOST" -j DROP               2>/dev/null || true
+    iptables -t filter -D FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || true
+
+    iptables -t nat    -A POSTROUTING -s "${NS_IP}/${PREFIX}" -j MASQUERADE
+    iptables -t filter -I FORWARD 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    iptables -t filter -A FORWARD -i "$VETH_HOST" -j DROP
+
+    # Punch holes for each whitelisted host
+    local whitelist_count=0
+    if [[ -f "$WHITELIST_FILE" ]]; then
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line="${line%%#*}"
+            line="${line// /}"
+            line="${line//	/}"
+            [[ -z "$line" ]] && continue
+
+            local resolved_ip
+            if [[ "$line" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                resolved_ip="$line"
+            else
+                resolved_ip=$(getent hosts "$line" 2>/dev/null | awk '{print $1; exit}')
+                if [[ -z "$resolved_ip" ]]; then
+                    echo "[vim-netns] WARNING: cannot resolve '$line', skipping." >&2
+                    continue
+                fi
+                log "Whitelisting $line -> $resolved_ip"
+            fi
+
+            iptables -t filter -I FORWARD -i "$VETH_HOST" -d "$resolved_ip" -j ACCEPT
+            iptables -t filter -I FORWARD -o "$VETH_HOST" -s "$resolved_ip" -j ACCEPT
+            (( whitelist_count++ )) || true
+        done < "$WHITELIST_FILE"
+    fi
+
+    log "Whitelisted $whitelist_count external host(s)."
+    log "Done. Namespace '$NETNS' is ready."
+    log "To tear down: sudo vim-netns stop"
+}
+
+# ── dispatch ──────────────────────────────────────────────────────────────────
+
+case "${1:-}" in
+    start) shift; cmd_start "$@" ;;
+    stop)  shift; cmd_stop  "$@" ;;
+    *)     echo "Usage: sudo $(basename "$0") start [whitelist-file]" >&2
+           echo "       sudo $(basename "$0") stop" >&2
+           exit 1 ;;
+esac

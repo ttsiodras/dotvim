@@ -1,0 +1,465 @@
+#!/bin/bash
+# Network-isolated vim wrapper.
+#
+# PURPOSE
+# -------
+# Vim spawns child processes: language servers (LSPs), linters, formatters,
+# plugin helpers (coc.nvim, etc.). These children inherit the network
+# and could silently exfiltrate code, make telemetry calls, or be compromised.
+#
+# This wrapper puts vim AND all its children into a restricted Linux network
+# namespace, so they cannot reach the internet/intranet; except whatever
+# servers we decide to whitelist in file whitelisted.servers.
+#
+# WHAT IS A NETWORK NAMESPACE?
+# ----------------------------
+# Linux namespaces let a process have its own private view of kernel resources.
+# A network namespace has its own interfaces, routing table, and firewall
+# rules - completely separate from the host. A process inside it cannot see
+# or use the host's network interfaces.
+#
+# WHY CAN'T WE JUST USE  unshare --net ?
+# ---------------------------------------
+# Creating a network namespace requires CAP_SYS_ADMIN - a privilege only root
+# has. Unprivileged users cannot do it directly:
+#
+#   $ unshare --net bash    ->  "unshare failed: Operation not permitted"
+#
+# SOLUTION: PAIR IT WITH A USER NAMESPACE
+# ----------------------------------------
+# Linux allows unprivileged users to create a *user* namespace, inside which
+# they hold a full set of capabilities (including CAP_SYS_ADMIN and
+# CAP_NET_ADMIN) - but only scoped to resources owned by that namespace.
+# By creating a user namespace and a net namespace together, the user
+# namespace "owns" the net namespace, and we can manage it freely:
+#
+#   $ unshare --user --net bash    ->  works, no root needed
+#
+# This requires:
+#   /proc/sys/user/max_user_namespaces  > 0
+#   /proc/sys/kernel/unprivileged_userns_clone == 1
+#
+# THE UID MAPPING PROBLEM
+# -----------------------
+# Inside a user namespace, the process needs a uid. Without any mapping,
+# it appears as uid 65534 ("nobody"), which cannot bring up network interfaces.
+#
+# --map-root-user maps uid 0 (root) inside the namespace to your real uid
+# outside. This gives the process CAP_NET_ADMIN inside the namespace (because
+# it appears as root inside), which lets us run "ip link set lo up".
+#
+# And we need to do this; because a fresh network namespace has a loopback
+# interface (lo) but it's in the DOWN state. LSPs like coc.nvim bind to
+# 127.0.0.1, so without loopback up they can't start. With CAP_NET_ADMIN
+# now available inside the namespace, we can "ip link set lo up"; all is OK.
+#
+# Crucially: on disk, uid 0 inside = your real uid outside. Files written by
+# the vim running inside your namespace, are owned by YOU, not by root.
+#
+# If you launch ":terminal" inside your vim, you'll see the shell prompt
+# showing "root@" - but this is cosmetic. The kernel translates uid 0 inside
+# to your real uid for all filesystem operations.
+#
+# The HOME/USER env fix
+# ---------------------
+# Inside the namespace we're uid 0. Some programs - vim, bash, X11 - look up
+# the home directory by calling getpwuid(UID), which in this case will return
+# /root. Vim would then load /root/.vimrc instead of yours, and X11 auth
+# would fail.
+#
+# The fix: capture HOME, USER, LOGNAME, and XAUTHORITY before entering the
+# namespace, stash them in temporary env vars, then restore them inside:
+#
+# export HOME="$_VIM_ISOLATED_HOME"
+# export USER="$_VIM_ISOLATED_USER"
+# ...
+#
+# This overrides the uid-based lookup. Vim reads $HOME for its config path,
+# not the passwd database.
+#
+# TWO MODES OF OPERATION
+# ----------------------
+#
+#   MODE A - localhost only, zero sudo necessary:
+#
+#     +-----------------------------------------+
+#     |  HOST NETWORK NAMESPACE                 |
+#     |  eth0, wlan0, real internet...          |
+#     |                                         |
+#     |   +---------------------------------+   |
+#     |   |  vim-isolated USER+NET NAMESPACE|   |
+#     |   |  (unprivileged, no sudo)        |   |
+#     |   |                                 |   |
+#     |   |  lo (127.0.0.1)   <- LSPs work  |   |
+#     |   |  NO other interfaces            |   |
+#     |   |  internet: BLOCKED              |   |
+#     |   |                                 |   |
+#     |   |  vim + all plugins/LSPs         |   |
+#     |   +---------------------------------+   |
+#     +-----------------------------------------+
+#
+#   This mode is used when whitelisted.servers is empty.
+#   No sudo, no setup - just works.
+#
+#   MODE B - localhost + whitelisted hosts, requires one-time sudo setup:
+#
+#     +------------------------------------------------------+
+#     |  HOST NETWORK NAMESPACE                              |
+#     |                                                      |
+#     |  vim-veth0 (10.200.200.1)  ----------------------+   |
+#     |                           iptables FORWARD:      |   |
+#     |                           ACCEPT whitelisted IPs |   |
+#     |                           DROP everything else   |   |
+#     |                                                  |   |
+#     |   +-------------------------------------------+  |   |
+#     |   |  vim-isolated NAMED NET NAMESPACE         |  |   |
+#     |   |  (created by sudo vim-netns start)        |  |   |
+#     |   |                                           |  |   |
+#     |   |  lo (127.0.0.1)                           |  |   |
+#     |   |  vim-veth1 (10.200.200.2) ----------------+  |   |
+#     |   |  default route via 10.200.200.1              |   |
+#     |   |                                              |   |
+#     |   |  whitelisted IPs:    (via NAT)               |   |
+#     |   |  everything else:  BLOCKED (iptables DROP)   |   |
+#     |   |                                              |   |
+#     |   |  vim + all plugins/LSPs + access to servers  |   |
+#     |   +----------------------------------------------+   |
+#     +------------------------------------------------------+
+#
+#     Requires: sudo vim-netns start  (once per boot)
+#
+# WHAT IS HAPPENING IN MODE B
+# ---------------------------
+# MODE A's limitation is that vim gets only loopback. If you need vim's
+# plugins to reach specific servers - a private Git server, a package registry,
+# etc, you need a way to let some traffic through while still blocking
+# everything else.
+#
+# That requires actual firewall rules, which requires root.
+# Hence the one-time sudo vim-netns start.
+#
+# The named namespace
+# -------------------
+# In MODE A, unshare creates an anonymous namespace - it exists only for as
+# long as a process (our vim) lives inside it, and it's a fresh one each time.
+#
+# MODE B uses a named namespace instead:
+#
+#   ip netns add vim-isolated
+#
+# This creates a bind mount at /run/netns/vim-isolated. A bind mount is just
+# a file that holds a reference to the namespace open - so the namespace
+# persists even when no process is inside it. Vim can enter it, exit it,
+# re-enter it, and it's always the same namespace with the same rules already
+# in place.
+#
+# In fact, other processes can enter it. DON'T YOU DARE USE EMACS, INFIDEL.
+#
+# The veth pair
+# -------------
+# A named namespace is initially just as isolated as MODE A; it has loopback
+# and nothing else. To give it a path to the outside world, we create a veth
+# pair:
+#
+# vim-veth0  (in host namespace)  ------  vim-veth1  (moved into vim-isolated)
+# 10.200.200.1                            10.200.200.2
+#
+# A veth pair is like a virtual ethernet cable with two ends - a packet sent
+# into one end comes out the other. We assign IPs to both ends and set a
+# default route inside the namespace pointing at the host end. Now the
+# namespace has a path out.
+#
+# The iptables whitelist
+# ----------------------
+# Having a path out isn't enough. We need to control what can traverse it.
+# That's done on the host with iptables rules on the FORWARD chain.
+#
+# The FORWARD chain handles packets being routed through the host (that is,
+# packets not destined for the host itself) - which is exactly what happens
+# when vim-isolated sends a packet out; through
+#
+#     vim-veth1 -> vim-veth0 -> internet.
+#
+# FORWARD chain
+# -------------
+# [1] conntrack RELATED,ESTABLISHED -> ACCEPT 
+#     return traffic for open connections
+#
+# [2] -i vim-veth0 -d <whitelisted_ip> -> ACCEPT
+#     outbound to each one of our allowed hosts (in our whitelist)
+#     ...
+#
+# [N] -i vim-veth0 -> DROP
+#     everything else: blocked
+#
+# The conntrack rule is the clever part. After a packet leaves via NAT
+# (see below), the response arrives on the host's external interface
+# (eth0/wlan0/whatever), not on vim-veth0. Without conntrack, you'd need a
+# matching ACCEPT rule in the return direction for every whitelisted IP.
+# With conntrack, the kernel tracks every connection; return packets for an
+# already-established connection are automatically accepted regardless of
+# which interface they arrive on.
+#
+# NAT / MASQUERADE chain
+# ----------------------
+# Packets leaving the namespace have source IP 10.200.200.2 - a private addr
+# the internet has never heard of. The host rewrites the source to its
+# own real IP before forwarding:
+#
+#   iptables -t nat -A POSTROUTING -s 10.200.200.0/24 -j MASQUERADE
+#
+# MASQUERADE is NAT that automatically uses whatever IP the outbound interface
+# currently has. The kernel tracks the rewrite and reverses it for the
+# response, so vim sees the reply arrive at 10.200.200.2 as expected.
+#
+# Entering the namespace
+# ----------------------
+# We enter the namespace via:
+#
+#   sudo -E nsenter --net=/run/netns/vim-isolated -- \
+#       setpriv --reuid=<uid> --regid=<gid> --init-groups -- vim ...
+#
+# nsenter opens the bind-mount file descriptor and calls setns(2). This is a
+# syscall that switches a process's namespace membership. It switches only the
+# net namespace. sudo gives us real root (needed for setns), but we immediately
+# call setpriv to drop back to the real uid/gid before execing vim. So vim
+# and all its children run as your_user, not as root; inside the isolated
+# namespace.
+#
+# -E on sudo preserves your environment (PATH, HOME, etc.) so vim finds its
+# config and all LSP binaries exactly as in a normal session.
+#
+# The full picture side by side
+# -----------------------------
+#
+# MODE A                              MODE B
+# ----------------------------------  ----------------------------------
+# anonymous namespace, per-session    named namespace, persistent
+# user+net namespace together         net namespace only (root created it)
+# uid 0 inside (cosmetic)             real uid (setpriv drops root)
+# lo only                             lo + veth to host
+# no firewall rules needed            iptables whitelist on host FORWARD
+# no root ever                        sudo for ns entry only, then dropped
+#
+# The security guarantee is the same in both modes: vim and all its children
+# are in a namespace with no route to the general internet. MODE B just adds
+# a narrow, explicitly enumerated set of exceptions.
+#
+# DECISION FLOW ON LAUNCH
+# -----------------------
+#
+#   start
+#     |
+#     +- named namespace "vim-isolated" exists?
+#     |       |
+#     |      YES ---> MODE B (enter named ns via sudo nsenter)
+#     |       |
+#     |      NO?
+#     |       |
+#     |       +- whitelisted.servers has entries? -> warn user, fall back
+#     |       |
+#     |       +---> MODE A (unprivileged unshare --user --map-root-user --net)
+#     |
+#   vim runs inside isolated namespace
+#
+# SETUP (one-time for MODE B):
+#   1. Add hosts to  isolated/whitelisted.servers  (one per line)
+#   2. sudo isolated/vim-netns start
+#   3. Have isolated/vim in FRONT of your actual vim in your $PATH. e.g. add
+#             export PATH=$HOME/.vim/isolated:$PATH
+#      ...as the last line in your .bashrc/.zshrc
+
+set -euo pipefail
+
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NETNS="vim-isolated"
+WHITELIST_FILE="$SCRIPT_DIR/whitelisted.servers"
+
+# Capture real identity now, before any sudo/namespace changes uid.
+REAL_UID="$(id -u)"
+REAL_GID="$(id -g)"
+REAL_USER="${USER:-$(id -un)}"
+REAL_HOME="$HOME"
+REAL_XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
+
+# Find the real vim by temporarily removing this script's directory from PATH,
+# so we don't recurse into ourselves.
+REAL_VIM="$(PATH="${PATH//$SCRIPT_DIR:/}" command -v vim 2>/dev/null)" \
+    || { echo "[vim-isolated] ERROR: cannot find real vim on PATH." >&2; exit 1; }
+
+# -- Kernel feature checks ----------------------------------------------------
+
+die()  { echo "[vim-isolated] ERROR: $*" >&2; exit 1; }
+warn() { echo "[vim-isolated] WARNING: $*" >&2; }
+
+# Network namespaces are exposed via /proc/self/ns/net.
+# If this is missing, the kernel predates namespace support entirely.
+[[ -e /proc/self/ns/net ]] || die "Kernel does not support network namespaces."
+
+# util-linux: unshare (MODE A), nsenter (MODE B), setpriv (MODE B)
+# Debian/Ubuntu: apt install util-linux
+# Arch:          pacman -S util-linux  (usually pre-installed)
+command -v unshare  >/dev/null 2>&1 || die "'unshare' not found (install util-linux)."
+command -v ip       >/dev/null 2>&1 || die "'ip' not found (install iproute2)."
+
+# max_user_namespaces: how many user namespaces the kernel allows total.
+# Set to 0 by some hardened kernels to disable unprivileged namespaces.
+_userns_ok() {
+    local val
+    val=$(cat /proc/sys/user/max_user_namespaces 2>/dev/null || echo 0)
+    [[ "$val" -gt 0 ]]
+}
+
+# unprivileged_userns_clone: Debian/Ubuntu-specific sysctl that gates whether
+# unprivileged processes can create user namespaces at all.
+# Absent on non-Debian kernels -> treated as "allowed".
+_userns_clone_ok() {
+    local f="/proc/sys/kernel/unprivileged_userns_clone"
+    [[ ! -f "$f" ]] && return 0   # absent = no restriction
+    [[ "$(cat "$f")" == "1" ]]
+}
+
+# -- Whitelist helpers --------------------------------------------------------
+
+# Returns true if whitelisted.servers has at least one non-comment, non-blank line.
+_whitelist_has_entries() {
+    [[ -f "$WHITELIST_FILE" ]] || return 1
+    grep -qE '^[^#[:space:]]' "$WHITELIST_FILE" 2>/dev/null
+}
+
+# -- Named namespace helpers (MODE B) ----------------------------------------
+
+# Check if the named namespace was created by setup-vim-netns.
+# 'ip netns list' reads /run/netns/ which is populated by 'ip netns add'.
+_named_ns_exists() {
+    ip netns list 2>/dev/null | grep -qw "$NETNS"
+}
+
+# -- MODE B -------------------------------------------------------------------
+#
+# The named namespace was created by setup-vim-netns (as root), so it has:
+#   - lo up
+#   - a veth interface connected to the host
+#   - iptables rules on the host that allow only whitelisted IPs through
+#
+# We enter it via sudo nsenter --net=... which switches only the net namespace.
+# sudo gives us real root, which nsenter needs to call setns(2). We then
+# immediately drop back to the real user via setpriv, so vim runs as you,
+# not as root, inside the isolated namespace. Best of both worlds.
+
+_mode_b() {
+    command -v sudo    >/dev/null 2>&1 || die "MODE B: 'sudo' not found."
+    command -v nsenter >/dev/null 2>&1 || die "MODE B: 'nsenter' not found (install util-linux)."
+    command -v setpriv >/dev/null 2>&1 || die "MODE B: 'setpriv' not found (install util-linux)."
+    echo "[vim-isolated] Entering named namespace '$NETNS' (with external whitelist)." >&2
+    exec sudo -E nsenter --net="/run/netns/$NETNS" -- \
+        setpriv --reuid="$REAL_UID" --regid="$REAL_GID" --init-groups -- \
+        env HOME="$REAL_HOME" USER="$REAL_USER" LOGNAME="$REAL_USER" \
+            XAUTHORITY="$REAL_XAUTHORITY" \
+        "$REAL_VIM" "$@"
+}
+
+# -- MODE A -------------------------------------------------------------------
+#
+# No named namespace, no sudo. Pure unprivileged namespace creation.
+#
+# WHY --map-root-user?
+# --------------------
+# After  unshare --user --net  we are inside a new user namespace, but our uid
+# is unmapped (appears as 65534 "nobody"). We need CAP_NET_ADMIN to run
+#   ip link set lo up
+# so language servers binding to 127.0.0.1 will work; and in turn, this
+# cmd requires appearing as uid 0 inside the namespace.
+#
+# --map-root-user writes this to /proc/self/uid_map:
+#   0  <real_uid>  1
+#   |   |          +- map 1 uid
+#   |   +- outside uid (your real uid, e.g. 1001)
+#   +- inside uid (0 = root inside the namespace)
+#
+# Effect:
+#   +----------------------------------------------------------+
+#   |  Inside user namespace      |  Outside (host)            |
+#   |  uid 0  ("root")            |  uid 1001  ("your_user")   |
+#   |  CAP_NET_ADMIN OK           |                            |
+#   |  ip link set lo up OK       |                            |
+#   |  files written -> owned by  |  <- your_user on disk OK   |
+#   +----------------------------------------------------------+
+#
+# The shell prompt shows "root@hostname" inside - but that's purely cosmetic.
+# Every file vim creates on disk is owned by your real uid.
+#
+# WHY EXPORT HOME/USER/LOGNAME/XAUTHORITY?
+# -----------------------------------------
+# Inside the namespace, the process is uid 0. Some programs (vim, bash, X11)
+# look up the home directory from the uid via getpwuid(). uid 0 -> /root.
+# Vim would load /root/.vimrc instead of ~/.vimrc, and X11 auth would fail.
+#
+# By explicitly exporting these variables before the exec, we override the
+# uid-based lookup. Vim reads $HOME for its config path, and X11 reads
+# $XAUTHORITY for the auth cookie file.
+
+_mode_a() {
+    echo "[vim-isolated] Entering unprivileged namespace (localhost only, no sudo)." >&2
+
+    if ! _userns_ok || ! _userns_clone_ok; then
+        die "Unprivileged user namespaces are disabled on this kernel." \
+            "Either enable them (sysctl kernel.unprivileged_userns_clone=1)" \
+            "or run: sudo $SCRIPT_DIR/vim-netns start  for MODE B."
+    fi
+
+    # Pass identity into the inner bash -c via exported env vars.
+    export _VIM_ISOLATED_REAL_VIM="$REAL_VIM"
+    export _VIM_ISOLATED_HOME="$REAL_HOME"
+    export _VIM_ISOLATED_USER="$REAL_USER"
+    export _VIM_ISOLATED_XAUTHORITY="$REAL_XAUTHORITY"
+
+    # Exec chain:
+    #
+    #   this script (real uid)
+    #     +- unshare --user --map-root-user --net
+    #          creates: new user namespace  (uid 0 inside = real uid outside)
+    #                   new net namespace   (owned by that user namespace)
+    #          +- bash -c '...'  (uid 0 inside, CAP_NET_ADMIN available)
+    #               ip link set lo up   <- needs CAP_NET_ADMIN, succeeds
+    #               restore env vars    <- HOME, USER, LOGNAME, XAUTHORITY
+    #               +- exec vim         (uid 0 inside, real uid on disk)
+    #                    +- LSPs, plugins, etc. - all in the same namespace,
+    #                       all network-isolated
+    exec unshare --user --map-root-user --net -- \
+        bash -c '
+            ip link set lo up 2>/dev/null || {
+                echo "[vim-isolated] WARNING: could not bring up lo; proceeding anyway." >&2
+            }
+            # Restore identity env vars (inside the namespace we are uid 0;
+            # these overrides make vim find the right config and X11 auth).
+            export HOME="$_VIM_ISOLATED_HOME"
+            export USER="$_VIM_ISOLATED_USER"
+            export LOGNAME="$_VIM_ISOLATED_USER"
+            export XAUTHORITY="$_VIM_ISOLATED_XAUTHORITY"
+            exec "$_VIM_ISOLATED_REAL_VIM" "$@"
+        ' -- "$@"
+}
+
+# -- Decision logic -----------------------------------------------------------
+
+main() {
+    # MODE B: use named namespace if available
+    if _named_ns_exists; then
+        _mode_b "$@"
+        return
+    fi
+
+    # Warn if the user has whitelisted servers but MODE B isn't available
+    if _whitelist_has_entries; then
+        warn "whitelisted.servers has entries but namespace '$NETNS' is not set up."
+        warn "Run: sudo $SCRIPT_DIR/vim-netns start"
+        warn "Falling back to localhost-only (MODE A)."
+    fi
+
+    # MODE A: unprivileged, localhost only
+    _mode_a "$@"
+}
+
+main "$@"
