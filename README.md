@@ -1,14 +1,25 @@
 Intro
 -----
 These are my VIM settings, mostly targeting development with C, C++ and Python.
-I wrote a detailed blog post about why I use VIM [here](https://www.thanassis.space/myvim.html).
+I wrote a detailed blog post more than a decade ago about
+[why I use VIM](https://www.thanassis.space/myvim.html). Many things changed
+since then in terms of adopted solutions; but the core message still stands :-)
 
-I use a small number of plugins, that keeps increasing over the years :-)
-I also did some minor customization for keyboard shortcuts.
+I use a small number of plugins, that keeps increasing over the years.
 
-The plugins are maintained with pathogen, and
-are placed under bundle/ via Git submodules (so I always have control over
-what plugin versions I use).
+The plugins are maintained with pathogen and vim-plug, with the former placed
+under bundle/ via Git submodules (so I control the exact plugin versions I use).
+
+**UPDATE, 2026/March**: I added an isolated/ folder that allows you to work with
+your vim using namespaces that **forbid network access**; and you can choose either
+**complete** isolation, or **partial** *(enabling a whitelist of servers)*.
+You can therefore use your plugins/language servers without worrying about
+potential information leaks. 
+
+Translation: yeah, I need language servers - but that doesn't mean I should
+be trusting them :-)
+
+Read details about how this works [here](isolated/vim).
 
 Installation
 -------------
@@ -26,63 +37,42 @@ In any new machine/account I need to work on, I clone from the repository:
 
 I therefore use the same VIM environment in all my machines.
 
-UPDATE, 2025/May: I added a Dockerized folder where you just issue "make"
-and get a nice Docker image that DOESNT ALLOW NETWORK ACCESS; you then use
-Dockerized/myvim.py as your vim (alias it) and you edit as you normally would,
-with fully operational language servers for C/C++/Python; but WITHOUT ANY NETWORK ACCESS.
+For C/C++ development
+---------------------
 
-Translation: yeah, I need language servers - but that doesn't mean I should
-be trusting them :-)
+Begin with `:PlugInstall` - `neoclide/coc.nvim` will be installed, and if you have a clangd available, that will be used to drive your language-aware autocompletion and navigation. 
 
-Older, deprecated stuff for C/C++ development - DONT READ EXCEPT FOR HISTORY LESSONS
-------------------------------------------------------------------------------------
+*UPDATE*: I am actually now using a "proxy":
 
-I first create /usr/include/tags:
+    $ cat /usr/local/bin/clangd-mine
+    #!/bin/bash
+    exec /usr/bin/clangd \
+        --header-insertion=never \
+        --background-index=0 "$@"
 
-    (become root via su/sudo)
-    cd /usr/include
-    ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
+...because I am sick of some default behaviors :-)
 
-My .vimrc is set to use these, as well as any local "tags" I build
-in my project-specific Makefiles:
+Note also that the language server seems to have issues with the latest version of node in my Arch; but that's not really much of a problem: Just add a version that works in front of your PATH:
 
-    set tags+=/usr/include/tags
+    $ cd
+    $ mkdir -p local
+    $ cd local
+    $ wget -q -O- \
+      https://nodejs.org/dist/v16.19.0/node-v16.19.0-linux-x64.tar.xz |\
+      tar -Jxvf -
 
-I use [clang complete](http://www.vim.org/scripts/script.php?script_id=3302)
-  to get Intellisense-like autocompletion (see an example session recorded
-in this [Vimeo-hosted video](http://vimeo.com/37875339)).
+...and add `$HOME/local/node-v16.19.0-linux-x64/bin` in front of your PATH.
+After that, your language server will work fine.
 
-The 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'
+I have a lot of accumulated minutae in my setup (see `SetupCandCPPenviron`
+in my `.vimrc` for details); e.g. the 'A' plugin allows me to quickly switch between .h/c{c,pp} with ':A'; 'K' shows manpages on the symbol under the cursor in an "inner window" (which allows me to copy/paste); auto-format with clang-format on every save; etc.
 
-Pressing 'K' shows manpages on the symbol under the cursor in an "inner window"
-(which allows me to copy/paste).
-I then quickly close the manpage "window" with Ctrl-F12.
-
-F8 shows taglists (macros/types/variables/functions/classes).
+After a `:make` (F7) I navigate from error to next error via F4; as for the LS diagnostics, they are always available in list form via F6.
 
 For Python development
 ----------------------
 
-F7 is mapped to invoke flake8 (install it with: "pip install flake8") to get
-static analysis error reports from "pyflakes" and style issues from "pep8",
-navigating from error to error in the usual way (":cn", ":cp") - which is
-mapped to F4.
-
-I've also added a "screen" based SLIME-like environment. Here's a
-[demonstration of the process on Vimeo](http://www.vimeo.com/37894593).
-
-Basically, spawn a screen session via...
-
-    screen -c python.screenrc
-
-(or "python.screenrc.for.ArchLinux" if your screen doesn't support the
-"split -v" command) and you will get two screen windows: one with a VIM,
-one with a python instance. Navigate to whatever function/class you want
-in VIM, and hit Ctrl-c Ctrl-c (i.e. Ctrl-c twice). This will send
-the function/class to the running python instance.
-
-You can then switch between VIM and python 'windows' via Alt-1,
-and abort it all via Alt-0.
+Current preferred LS is pyright (`:CocInstall coc-pyright`). Works very nicely; I also have F7 mapped to flake8 and F6 mapped to pylint.
 
 For XML
 -------
@@ -98,15 +88,16 @@ I've mapped:
 
 - NERDTreeToggle to F10, for direct access to "file manager" interface
 - TAB and Shift-TAB (in normal mode) cycle buffers
-- Ctrl-cursors to navigate windows (or create them, if missing)
 - Ctrl-l to clear search results (hate seeing yellow stuff after search)
-- Ctrl-F12 to quickly close "window" (buffer)
-- I've also installed the easymotion plugin, so I can navigate to any place in the screen
-  with a simple \\\\w followed by a character. Amazing plugin.
+- I've also installed the easymotion plugin, so I can navigate to any place in the screen with a simple \\\\w followed by a character. Amazing plugin.
+
+...and there's much more. The point isn't for you to use my setup; the whole point with programmable editors is to tweak them to your liking. 
+
+Use my setup as one more source of inspiration, nothing more.
 
 Am I insane to use VIM?
 -----------------------
-[No,](http://www.viemu.com/a-why-vi-vim.html) I am [not](https://www.thanassis.space/myvim.html).
+[No,](https://web.archive.org/web/20250427210530/https://www.viemu.com/a-why-vi-vim.html) I am [not](https://www.thanassis.space/myvim.html).
 
 How to add more plugins?
 ------------------------
