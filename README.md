@@ -107,6 +107,7 @@ Just...
 How to uninstall a plugin?
 --------------------------
 Just...
+
     git submodule deinit bundle/something
     git rm bundle/something
     git rm --cached bundle/something
