@@ -1,3 +1,6 @@
+" This has to be at the top; it resets many other options.
+se nocp
+
 " These may be necessary to work inside the ipython-slime mode
 "
 "  set runtimepath+=/home/ttsiod/.vim
@@ -42,9 +45,7 @@ se nobackup
 se directory=~/.vim/swp,.
 se shiftwidth=4
 se sts=4
-se modelines=2
-se modeline
-se nocp
+se nomodeline
 se mouse=a
 
 if has("autocmd")
