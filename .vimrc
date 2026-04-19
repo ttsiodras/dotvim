@@ -1,6 +1,11 @@
 " This has to be at the top; it resets many other options.
 se nocp
 
+" viminfo must be writeable; but it's normally living in $HOME,
+" which I don't want to have as R/W in my isolate.sh.
+se viminfofile=~/.vim/viminfo/.viminfo
+se backupdir=~/.vim/backup/
+
 " These may be necessary to work inside the ipython-slime mode
 "
 "  set runtimepath+=/home/ttsiod/.vim
