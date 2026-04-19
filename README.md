@@ -10,16 +10,16 @@ I use a small number of plugins, that keeps increasing over the years.
 The plugins are maintained with pathogen and vim-plug, with the former placed
 under bundle/ via Git submodules (so I control the exact plugin versions I use).
 
-**UPDATE, 2026/March**: I added an isolated/ folder that allows you to work with
-your vim using namespaces that **forbid network access**; and you can choose either
-**complete** isolation, or **partial** *(enabling a whitelist of servers)*.
-You can therefore use your plugins/language servers without worrying about
-potential information leaks. 
+**UPDATE, 2026/March**: I added an isolate.sh and a vimisolated.sh in my
+[utilities](https://github.com/ttsiodras/utils) that perfectly solves
+all network and filesystem isolation needs. This allows you to use your
+plugins/language servers without worrying about potential information leaks. 
 
 Translation: yeah, I need language servers - but that doesn't mean I should
 be trusting them :-)
 
-Read details about how this works [here](isolated/vim).
+Read details about how this works [here](https://github.com/ttsiodras/utils/blob/master/isolate.sh)
+and [here](https://github.com/ttsiodras/utils/blob/master/vimisolated.sh).
 
 Installation
 -------------
