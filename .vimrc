@@ -547,7 +547,8 @@ noremap <C-p> :Files<CR>
 "
 " Powerline settings
 "
-let g:Powerline_stl_path_style = 'short'
+" let g:Powerline_stl_path_style = 'short'
+let g:Powerline_stl_path_style = 'relative'
 
 "
 " For GVIM only
@@ -681,7 +682,8 @@ let g:gitgutter_preview_win_floating = 1
 nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
 nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
 nnoremap <silent> <leader>u :GitGutterUndoHunk<CR>
-nnoremap <silent> <F1> :GitGutterNextHunk<CR>
+"nnoremap <silent> <F1> :GitGutterNextHunk<CR>
+
 "
 " Auto comment/uncomment
 "
@@ -706,6 +708,11 @@ endfunction
 
 noremap <special> <F7> :call ThanassisMake()<CR>
 noremap! <special> <F7> <ESC> :call ThanassisMake()<CR>
+
+
+" After recording a macro, use a single-key to repeat it
+nnoremap <F1> @@
+
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
