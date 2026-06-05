@@ -1,44 +1,81 @@
 " This has to be at the top; it resets many other options.
 se nocp
 
-" viminfo must be writeable; but it's normally living in $HOME,
-" which I don't want to have as R/W in my isolate.sh.
+" State that must be writeable (swap/backup/undo/viminfo). Normally these live
+" under ~/.vim, but isolate.sh mounts $HOME read-only, so we ALSO offer /tmp
+" (a writable private tmpfs in the sandbox) as a fallback. Vim walks each list
+" left-to-right and uses the first writable entry; the trailing '//' encodes
+" the full path into the swap/undo name so files in different dirs never clash.
+" Ensure the ~/.vim dirs exist so vim never falls back to '.' (which is $HOME,
+" read-only, for scratch buffers like man pages -> E303).
+for s:d in ['~/.vim/swp', '~/.vim/backup', '~/.vim/viminfo', '~/.vim/undo']
+    if !isdirectory(expand(s:d)) | call mkdir(expand(s:d), 'p') | endif
+endfor
+
 se viminfofile=~/.vim/viminfo/.viminfo
-se backupdir=~/.vim/backup/
+se backupdir=~/.vim/backup//,/tmp//
 
-" These may be necessary to work inside the ipython-slime mode
-"
-"  set runtimepath+=/home/ttsiod/.vim
-"  runtime autoload/pathogen.vim
-
-call pathogen#infect()
-" call pathogen#helptags()
+" matchit is shipped with Vim - load the built-in version (replaces the old
+" vendored bundle/matchit).
+packadd! matchit
 
 """""""""
-" VimPlug
+" VimPlug - single plugin manager (pathogen retired; all plugins below)
 """""""""
 call plug#begin('~/.vim/plugged')
 
 " Best autocompletion as of 2025
-
-" Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
-"      \'java','json', 'haskell', 'ts','sh', 'cs',
-"      \'yaml', 'c', 'cpp', 'd', 'go',
-"      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 
 " Fuzzy friends
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" Local LLMs safely accessed from inside Docker
-" Plug 'ggml-org/llama.vim'
+" Local LLMs safely accessed from inside Docker. Installed but lazy: it is
+" only activated at the bottom of this file if the FIM endpoint is reachable.
+Plug 'ggml-org/llama.vim', { 'on': [] }
 
-" Capitalization
+" tpope essentials
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-commentary'
 
 " Ctrl-w _
 Plug 'szw/vim-maximizer'
+
+" Navigation / editing
+Plug 'preservim/nerdtree'
+Plug 'easymotion/vim-easymotion'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'godlygeek/tabular'
+Plug 'vim-scripts/a.vim'
+
+" Search
+Plug 'mileszs/ack.vim'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+
+" Linting (sh/python via syntastic; coc handles the rest)
+Plug 'vim-syntastic/syntastic'
+
+" C/C++
+Plug 'rhysd/vim-clang-format'
+
+" TypeScript
+Plug 'ttsiodras/typescript-vim'
+Plug 'clausreinke/typescript-tools'
+
+" Clojure
+Plug 'tpope/vim-fireplace'
+Plug 'guns/vim-clojure-static'
+
+" Scala
+Plug 'derekwyatt/vim-scala'
+
+" Markdown
+Plug 'preservim/vim-markdown'
 
 call plug#end()
 
@@ -47,7 +84,7 @@ call plug#end()
 """""""""""""""""""""""""""""
 
 se nobackup
-se directory=~/.vim/swp,.
+se directory=~/.vim/swp//,/tmp//
 se shiftwidth=4
 se sts=4
 se nomodeline
@@ -61,7 +98,7 @@ endif
 
 " se autoindent
 se undofile
-se undodir=~/.vimundo
+se undodir=~/.vim/undo//,/tmp//
 "noremap <ESC>OP <F1>
 
 " ESC is too far away - and Steve Losh is right, this is better than jj
@@ -481,10 +518,7 @@ set expandtab
 "
 " Inside vimdiff, enable wrap (visible diffs past 80 columns)
 " au FilterWritePre * if &diff | set wrap | endif
-
-" Set vimdiff to ignore whitespace
-set diffopt+=iwhite
-set diffexpr=
+" (vimdiff whitespace-ignoring is configured once, lower down, via DiffW())
 
 "
 " Much improved auto completion menus
@@ -500,10 +534,6 @@ set completeopt=menuone,longest,preview
 "             \ "\"\\<lt>c-n>\\<lt>c-p>\\<lt>c-n>\" :" .
 "             \ "\" \\<lt>bs>\\<lt>C-n>\"\<CR>"
 " imap <C-@> <C-Space>
-
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
 
 
 
@@ -528,14 +558,14 @@ set t_Co=256
 noremap <space> ;
 
 "
-" Manpage for word under cursor via 'K' in command mode
+" Manpage for word under cursor via 'K' (global default; per-filetype setups
+" like C/C++ override this buffer-locally with their own section).
 "
 runtime ftplugin/man.vim
-noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
+noremap <silent> K :exe "Man" expand('<cword>') <CR>
 
 "
-" Now that I use the CtrlP plugin, a very useful shortcut is to open
-" an XTerm in the folder of the currently opened file:
+" Open an XTerm in the folder of the currently opened file:
 "
 " noremap <silent> <F5> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
 " noremap <silent> <Esc>OQ :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
@@ -545,12 +575,6 @@ noremap <silent> <S-F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 noremap <C-p> :Files<CR>
 
 "
-" Powerline settings
-"
-" let g:Powerline_stl_path_style = 'short'
-let g:Powerline_stl_path_style = 'relative'
-
-"
 " For GVIM only
 "
 if has("gui_running")
@@ -558,7 +582,6 @@ if has("gui_running")
     set guioptions+=b
     set nowrap
     set guifont=Lucida\ Console\ Semi-Condensed\ 11
-    colorscheme evening
 endif
 
 "
@@ -720,13 +743,10 @@ nnoremap <F1> @@
 "
 """""""""""""""""""""""""""""""""""""""""""""
 
-" OBSOLETE - Disabled.
-"
-" First, use session management
+" Session management: auto-load/save a per-directory session (keyed by an MD5
+" of the cwd) when vim is started with no file arguments.
 " (From http://pm.veritablesoftware.com/slides/vim_for_perl_development/session_code.vimrc.html)
 "
-"
-" Autoload and autosave sessions.                                                                                                     
 autocmd VimEnter * call AutoLoadSession()
 autocmd VimLeave * call AutoSaveSession()
 
@@ -809,23 +829,9 @@ au BufWritePre *.cu  call AutoSaveMaybe()
 au BufWritePre *.h   call AutoSaveMaybe()
 au BufWritePre *.hpp call AutoSaveMaybe()
 
-fun! ShowFuncName()
-  echohl ModeMsg
-  echo getline(search("^[^ \t#/]\\{2}.*[^:]\s*$", 'bWn'))
-  echohl None
-endfun
-
 function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
 endfunction
 
 noremap <silent> <F8> :se wrap!<CR>
@@ -843,7 +849,7 @@ function! LS()
     "
     " F6 to see the CocDiagnostics output
     "
-    noremap <silent> <F6> :CocDiagnostics<CR>
+    noremap <buffer> <silent> <F6> :CocDiagnostics<CR>
 
     "
     " Remap F3 to show function name
@@ -862,13 +868,13 @@ function! LS()
     "
 
     " Show me what you know about the symbol under the cursor
-    nnoremap <silent> <leader>\ :call CocActionAsync('doHover')<cr>
+    nnoremap <buffer> <silent> <leader>\ :call CocActionAsync('doHover')<cr>
 
     " Refresh the clang diagnostics shown by Coc
-    nnoremap <silent> <leader>r :CocRestart<cr>
+    nnoremap <buffer> <silent> <leader>r :CocRestart<cr>
 
     " Better yet, choose one of the available actions from the LSP.
-    nnoremap <leader>x <Plug>(coc-codeaction-cursor)
+    nnoremap <buffer> <leader>x <Plug>(coc-codeaction-cursor)
 
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
@@ -879,31 +885,31 @@ function! LS()
     " no select by `"suggest.noselect": true` in your configuration file
     " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
     " other plugin before putting this into your config
-    inoremap <silent><expr> <TAB>
+    inoremap <buffer> <silent><expr> <TAB>
           \ coc#pum#visible() ? coc#pum#next(1) :
           \ CheckBackspace() ? "\<Tab>" :
           \ coc#refresh()
-    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <buffer> <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
     " Make <CR> to accept selected completion item or notify coc.nvim to format
     " <C-g>u breaks current undo, please make your own choice
-    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+    inoremap <buffer> <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     " Use <c-space> to trigger completion
-    inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <buffer> <silent><expr> <c-space> coc#refresh()
 
     " Use `[g` and `]g` to navigate diagnostics
     " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-    nmap <silent> [g <Plug>(coc-diagnostic-prev)
-    nmap <silent> ]g <Plug>(coc-diagnostic-next)
+    nmap <buffer> <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <buffer> <silent> ]g <Plug>(coc-diagnostic-next)
 
     " GoTo code navigation
-    nmap <silent> gd <Plug>(coc-definition)
-    nmap <silent> gy <Plug>(coc-type-definition)
-    nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-references)
-    nmap <silent> gx <Plug>(coc-fix-current)
+    nmap <buffer> <silent> gd <Plug>(coc-definition)
+    nmap <buffer> <silent> gy <Plug>(coc-type-definition)
+    nmap <buffer> <silent> gi <Plug>(coc-implementation)
+    nmap <buffer> <silent> gr <Plug>(coc-references)
+    nmap <buffer> <silent> gx <Plug>(coc-fix-current)
 
     call coc#config('list', {
       \ 'previewSplitRight': v:false,
@@ -997,57 +1003,7 @@ function! SetupPythonEnviron()
     set autoindent
 
     "
-    " flake8: ignore 'too long lines'
-    "
-    let g:flake8_ignore="E501,E225,C103"
-
-    "
-    " Function that sends individual Python classes or Python functions
-    " to active screen (SLIME emulation)
-    "
-    function! SelectClassOrFunction ()
-
-        let s:currLine = getline(line('.'))
-        if s:currLine =~ '^def\|^class'
-            " If the cursor line is a function/class start line,
-            " save its number
-            let s:beginLineNumber = line('.')
-        elseif s:currLine =~ '^[a-zA-Z]'
-            " If the cursor line begins with something else,
-            " we must be on something like a global assignment
-            let s:beginLineNumber = line('.')
-            let s:endLineNumber = line('.')
-            :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-            :call Send_to_Screen(@r)
-            return
-        else
-            " we are inside something, so search backwards
-            " for function/class beginning, and save its number
-            let s:beginLineNumber = search('^def\|^class', 'bnW')
-            if !s:beginLineNumber
-                let s:beginLineNumber = 1
-            endif
-        endif
-
-        " Now search for the first line that starts with something
-        " (function, class, global, etc) and save it
-        let s:endLineNumber = search('^[a-zA-Z@]', 'nW')
-        if !s:endLineNumber
-            let s:endLineNumber = line('$')
-        else
-            let s:endLineNumber = s:endLineNumber-1
-        endif
-
-        " Finally pass the range to the screen session running a REPL
-        :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-        :call Send_to_Screen(@r)
-    endfunction
-    
-    "Obsoleted: I no longer use this
-    "noremap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
-
-    "
-    " Flake8 is always at F7 - but syntastic must use pylint
+    " syntastic uses pylint for Python
     "
     let g:syntastic_python_checker = 'pylint'
 
@@ -1063,14 +1019,9 @@ function! SetupPythonEnviron()
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
 
-    " Somehow, ts for python files is autoset to 4. 
+    " Somehow, ts for python files is autoset to 4.
     " Only sts should be 4, nothing else.
     set ts=8
-
-    "
-    " Jedi auto-completion
-    "
-    :setlocal omnifunc=jedi#completions
 
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
@@ -1092,49 +1043,12 @@ function! SetupPythonEnviron()
 endfunction
 
 "
-" OCaml
-"
-
-"
-" Merlin
-"
-if executable('ocamlmerlin') && has('python')
-    let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/ocamlmerlin"
-    execute "set rtp+=".s:ocamlmerlin."/vim"
-    execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
-    let g:syntastic_ocaml_checkers = ['merlin']
-endif
-
-if executable('ocp-indent')
-    let $OCPPATHVIM = substitute(system('opam config var share'), '\n$', '', '''') . "/vim/syntax/ocp-indent.vim"
-    autocmd FileType ocaml source $OCPPATHVIM
-endif
-
-au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
-function! SetupOCamlEnviron()
-    se shiftwidth=2
-
-    "
-    " Thanks to Merlin
-    "
-    noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
-    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
-    inoremap <buffer> <C-Space> <C-x><C-o>
-    noremap <buffer> <C-]> :Locate<CR>
-    inoremap <buffer> <C-]> <ESC>:Locate<CR>
-endfunction
-
-"
 " Javascript
 "
 au BufNewFile,BufRead *.js call SetupJSEnviron()
 function! SetupJSEnviron()
-    "
-    " Remap F7 to JSHint if the file is a .js one
-    "
-    noremap <buffer> <special> <F7> :JSHint<CR>
-    noremap! <buffer> <special> <F7> <ESC>:JSHint<CR>
-    let g:syntastic_javascript_syntax_checker="jshint"
+    " JS uses coc (like TypeScript) for completion/diagnostics.
+    call LS()
 endfunction
 
 "
@@ -1296,19 +1210,11 @@ endfunction
 au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
 
 "
-" Java autocompletion - also via Eclim
-"
-au BufNewFile,BufRead *.java call SetupJavaEnviron()
-function! SetupJavaEnviron()
-    call CommonEclim("java")
-endfunction
-
-"
 " Typescript - autocompletion via typescript-tools plugin
 " and custom Makefile-based builds...
 "
-let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
-set rtp+=$HOME/.vim/bundle/typescript-tools/
+let $PATH .= ':' . $HOME . '/.vim/plugged/typescript-tools/bin'
+set rtp+=$HOME/.vim/plugged/typescript-tools/
 
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 au BufNewFile,BufRead *.tsx call SetupTSEnviron()
@@ -1316,7 +1222,7 @@ function! SetupTSEnviron()
     setlocal filetype=typescript
     se makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
-    nnoremap <buffer> <C-]> :TsuquyomiDefinition<CR>
+    nnoremap <buffer> <C-]> :TSSdef<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
@@ -1460,5 +1366,18 @@ endfunction
 
 command! ShowLeaderBindings call ShowLeaderBindings()
 
-let g:llama_config = get(g:, 'llama_config', {})
-let g:llama_config.endpoint_fim = "http://172.17.0.1:8012/infill"
+"
+" llama.vim: cake-and-eat-it. The plugin is installed but loaded lazily
+" (Plug '... { 'on': [] }'). Here we probe the local FIM endpoint with a hard
+" 1s timeout; only if it answers do we load + configure the plugin. A dead or
+" slow server therefore costs at most 1s once, and never blocks beyond that.
+"
+let s:llama_host = "http://172.17.0.1:8012"
+if executable('curl')
+    call system('curl -s -o /dev/null --max-time 1 ' . shellescape(s:llama_host . '/health'))
+    if v:shell_error == 0
+        let g:llama_config = get(g:, 'llama_config', {})
+        let g:llama_config.endpoint_fim = s:llama_host . "/infill"
+        call plug#load('llama.vim')
+    endif
+endif
