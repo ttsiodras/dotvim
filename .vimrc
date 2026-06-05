@@ -1,10 +1,19 @@
 " This has to be at the top; it resets many other options.
 se nocp
 
-" viminfo must be writeable; but it's normally living in $HOME,
-" which I don't want to have as R/W in my isolate.sh.
+" State that must be writeable (swap/backup/undo/viminfo). Normally these live
+" under ~/.vim, but isolate.sh mounts $HOME read-only, so we ALSO offer /tmp
+" (a writable private tmpfs in the sandbox) as a fallback. Vim walks each list
+" left-to-right and uses the first writable entry; the trailing '//' encodes
+" the full path into the swap/undo name so files in different dirs never clash.
+" Ensure the ~/.vim dirs exist so vim never falls back to '.' (which is $HOME,
+" read-only, for scratch buffers like man pages -> E303).
+for s:d in ['~/.vim/swp', '~/.vim/backup', '~/.vim/viminfo', '~/.vim/undo']
+    if !isdirectory(expand(s:d)) | call mkdir(expand(s:d), 'p') | endif
+endfor
+
 se viminfofile=~/.vim/viminfo/.viminfo
-se backupdir=~/.vim/backup/
+se backupdir=~/.vim/backup//,/tmp//
 
 " matchit is shipped with Vim - load the built-in version (replaces the old
 " vendored bundle/matchit).
@@ -75,7 +84,7 @@ call plug#end()
 """""""""""""""""""""""""""""
 
 se nobackup
-se directory=~/.vim/swp,.
+se directory=~/.vim/swp//,/tmp//
 se shiftwidth=4
 se sts=4
 se nomodeline
@@ -89,7 +98,7 @@ endif
 
 " se autoindent
 se undofile
-se undodir=~/.vimundo
+se undodir=~/.vim/undo//,/tmp//
 "noremap <ESC>OP <F1>
 
 " ESC is too far away - and Steve Losh is right, this is better than jj
@@ -509,10 +518,7 @@ set expandtab
 "
 " Inside vimdiff, enable wrap (visible diffs past 80 columns)
 " au FilterWritePre * if &diff | set wrap | endif
-
-" Set vimdiff to ignore whitespace
-set diffopt+=iwhite
-set diffexpr=
+" (vimdiff whitespace-ignoring is configured once, lower down, via DiffW())
 
 "
 " Much improved auto completion menus
@@ -562,8 +568,7 @@ runtime ftplugin/man.vim
 noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
 
 "
-" Now that I use the CtrlP plugin, a very useful shortcut is to open
-" an XTerm in the folder of the currently opened file:
+" Open an XTerm in the folder of the currently opened file:
 "
 " noremap <silent> <F5> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
 " noremap <silent> <Esc>OQ :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
@@ -741,13 +746,10 @@ nnoremap <F1> @@
 "
 """""""""""""""""""""""""""""""""""""""""""""
 
-" OBSOLETE - Disabled.
-"
-" First, use session management
+" Session management: auto-load/save a per-directory session (keyed by an MD5
+" of the cwd) when vim is started with no file arguments.
 " (From http://pm.veritablesoftware.com/slides/vim_for_perl_development/session_code.vimrc.html)
 "
-"
-" Autoload and autosave sessions.                                                                                                     
 autocmd VimEnter * call AutoLoadSession()
 autocmd VimLeave * call AutoSaveSession()
 
@@ -829,12 +831,6 @@ au BufWritePre *.c   call AutoSaveMaybe()
 au BufWritePre *.cu  call AutoSaveMaybe()
 au BufWritePre *.h   call AutoSaveMaybe()
 au BufWritePre *.hpp call AutoSaveMaybe()
-
-fun! ShowFuncName()
-  echohl ModeMsg
-  echo getline(search("^[^ \t#/]\\{2}.*[^:]\s*$", 'bWn'))
-  echohl None
-endfun
 
 function! CheckBackspace() abort
   let col = col('.') - 1
@@ -1018,12 +1014,7 @@ function! SetupPythonEnviron()
     set autoindent
 
     "
-    " flake8: ignore 'too long lines'
-    "
-    let g:flake8_ignore="E501,E225,C103"
-
-    "
-    " Flake8 is always at F7 - but syntastic must use pylint
+    " syntastic uses pylint for Python
     "
     let g:syntastic_python_checker = 'pylint'
 
@@ -1039,14 +1030,9 @@ function! SetupPythonEnviron()
     noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
     noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
 
-    " Somehow, ts for python files is autoset to 4. 
+    " Somehow, ts for python files is autoset to 4.
     " Only sts should be 4, nothing else.
     set ts=8
-
-    "
-    " Jedi auto-completion
-    "
-    :setlocal omnifunc=jedi#completions
 
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
@@ -1105,12 +1091,8 @@ endfunction
 "
 au BufNewFile,BufRead *.js call SetupJSEnviron()
 function! SetupJSEnviron()
-    "
-    " Remap F7 to JSHint if the file is a .js one
-    "
-    noremap <buffer> <special> <F7> :JSHint<CR>
-    noremap! <buffer> <special> <F7> <ESC>:JSHint<CR>
-    let g:syntastic_javascript_syntax_checker="jshint"
+    " JS uses coc (like TypeScript) for completion/diagnostics.
+    call LS()
 endfunction
 
 "
