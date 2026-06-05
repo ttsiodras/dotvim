@@ -52,6 +52,10 @@ Begin with `:PlugInstall` - `neoclide/coc.nvim` will be installed, and if you ha
 
 ...because I am sick of some default behaviors :-)
 
+UPDATE, Jun 2026: Apparently the latest versions of Coc now emit a warning about coc-clangd - easy fix:
+
+    $ mv ~/.config/coc/extensions/node_modules/coc-clangd ~/.config/coc/extensions/node_modules/coc-clangd.off
+
 Note also that the language server seems to have issues with the latest version of node in my Arch; but that's not really much of a problem: Just add a version that works in front of your PATH:
 
     $ cd
