@@ -1,4 +1,7 @@
 {
+    "http.proxyStrictSSL": false,
+    "suggest.enablePreselect": false,
+    "suggest.noselect": true,
     "coc.preferences.previewAutoClose": false,
     "coc.preferences.previewSize": 35,
     "languageserver": {
