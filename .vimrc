@@ -536,10 +536,6 @@ set completeopt=menuone,longest,preview
 " imap <C-@> <C-Space>
 
 
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
-
 
 "
 " Stop warning me about leaving a modified buffer
@@ -562,10 +558,11 @@ set t_Co=256
 noremap <space> ;
 
 "
-" Manpage for word under cursor via 'K' in command mode
+" Manpage for word under cursor via 'K' (global default; per-filetype setups
+" like C/C++ override this buffer-locally with their own section).
 "
 runtime ftplugin/man.vim
-noremap <buffer> <silent> K :exe "Man" expand('<cword>') <CR>
+noremap <silent> K :exe "Man" expand('<cword>') <CR>
 
 "
 " Open an XTerm in the folder of the currently opened file:
@@ -837,14 +834,6 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
 noremap <silent> <F8> :se wrap!<CR>
 noremap! <silent> <F8> :se wrap!<CR>
 " Toggle wrap/nowrap via leader
@@ -860,7 +849,7 @@ function! LS()
     "
     " F6 to see the CocDiagnostics output
     "
-    noremap <silent> <F6> :CocDiagnostics<CR>
+    noremap <buffer> <silent> <F6> :CocDiagnostics<CR>
 
     "
     " Remap F3 to show function name
@@ -879,13 +868,13 @@ function! LS()
     "
 
     " Show me what you know about the symbol under the cursor
-    nnoremap <silent> <leader>\ :call CocActionAsync('doHover')<cr>
+    nnoremap <buffer> <silent> <leader>\ :call CocActionAsync('doHover')<cr>
 
     " Refresh the clang diagnostics shown by Coc
-    nnoremap <silent> <leader>r :CocRestart<cr>
+    nnoremap <buffer> <silent> <leader>r :CocRestart<cr>
 
     " Better yet, choose one of the available actions from the LSP.
-    nnoremap <leader>x <Plug>(coc-codeaction-cursor)
+    nnoremap <buffer> <leader>x <Plug>(coc-codeaction-cursor)
 
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
@@ -896,31 +885,31 @@ function! LS()
     " no select by `"suggest.noselect": true` in your configuration file
     " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
     " other plugin before putting this into your config
-    inoremap <silent><expr> <TAB>
+    inoremap <buffer> <silent><expr> <TAB>
           \ coc#pum#visible() ? coc#pum#next(1) :
           \ CheckBackspace() ? "\<Tab>" :
           \ coc#refresh()
-    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+    inoremap <buffer> <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
     " Make <CR> to accept selected completion item or notify coc.nvim to format
     " <C-g>u breaks current undo, please make your own choice
-    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+    inoremap <buffer> <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
                                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     " Use <c-space> to trigger completion
-    inoremap <silent><expr> <c-space> coc#refresh()
+    inoremap <buffer> <silent><expr> <c-space> coc#refresh()
 
     " Use `[g` and `]g` to navigate diagnostics
     " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-    nmap <silent> [g <Plug>(coc-diagnostic-prev)
-    nmap <silent> ]g <Plug>(coc-diagnostic-next)
+    nmap <buffer> <silent> [g <Plug>(coc-diagnostic-prev)
+    nmap <buffer> <silent> ]g <Plug>(coc-diagnostic-next)
 
     " GoTo code navigation
-    nmap <silent> gd <Plug>(coc-definition)
-    nmap <silent> gy <Plug>(coc-type-definition)
-    nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-references)
-    nmap <silent> gx <Plug>(coc-fix-current)
+    nmap <buffer> <silent> gd <Plug>(coc-definition)
+    nmap <buffer> <silent> gy <Plug>(coc-type-definition)
+    nmap <buffer> <silent> gi <Plug>(coc-implementation)
+    nmap <buffer> <silent> gr <Plug>(coc-references)
+    nmap <buffer> <silent> gx <Plug>(coc-fix-current)
 
     call coc#config('list', {
       \ 'previewSplitRight': v:false,
@@ -1051,39 +1040,6 @@ function! SetupPythonEnviron()
                                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     call LS()
-endfunction
-
-"
-" OCaml
-"
-
-"
-" Merlin
-"
-if executable('ocamlmerlin') && has('python')
-    let s:ocamlmerlin = substitute(system('opam config var share'), '\n$', '', '''') . "/ocamlmerlin"
-    execute "set rtp+=".s:ocamlmerlin."/vim"
-    execute "set rtp+=".s:ocamlmerlin."/vimbufsync"
-    let g:syntastic_ocaml_checkers = ['merlin']
-endif
-
-if executable('ocp-indent')
-    let $OCPPATHVIM = substitute(system('opam config var share'), '\n$', '', '''') . "/vim/syntax/ocp-indent.vim"
-    autocmd FileType ocaml source $OCPPATHVIM
-endif
-
-au BufNewFile,BufRead *.ml call SetupOCamlEnviron()
-function! SetupOCamlEnviron()
-    se shiftwidth=2
-
-    "
-    " Thanks to Merlin
-    "
-    noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
-    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
-    inoremap <buffer> <C-Space> <C-x><C-o>
-    noremap <buffer> <C-]> :Locate<CR>
-    inoremap <buffer> <C-]> <ESC>:Locate<CR>
 endfunction
 
 "
