@@ -6,39 +6,67 @@ se nocp
 se viminfofile=~/.vim/viminfo/.viminfo
 se backupdir=~/.vim/backup/
 
-" These may be necessary to work inside the ipython-slime mode
-"
-"  set runtimepath+=/home/ttsiod/.vim
-"  runtime autoload/pathogen.vim
-
-call pathogen#infect()
-" call pathogen#helptags()
+" matchit is shipped with Vim - load the built-in version (replaces the old
+" vendored bundle/matchit).
+packadd! matchit
 
 """""""""
-" VimPlug
+" VimPlug - single plugin manager (pathogen retired; all plugins below)
 """""""""
 call plug#begin('~/.vim/plugged')
 
 " Best autocompletion as of 2025
-
-" Plug 'neoclide/coc.nvim', {'for':['zig','cmake','rust',
-"      \'java','json', 'haskell', 'ts','sh', 'cs',
-"      \'yaml', 'c', 'cpp', 'd', 'go',
-"      \'python', 'dart', 'javascript', 'vim'], 'branch': 'release'}
 Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 
 " Fuzzy friends
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" Local LLMs safely accessed from inside Docker
-" Plug 'ggml-org/llama.vim'
+" Local LLMs safely accessed from inside Docker. Installed but lazy: it is
+" only activated at the bottom of this file if the FIM endpoint is reachable.
+Plug 'ggml-org/llama.vim', { 'on': [] }
 
-" Capitalization
+" tpope essentials
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-commentary'
 
 " Ctrl-w _
 Plug 'szw/vim-maximizer'
+
+" Navigation / editing
+Plug 'preservim/nerdtree'
+Plug 'easymotion/vim-easymotion'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'godlygeek/tabular'
+Plug 'vim-scripts/a.vim'
+
+" Search
+Plug 'mileszs/ack.vim'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+
+" Linting (sh/python via syntastic; coc handles the rest)
+Plug 'vim-syntastic/syntastic'
+
+" C/C++
+Plug 'rhysd/vim-clang-format'
+
+" TypeScript
+Plug 'ttsiodras/typescript-vim'
+Plug 'clausreinke/typescript-tools'
+
+" Clojure
+Plug 'tpope/vim-fireplace'
+Plug 'guns/vim-clojure-static'
+
+" Scala
+Plug 'derekwyatt/vim-scala'
+
+" Markdown
+Plug 'preservim/vim-markdown'
 
 call plug#end()
 
@@ -545,12 +573,6 @@ noremap <silent> <S-F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 noremap <C-p> :Files<CR>
 
 "
-" Powerline settings
-"
-" let g:Powerline_stl_path_style = 'short'
-let g:Powerline_stl_path_style = 'relative'
-
-"
 " For GVIM only
 "
 if has("gui_running")
@@ -558,7 +580,6 @@ if has("gui_running")
     set guioptions+=b
     set nowrap
     set guifont=Lucida\ Console\ Semi-Condensed\ 11
-    colorscheme evening
 endif
 
 "
@@ -1002,51 +1023,6 @@ function! SetupPythonEnviron()
     let g:flake8_ignore="E501,E225,C103"
 
     "
-    " Function that sends individual Python classes or Python functions
-    " to active screen (SLIME emulation)
-    "
-    function! SelectClassOrFunction ()
-
-        let s:currLine = getline(line('.'))
-        if s:currLine =~ '^def\|^class'
-            " If the cursor line is a function/class start line,
-            " save its number
-            let s:beginLineNumber = line('.')
-        elseif s:currLine =~ '^[a-zA-Z]'
-            " If the cursor line begins with something else,
-            " we must be on something like a global assignment
-            let s:beginLineNumber = line('.')
-            let s:endLineNumber = line('.')
-            :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-            :call Send_to_Screen(@r)
-            return
-        else
-            " we are inside something, so search backwards
-            " for function/class beginning, and save its number
-            let s:beginLineNumber = search('^def\|^class', 'bnW')
-            if !s:beginLineNumber
-                let s:beginLineNumber = 1
-            endif
-        endif
-
-        " Now search for the first line that starts with something
-        " (function, class, global, etc) and save it
-        let s:endLineNumber = search('^[a-zA-Z@]', 'nW')
-        if !s:endLineNumber
-            let s:endLineNumber = line('$')
-        else
-            let s:endLineNumber = s:endLineNumber-1
-        endif
-
-        " Finally pass the range to the screen session running a REPL
-        :exe ":" . s:beginLineNumber . "," . s:endLineNumber . "y r"
-        :call Send_to_Screen(@r)
-    endfunction
-    
-    "Obsoleted: I no longer use this
-    "noremap <buffer> <silent> <C-c><C-c> :call SelectClassOrFunction()<CR><CR>
-
-    "
     " Flake8 is always at F7 - but syntastic must use pylint
     "
     let g:syntastic_python_checker = 'pylint'
@@ -1296,19 +1272,11 @@ endfunction
 au BufNewFile,BufRead *.nrl call SetupXMLEnviron()
 
 "
-" Java autocompletion - also via Eclim
-"
-au BufNewFile,BufRead *.java call SetupJavaEnviron()
-function! SetupJavaEnviron()
-    call CommonEclim("java")
-endfunction
-
-"
 " Typescript - autocompletion via typescript-tools plugin
 " and custom Makefile-based builds...
 "
-let $PATH .= ':' . $HOME . '/.vim/bundle/typescript-tools/bin'
-set rtp+=$HOME/.vim/bundle/typescript-tools/
+let $PATH .= ':' . $HOME . '/.vim/plugged/typescript-tools/bin'
+set rtp+=$HOME/.vim/plugged/typescript-tools/
 
 au BufNewFile,BufRead *.ts call SetupTSEnviron()
 au BufNewFile,BufRead *.tsx call SetupTSEnviron()
@@ -1316,7 +1284,7 @@ function! SetupTSEnviron()
     setlocal filetype=typescript
     se makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
-    nnoremap <buffer> <C-]> :TsuquyomiDefinition<CR>
+    nnoremap <buffer> <C-]> :TSSdef<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
     set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
@@ -1460,5 +1428,18 @@ endfunction
 
 command! ShowLeaderBindings call ShowLeaderBindings()
 
-let g:llama_config = get(g:, 'llama_config', {})
-let g:llama_config.endpoint_fim = "http://172.17.0.1:8012/infill"
+"
+" llama.vim: cake-and-eat-it. The plugin is installed but loaded lazily
+" (Plug '... { 'on': [] }'). Here we probe the local FIM endpoint with a hard
+" 1s timeout; only if it answers do we load + configure the plugin. A dead or
+" slow server therefore costs at most 1s once, and never blocks beyond that.
+"
+let s:llama_host = "http://172.17.0.1:8012"
+if executable('curl')
+    call system('curl -s -o /dev/null --max-time 1 ' . shellescape(s:llama_host . '/health'))
+    if v:shell_error == 0
+        let g:llama_config = get(g:, 'llama_config', {})
+        let g:llama_config.endpoint_fim = s:llama_host . "/infill"
+        call plug#load('llama.vim')
+    endif
+endif
