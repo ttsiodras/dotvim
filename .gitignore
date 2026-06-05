@@ -4,3 +4,4 @@ plugin/eclim.vim
 plugged
 viminfo
 backup/
+whitelisted.servers
