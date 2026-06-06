@@ -207,8 +207,6 @@ if !has("gui_running")
     noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
     noremap <silent>  <Esc>OS :cn<CR>
     noremap! <silent> <Esc>OS <ESC>:cn<CR>
-    noremap <silent> <Esc>OR :lnext<CR>
-    noremap! <silent> <Esc>OR <ESC>:lnext<CR>
     noremap <silent> <Esc>[1;5S :bd<CR>
     noremap! <silent> <Esc>[1;5S <ESC>:bd<CR>
 
@@ -689,8 +687,8 @@ function! ThanassisMake()
   endif
 endfunction
 
-noremap <special> <F7> :call ThanassisMake()<CR>
-noremap! <special> <F7> <ESC> :call ThanassisMake()<CR>
+noremap <F7> :call ThanassisMake()<CR>
+noremap! <F7> <ESC> :call ThanassisMake()<CR>
 
 
 " After recording a macro, use a single-key to repeat it
@@ -825,7 +823,7 @@ function! LS()
     "
     " Remap F3 to toggle argument names in function calls (inlays)
     "
-    noremap <buffer> <special> <F3> :CocCommand document.toggleInlayHint<CR>
+    noremap <buffer> <F3> :CocCommand document.toggleInlayHint<CR>
 
     "
     " Use Coc to rename, Luke (with F2)
