@@ -754,7 +754,11 @@ let g:syntastic_sh_checkers = ['shellcheck']
 "
 let g:clang_use_library = 1
 let g:clang_library_path = "/lib/x86_64-linux-gnu"
-let g:clang_format#command = "clang-format-19"
+if executable('clang-format-19')
+    let g:clang_format#command = 'clang-format-19'
+else
+    let g:clang_format#command = 'clang-format'
+endif
 let g:clang_format#extra_args = "-style=file"
 
 
