@@ -498,7 +498,7 @@ set completeopt=menuone,longest,preview
 
 
 "
-" Stop warning me about leaving a modified buffer
+" Stop warning about modified buffer when switching to another buffer
 "
 set hidden
 
@@ -528,9 +528,7 @@ noremap <silent> K :exe "Man" expand('<cword>') <CR>
 " Open an XTerm in the folder of the currently opened file:
 "
 " noremap <silent> <F5> :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
-" noremap <silent> <Esc>OQ :!gnome-terminal -e "$SHELL --login -c 'cd %:p:h ; $SHELL'" &<CR><CR>
 noremap <silent> <S-F5> :!xterm -e "cd %:p:h ; bash" &<CR><CR>
-"noremap <silent> <Esc>OQ :!xterm -e "cd %:p:h ; bash" &<CR><CR>
 
 noremap <C-p> :Files<CR>
 
@@ -626,7 +624,7 @@ nmap ! H\\w
 se foldcolumn=0
 
 "
-" Reroute the :Ack to use the silver searcher - warp speed!
+" Reroute the :Ack to use ripgrep - warp speed!
 "
 "let g:ackprg = 'ag --nogroup --nocolor --column'
 let g:ackprg = 'rg --vimgrep --smart-case'
@@ -638,7 +636,7 @@ se ignorecase
 se smartcase
 
 "
-" VIMDIFF is far more useful when ignoring whitespace
+" vimdiff should just use diff
 "
 set diffopt+=iwhite
 set diffexpr=DiffW()
