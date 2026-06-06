@@ -9,7 +9,6 @@ let s:init_dirs = [
     \ '~/.vim/viminfo',
     \ '~/.vim/undo',
     \ '~/.vim/sessions',
-    \ '~/.config/coc'
     \ ]
 for s:d in s:init_dirs
     if !isdirectory(expand(s:d)) | call mkdir(expand(s:d), 'p') | endif
@@ -824,10 +823,9 @@ function! LS()
     noremap <buffer> <silent> <F6> :CocDiagnostics<CR>
 
     "
-    " Remap F3 to show argument names in function calls (inlays)
+    " Remap F3 to toggle argument names in function calls (inlays)
     "
     noremap <buffer> <special> <F3> :CocCommand document.toggleInlayHint<CR>
-    noremap <buffer> <Esc>OR :CocCommand document.toggleInlayHint<CR>
 
     "
     " Use Coc to rename, Luke (with F2)
