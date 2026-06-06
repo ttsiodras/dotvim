@@ -957,12 +957,12 @@ endfunction
 
 function! SetupCenviron()
   call SetupCandCPPenviron()
-  set commentstring=/*%s*/
+  setlocal commentstring=/*%s*/
 endfunction
 
 function! SetupCPPenviron()
   call SetupCandCPPenviron()
-  set commentstring=//%s
+  setlocal commentstring=//%s
 endfunction
 
 "
@@ -971,7 +971,7 @@ endfunction
 "
 au BufNewFile,BufRead *.py call SetupPythonEnviron()
 function! SetupPythonEnviron()
-    set autoindent
+    setlocal autoindent
 
     "
     " syntastic uses pylint for Python
@@ -986,7 +986,7 @@ function! SetupPythonEnviron()
 
     " Somehow, ts for python files is autoset to 4.
     " Only sts should be 4, nothing else.
-    set ts=8
+    setlocal ts=8
 
 
 
@@ -1183,7 +1183,7 @@ function! SetupTSEnviron()
     nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <C-]> :TSSdef<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
-    set errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
+    setlocal errorformat=%+A\ %#%f\ %#(%l\\\,%c):\ %m,%C%m
 endfunction
 
 "
