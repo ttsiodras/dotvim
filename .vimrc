@@ -740,7 +740,7 @@ EOD
 endfunction
 
 "
-" Tell Syntastic which files should be passive
+" Tell Syntastic which files should be passive (only on save)
 " (and wait for user to press F7/F6 for validation)
 "
 let g:syntastic_mode_map = {
@@ -976,12 +976,6 @@ function! SetupPythonEnviron()
     let g:syntastic_python_checker_args = "--ignore=E501,E225"
     let g:syntastic_python_pylint_post_args = "--disable=C0103,C0301,W0212,C0111"
 
-    "
-    " Map SyntasticCheck to F6
-    "
-    noremap <buffer> <silent> <F6> :SyntasticCheck<CR>
-    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck<CR>
-
     " Somehow, ts for python files is autoset to 4.
     " Only sts should be 4, nothing else.
     set ts=8
@@ -1003,6 +997,14 @@ function! SetupPythonEnviron()
                                     \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     call LS()
+
+    "
+    " Map SyntasticCheck to F6 (pylint) and F7 (flake8)
+    "
+    noremap <buffer> <silent> <F6> :SyntasticCheck pylint<CR>
+    noremap! <buffer> <silent> <F6> <ESC>:SyntasticCheck pylint<CR>
+    noremap <buffer> <silent> <F7> :SyntasticCheck flake8<CR>
+    noremap! <buffer> <silent> <F7> <ESC>:SyntasticCheck flake8<CR>
 endfunction
 
 "
