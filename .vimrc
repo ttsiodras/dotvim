@@ -730,15 +730,13 @@ EOD
 endfunction
 
 function! AutoSaveSession()
-    if argc() == 0
-        perl << EOD
-        use Digest::MD5 qw(md5_hex);
-        use Cwd;
-        my $session_md5_hash = md5_hex(cwd());
-        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
-        VIM::DoCommand("silent mksession! $session_path");
+    perl << EOD
+    use Digest::MD5 qw(md5_hex);
+    use Cwd;
+    my $session_md5_hash = md5_hex(cwd());
+    my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
+    VIM::DoCommand("silent mksession! $session_path");
 EOD
-    endif
 endfunction
 
 "
