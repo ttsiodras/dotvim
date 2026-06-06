@@ -193,59 +193,7 @@ endfunction
 " Unfortunately, normal key mappings don't work under Win/PuTTY,
 " so I have to create these messy Ctrl-v based mappings...
 
-if !has("gui_running")
-    " XTerm
-    noremap <silent> <Esc>[1;5B :call WinMove('j')<CR>
-    noremap <silent> <Esc>[1;5A :call WinMove('k')<CR>
-    noremap <silent> <Esc>[1;5D :call WinMove('h')<CR>
-    noremap <silent> <Esc>[1;5C :call WinMove('l')<CR>
-    noremap <silent> <Esc>[24~ :call WinClose()<CR>
-    noremap! <silent> <Esc>[1;5B <ESC>:call WinMove('j')<CR>
-    noremap! <silent> <Esc>[1;5A <ESC>:call WinMove('k')<CR>
-    noremap! <silent> <Esc>[1;5D <ESC>:call WinMove('h')<CR>
-    noremap! <silent> <Esc>[1;5C <ESC>:call WinMove('l')<CR>
-    noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
-    noremap <silent>  <Esc>OS :cn<CR>
-    noremap! <silent> <Esc>OS <ESC>:cn<CR>
-    noremap <silent> <Esc>[1;5S :bd<CR>
-    noremap! <silent> <Esc>[1;5S <ESC>:bd<CR>
-
-    " Putty-ing from Windows
-    "
-    if has("unix")
-      let myosuname = system("uname")
-      if myosuname =~ "OpenBSD"
-	" Putty-ing from Windows into OpenBSD
-	noremap <silent> <Esc>[B :call WinMove('j')<CR>
-	noremap <silent> <Esc>[A :call WinMove('k')<CR>
-	noremap <silent> <Esc>[D :call WinMove('h')<CR>
-	noremap <silent> <Esc>[C :call WinMove('l')<CR>
-	noremap <silent> <Esc>[24~ :call WinClose()<CR>
-	noremap! <silent> <Esc>[B <ESC>:call WinMove('j')<CR>
-	noremap! <silent> <Esc>[A <ESC>:call WinMove('k')<CR>
-	noremap! <silent> <Esc>[D <ESC>:call WinMove('h')<CR>
-	noremap! <silent> <Esc>[C <ESC>:call WinMove('l')<CR>
-	noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
-        noremap <silent>  <Esc>[14~ :cn<CR>
-        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
-      elseif &term == "xterm-color"
-	" Putty-ing from Windows into Linux
-	noremap <silent> <Esc>OB :call WinMove('j')<CR>
-	noremap <silent> <Esc>OA :call WinMove('k')<CR>
-	noremap <silent> <Esc>OD :call WinMove('h')<CR>
-	noremap <silent> <Esc>OC :call WinMove('l')<CR>
-	noremap <silent> <Esc>[24~ :call WinClose()<CR>
-	noremap! <silent> <Esc>OB <ESC>:call WinMove('j')<CR>
-	noremap! <silent> <Esc>OA <ESC>:call WinMove('k')<CR>
-	noremap! <silent> <Esc>OD <ESC>:call WinMove('h')<CR>
-	noremap! <silent> <Esc>OC <ESC>:call WinMove('l')<CR>
-	noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
-        noremap <silent> <Esc>[14~ :cn<CR>
-        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
-      endif
-    endif
-else
-    " GVim
+function! SetWindowNavigationMappings()
     noremap <silent> <C-Down>  :call WinMove('j')<CR>
     noremap <silent> <C-Up>    :call WinMove('k')<CR>
     noremap <silent> <C-Left>  :call WinMove('h')<CR>
@@ -258,10 +206,72 @@ else
     noremap! <silent> <F12>   <ESC>:call WinClose()<CR>
     noremap <silent> <F4> :cn<CR>
     noremap! <silent> <F4> <ESC>:cn<CR>
-    noremap <silent> <F3> :ln<CR>
-    noremap! <silent> <F3> <ESC>:ln<CR>
+    " disabled, because (a) never used it :-) (b) inlays toggle needs it
+    " noremap <silent> <F3> :ln<CR>
+    " noremap! <silent> <F3> <ESC>:ln<CR>
     noremap <silent> <C-F4> :bd<CR>
     noremap! <silent> <C-F4> <ESC>:bd<CR>
+endfunction
+
+if !has("gui_running")
+    " XTerm
+    call SetWindowNavigationMappings()
+    "
+    " I believe I no longer need to do these.
+    "
+    " noremap <silent> <Esc>[1;5B :call WinMove('j')<CR>
+    " noremap <silent> <Esc>[1;5A :call WinMove('k')<CR>
+    " noremap <silent> <Esc>[1;5D :call WinMove('h')<CR>
+    " noremap <silent> <Esc>[1;5C :call WinMove('l')<CR>
+    " noremap <silent> <Esc>[24~ :call WinClose()<CR>
+    " noremap! <silent> <Esc>[1;5B <ESC>:call WinMove('j')<CR>
+    " noremap! <silent> <Esc>[1;5A <ESC>:call WinMove('k')<CR>
+    " noremap! <silent> <Esc>[1;5D <ESC>:call WinMove('h')<CR>
+    " noremap! <silent> <Esc>[1;5C <ESC>:call WinMove('l')<CR>
+    " noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
+    " noremap <silent>  <Esc>OS :cn<CR>
+    " noremap! <silent> <Esc>OS <ESC>:cn<CR>
+    " noremap <silent> <Esc>[1;5S :bd<CR>
+    " noremap! <silent> <Esc>[1;5S <ESC>:bd<CR>
+
+
+    " Putty-ing from Windows
+    "
+    if has("unix")
+      let myosuname = system("uname")
+      if myosuname =~ "OpenBSD"
+        " Putty-ing from Windows into OpenBSD
+        noremap <silent> <Esc>[B :call WinMove('j')<CR>
+        noremap <silent> <Esc>[A :call WinMove('k')<CR>
+        noremap <silent> <Esc>[D :call WinMove('h')<CR>
+        noremap <silent> <Esc>[C :call WinMove('l')<CR>
+        noremap <silent> <Esc>[24~ :call WinClose()<CR>
+        noremap! <silent> <Esc>[B <ESC>:call WinMove('j')<CR>
+        noremap! <silent> <Esc>[A <ESC>:call WinMove('k')<CR>
+        noremap! <silent> <Esc>[D <ESC>:call WinMove('h')<CR>
+        noremap! <silent> <Esc>[C <ESC>:call WinMove('l')<CR>
+        noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
+        noremap <silent>  <Esc>[14~ :cn<CR>
+        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
+      elseif &term == "xterm-color"
+        " Putty-ing from Windows into Linux
+        noremap <silent> <Esc>OB :call WinMove('j')<CR>
+        noremap <silent> <Esc>OA :call WinMove('k')<CR>
+        noremap <silent> <Esc>OD :call WinMove('h')<CR>
+        noremap <silent> <Esc>OC :call WinMove('l')<CR>
+        noremap <silent> <Esc>[24~ :call WinClose()<CR>
+        noremap! <silent> <Esc>OB <ESC>:call WinMove('j')<CR>
+        noremap! <silent> <Esc>OA <ESC>:call WinMove('k')<CR>
+        noremap! <silent> <Esc>OD <ESC>:call WinMove('h')<CR>
+        noremap! <silent> <Esc>OC <ESC>:call WinMove('l')<CR>
+        noremap! <silent> <Esc>[24~ <ESC>:call WinClose()<CR>
+        noremap <silent> <Esc>[14~ :cn<CR>
+        noremap! <silent> <Esc>[14~ <ESC>:cn<CR>
+      endif
+    endif
+else
+    " GVim
+    call SetWindowNavigationMappings()
 endif
 
 "
