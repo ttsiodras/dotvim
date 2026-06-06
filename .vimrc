@@ -8,7 +8,14 @@ se nocp
 " the full path into the swap/undo name so files in different dirs never clash.
 " Ensure the ~/.vim dirs exist so vim never falls back to '.' (which is $HOME,
 " read-only, for scratch buffers like man pages -> E303).
-for s:d in ['~/.vim/swp', '~/.vim/backup', '~/.vim/viminfo', '~/.vim/undo']
+let s:init_dirs = [
+    \ '~/.vim/swp',
+    \ '~/.vim/backup',
+    \ '~/.vim/viminfo',
+    \ '~/.vim/undo',
+    \ '~/.vim/sessions'
+    \ ]
+for s:d in s:init_dirs
     if !isdirectory(expand(s:d)) | call mkdir(expand(s:d), 'p') | endif
 endfor
 
