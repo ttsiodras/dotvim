@@ -1065,8 +1065,8 @@ function! CommonEclim(myfiletype)
     " Step 3: Auto-close preview window when insertion cursor moves (usually,
     "         by just hitting space) or escaping into normal mode.
     "
-    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    autocmd CursorMovedI <buffer> if pumvisible() == 0|pclose|endif
+    autocmd InsertLeave <buffer> if pumvisible() == 0|pclose|endif
 endfunction
 
 " Use SAXCount to validate XMLs based on their .xsds ; provided that is,
@@ -1220,10 +1220,10 @@ endfunction
 "
 au BufNewFile,BufRead *.clj call SetupCLJEnviron()
 function! SetupCLJEnviron()
-se nohlsearch
+setlocal nohlsearch
 noremap <buffer> <silent> K :exe "Doc" expand('<cword>') <CR>
 vmap <buffer> <silent> <F7> :Eval<CR>
-nmap <F7> ?^(<CR>V%:Eval<CR>%
+nnoremap <buffer> <F7> ?^(<CR>V%:Eval<CR>%
 nnoremap <buffer> <silent> <F6> ggVG:Eval<CR>
 endfunction
 
@@ -1233,13 +1233,13 @@ endfunction
 au BufNewFile,BufRead *.java call SetupJavaEnviron()
 function! SetupJavaEnviron()
     setlocal omnifunc=javacomplete#Complete
-    nmap <F4> <Plug>(JavaComplete-Imports-AddSmart)
-    nmap <F5> <Plug>(JavaComplete-Imports-Add)
-    imap <F5> <Plug>(JavaComplete-Imports-Add)
-    nmap <F6> <Plug>(JavaComplete-Imports-AddMissing)
-    imap <F6> <Plug>(JavaComplete-Imports-AddMissing)
-    nmap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
-    imap <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
+    nmap <buffer> <F4> <Plug>(JavaComplete-Imports-AddSmart)
+    nmap <buffer> <F5> <Plug>(JavaComplete-Imports-Add)
+    imap <buffer> <F5> <Plug>(JavaComplete-Imports-Add)
+    nmap <buffer> <F6> <Plug>(JavaComplete-Imports-AddMissing)
+    imap <buffer> <F6> <Plug>(JavaComplete-Imports-AddMissing)
+    nmap <buffer> <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
+    imap <buffer> <F7> <Plug>(JavaComplete-Imports-RemoveUnused)
 endfunction
 
 "
@@ -1279,8 +1279,8 @@ noremap <C-n> :terminal bash<CR>
 "
 au BufNewFile,BufRead *.vhd call SetupVHDL()
 function! SetupVHDL()
-    se shiftwidth=4
-    set colorcolumn=80
+    setlocal shiftwidth=4
+    setlocal colorcolumn=80
 endfunction
 
 "
@@ -1288,7 +1288,7 @@ endfunction
 "
 au BufNewFile,BufRead *.s call SetupASM()
 function! SetupASM()
-    se shiftwidth=4
+    setlocal shiftwidth=4
 endfunction
 
 "
@@ -1299,7 +1299,7 @@ function! SetupYamlEnviron()
     call LS()
     " Whoever thought that indenting the line the moment I add a '#' in front
     " is a good idea, is... mistaken.
-    se noautoindent
+    setlocal noautoindent
 endfunction
 
 "
