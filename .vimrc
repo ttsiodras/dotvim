@@ -1,11 +1,6 @@
 " This has to be at the top; it resets many other options.
 se nocp
 
-" State that must be writeable (swap/backup/undo/viminfo). Normally these live
-" under ~/.vim, but isolate.sh mounts $HOME read-only, so we ALSO offer /tmp
-" (a writable private tmpfs in the sandbox) as a fallback. Vim walks each list
-" left-to-right and uses the first writable entry; the trailing '//' encodes
-" the full path into the swap/undo name so files in different dirs never clash.
 " Ensure the ~/.vim dirs exist so vim never falls back to '.' (which is $HOME,
 " read-only, for scratch buffers like man pages -> E303).
 let s:init_dirs = [
@@ -13,7 +8,8 @@ let s:init_dirs = [
     \ '~/.vim/backup',
     \ '~/.vim/viminfo',
     \ '~/.vim/undo',
-    \ '~/.vim/sessions'
+    \ '~/.vim/sessions',
+    \ '~/.config/coc'
     \ ]
 for s:d in s:init_dirs
     if !isdirectory(expand(s:d)) | call mkdir(expand(s:d), 'p') | endif
@@ -796,11 +792,17 @@ au BufWritePre *.cu  call AutoSaveMaybe()
 au BufWritePre *.h   call AutoSaveMaybe()
 au BufWritePre *.hpp call AutoSaveMaybe()
 
+"
+" Used to decide whether <TAB> will insert a tab or open auto-completion
+"
 function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+"
+" Toggle wrap
+"
 noremap <silent> <F8> :se wrap!<CR>
 noremap! <silent> <F8> :se wrap!<CR>
 " Toggle wrap/nowrap via leader
@@ -812,14 +814,17 @@ se nowrap
 " delays and poor user experience
 set updatetime=300
 
+"
+" Common language server logic
+"
 function! LS()
     "
-    " F6 to see the CocDiagnostics output
+    " F6 to see the CocDiagnostics output. Overriden in e.g. Python section
     "
     noremap <buffer> <silent> <F6> :CocDiagnostics<CR>
 
     "
-    " Remap F3 to show function name
+    " Remap F3 to show argument names in function calls (inlays)
     "
     noremap <buffer> <special> <F3> :CocCommand document.toggleInlayHint<CR>
     noremap <buffer> <Esc>OR :CocCommand document.toggleInlayHint<CR>
@@ -918,13 +923,6 @@ function! SetupCandCPPenviron()
     " If I ever need to generate tags on the fly, I uncomment this:
     " noremap <C-F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
     " set tags+=/usr/include/tags
-
-    "
-    " Toggle TagList window with F8
-    "
-    " noremap <buffer> <silent> <F8> :TlistToggle<CR>
-    " noremap! <buffer> <silent> <F8> <ESC>:TlistToggle<CR>
-    " let g:Tlist_Use_Right_Window = 1
 
     "
     " Especially for C and C++, use section 3 of the manpages
@@ -1306,9 +1304,9 @@ endfunction
 "
 au BufNewFile,BufRead *.yaml call SetupYamlEnviron()
 function! SetupYamlEnviron()
+    call LS()
     " Whoever thought that indenting the line the moment I add a '#' in front
     " is a good idea, is... mistaken.
-    call LS()
     se noautoindent
 endfunction
 
