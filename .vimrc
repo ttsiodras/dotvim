@@ -949,8 +949,8 @@ function! SetupCandCPPenviron()
     " Work prefers these settings.
     " After using them for quite a while, I guess I like them too :-)
     "
-    se shiftwidth=2
-    se sts=2
+    setlocal shiftwidth=2
+    setlocal sts=2
 
     call LS()
 endfunction
@@ -1146,8 +1146,8 @@ endfunction
 
 au BufNewFile,BufRead *.xml call SetupXMLEnviron()
 function! SetupXMLEnviron()
-    se errorformat=%E,%C%.%#Error\ at\ file\ %f%.\ line\ %l%.\ char\ %c,%C\ \ Message:\ %m,%Z,%-G%f:\ %*[0-9]\ ms\ %.%#
-    se makeprg=SAXCount\ -n\ -s\ -f\ %
+    setlocal errorformat=%E,%C%.%#Error\ at\ file\ %f%.\ line\ %l%.\ char\ %c,%C\ \ Message:\ %m,%Z,%-G%f:\ %*[0-9]\ ms\ %.%#
+    setlocal makeprg=SAXCount\ -n\ -s\ -f\ %
 
     " In visual mode (with multiple lines selected) use Leader followed by '=' 
     " to align attribute assignments so that they line up horizontally
@@ -1179,7 +1179,7 @@ au BufNewFile,BufRead *.ts call SetupTSEnviron()
 au BufNewFile,BufRead *.tsx call SetupTSEnviron()
 function! SetupTSEnviron()
     setlocal filetype=typescript
-    se makeprg=make
+    setlocal makeprg=make
     nnoremap <buffer> <F8> :TSSstarthere<CR>
     nnoremap <buffer> <C-]> :TSSdef<CR>
     nnoremap <buffer> \t :TSSsymbol<CR>
@@ -1247,7 +1247,7 @@ endfunction
 "
 au BufNewFile,BufRead *.acn call SetupACNEnviron()
 function! SetupACNEnviron()
-    se filetype=acn
+    setlocal filetype=acn
 endfunction
 
 "
