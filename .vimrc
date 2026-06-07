@@ -610,7 +610,6 @@ noremap Ν N
 noremap Ο O
 noremap Π P
 noremap Ρ R
-noremap Σ S
 noremap Τ T
 noremap Θ U
 noremap Ω V
