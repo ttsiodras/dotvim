@@ -33,10 +33,6 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
-" Local LLMs safely accessed from inside Docker. Installed but lazy: it is
-" only activated at the bottom of this file if the FIM endpoint is reachable.
-Plug 'ggml-org/llama.vim', { 'on': [] }
-
 " tpope essentials
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-surround'
@@ -720,26 +716,19 @@ autocmd VimLeave * call AutoSaveSession()
 
 function! AutoLoadSession()
     if argc() == 0
-        perl << EOD
-        use Digest::MD5 qw(md5_hex);
-        use Cwd;
-        my $session_md5_hash = md5_hex(cwd());
-        my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
-        if (-e $session_path) {
-            VIM::DoCommand("silent source $session_path");
-        }
-EOD
+        " Use sha256() hash of the cwd as the session key
+        let l:session_hash = sha256(getcwd())
+        let l:session_path = expand('~/.vim/sessions/') . l:session_hash . '.session'
+        if filereadable(l:session_path)
+            silent execute 'source ' . l:session_path
+        endif
     endif
 endfunction
 
 function! AutoSaveSession()
-    perl << EOD
-    use Digest::MD5 qw(md5_hex);
-    use Cwd;
-    my $session_md5_hash = md5_hex(cwd());
-    my $session_path = "$ENV{HOME}/.vim/sessions/$session_md5_hash.session";
-    VIM::DoCommand("silent mksession! $session_path");
-EOD
+    let l:session_hash = sha256(getcwd())
+    let l:session_path = expand('~/.vim/sessions/') . l:session_hash . '.session'
+    silent execute 'mksession! ' . l:session_path
 endfunction
 
 "
@@ -856,7 +845,7 @@ function! LS()
 
     " Always show the signcolumn, otherwise it would shift the text each time
     " diagnostics appear/become resolved
-    set signcolumn=yes
+    setlocal signcolumn=yes
 
     " Use tab for trigger completion with characters ahead and navigate
     " NOTE: There's always complete item selected by default, you may want to enable
@@ -1324,19 +1313,3 @@ function! ShowLeaderBindings()
 endfunction
 
 command! ShowLeaderBindings call ShowLeaderBindings()
-
-"
-" llama.vim: cake-and-eat-it. The plugin is installed but loaded lazily
-" (Plug '... { 'on': [] }'). Here we probe the local FIM endpoint with a hard
-" 1s timeout; only if it answers do we load + configure the plugin. A dead or
-" slow server therefore costs at most 1s once, and never blocks beyond that.
-"
-let s:llama_host = "http://172.17.0.1:8012"
-if executable('curl')
-    call system('curl -s -o /dev/null --max-time 1 ' . shellescape(s:llama_host . '/health'))
-    if v:shell_error == 0
-        let g:llama_config = get(g:, 'llama_config', {})
-        let g:llama_config.endpoint_fim = s:llama_host . "/infill"
-        call plug#load('llama.vim')
-    endif
-endif
