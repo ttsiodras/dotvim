@@ -97,7 +97,6 @@ endif
 " se autoindent
 se undofile
 se undodir=~/.vim/undo//,/tmp//
-"noremap <ESC>OP <F1>
 
 " ESC is too far away - and Steve Losh is right, this is better than jj
 inoremap jk <esc>
@@ -668,7 +667,6 @@ let g:gitgutter_preview_win_floating = 1
 nnoremap <silent> <leader>d :GitGutterPreviewHunk<CR>
 nnoremap <silent> <leader>s :GitGutterStageHunk<CR>
 nnoremap <silent> <leader>u :GitGutterUndoHunk<CR>
-"nnoremap <silent> <F1> :GitGutterNextHunk<CR>
 
 "
 " Auto comment/uncomment
@@ -696,8 +694,8 @@ noremap <F7> :call ThanassisMake()<CR>
 noremap! <F7> <ESC> :call ThanassisMake()<CR>
 
 
-" After recording a macro, use a single-key to repeat it
-nnoremap <F1> @@
+" Use this to automate reviewing and staging via GitGutter
+nmap <F1> \s]czz\d
 
 
 """""""""""""""""""""""""""""""""""""""""""""
