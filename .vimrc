@@ -1297,7 +1297,7 @@ endfunction
 "
 " For log files with ANSI color codes
 "
-au BufNewFile,BufRead *.log AnsiEsc
+au BufNewFile,BufRead *.log let b:coc_enabled = 0 | AnsiEsc
 
 "
 " Now read machine-local customizations
