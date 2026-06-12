@@ -697,6 +697,9 @@ noremap! <F7> <ESC> :call ThanassisMake()<CR>
 " Use this to automate reviewing and staging via GitGutter
 nmap <F1> \s]czz\d
 
+" Scroll horizontally by 20 columns
+nnoremap <C-Left>  20zh
+nnoremap <C-Right> 20zl
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
