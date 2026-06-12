@@ -75,6 +75,9 @@ Plug 'derekwyatt/vim-scala'
 " Markdown
 Plug 'preservim/vim-markdown'
 
+" Render ANSI color codes in buffers
+Plug 'powerman/vim-plugin-AnsiEsc'
+
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -1290,6 +1293,11 @@ function! SetupYamlEnviron()
     " is a good idea, is... mistaken.
     setlocal noautoindent
 endfunction
+
+"
+" For log files with ANSI color codes
+"
+au BufNewFile,BufRead *.log AnsiEsc
 
 "
 " Now read machine-local customizations
