@@ -76,7 +76,7 @@ Plug 'derekwyatt/vim-scala'
 Plug 'preservim/vim-markdown'
 
 " Render ANSI color codes in buffers
-Plug 'powerman/vim-plugin-AnsiEsc'
+Plug 'ttsiodras/vim-plugin-AnsiEsc'
 
 call plug#end()
 
