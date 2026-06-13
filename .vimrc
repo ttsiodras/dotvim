@@ -26,58 +26,57 @@ packadd! matchit
 """""""""
 call plug#begin('~/.vim/plugged')
 
-" Best autocompletion as of 2025
-Plug 'neoclide/coc.nvim', { 'branch': 'release'}
+" Best autocompletion as of 2026
+Plug 'neoclide/coc.nvim', { 'branch': 'c2fdb755de20f1725ffd5b9001ee846dbcbd81cf' }
 
 " Fuzzy friends
-Plug 'junegunn/fzf', { 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': './install --all', 'branch': 'b59f27ef5aba64e20d4415538fa2f460977a0cba' }
+Plug 'junegunn/fzf.vim', { 'branch': '34a564c81f36047f50e593c1656f4580ff75ccca' }
 
 " tpope essentials
-Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-abolish', { 'branch': 'dcbfe065297d31823561ba787f51056c147aa682' }
+Plug 'tpope/vim-surround', { 'branch': '3d188ed2113431cf8dac77be61b842acb64433d9' }
+Plug 'tpope/vim-repeat', { 'branch': '65846025c15494983dafe5e3b46c8f88ab2e9635' }
+Plug 'tpope/vim-commentary', { 'branch': '64a654ef4a20db1727938338310209b6a63f60c9' }
 
 " Ctrl-w _
-Plug 'szw/vim-maximizer'
+Plug 'szw/vim-maximizer', { 'branch': '2e54952fe91e140a2e69f35f22131219fcd9c5f1' }
 
 " Navigation / editing
-Plug 'preservim/nerdtree'
-Plug 'easymotion/vim-easymotion'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'godlygeek/tabular'
-Plug 'vim-scripts/a.vim'
+Plug 'preservim/nerdtree', { 'branch': '690d061b591525890f1471c6675bcb5bdc8cdff9' }
+Plug 'easymotion/vim-easymotion', { 'branch': 'b3cfab2a6302b3b39f53d9fd2cd997e1127d7878' }
+Plug 'michaeljsmith/vim-indent-object', { 'branch': '8ab36d5ec2a3a60468437a95e142ce994df598c6' }
+Plug 'godlygeek/tabular', { 'branch': '12437cd1b53488e24936ec4b091c9324cafee311' }
+Plug 'vim-scripts/a.vim', { 'branch': '2cbe946206ec622d9d8cf2c99317f204c4d41885' }
 
 " Search
-Plug 'mileszs/ack.vim'
+Plug 'mileszs/ack.vim', { 'branch': '36e40f9ec91bdbf6f1adf408522a73a6925c3042' }
 
 " Git
-Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter', { 'branch': '21c977e8597c468c7dc76001389b0b430d46a4b0' }
 
 " Linting (sh/python via syntastic; coc handles the rest)
-Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic', { 'branch': '8d5e37c29cf5952fbf300b9230bffe424c61a488' }
 
 " C/C++
-Plug 'rhysd/vim-clang-format'
+Plug 'rhysd/vim-clang-format', { 'branch': '6b791825ff478061ad1c57b21bb1ed5a5fd0eb29' }
 
 " TypeScript
-Plug 'ttsiodras/typescript-vim'
-Plug 'clausreinke/typescript-tools'
+Plug 'ttsiodras/typescript-vim', { 'branch': '590c71520710235d8b6c8c301c1e19469e38b32e' }
+Plug 'clausreinke/typescript-tools', { 'branch': '6c07eab06fe9ac3afdf3259b13061aa7dfeb7020' }
 
 " Clojure
-Plug 'tpope/vim-fireplace'
-Plug 'guns/vim-clojure-static'
+Plug 'tpope/vim-fireplace', { 'branch': '5e66509599de92550762cf2681338fc4cd1e71cf' }
+Plug 'guns/vim-clojure-static', { 'branch': 'fae5710a0b79555fe3296145be4f85148266771a' }
 
 " Scala
-Plug 'derekwyatt/vim-scala'
+Plug 'derekwyatt/vim-scala', { 'branch': '7657218f14837395a4e6759f15289bad6febd1b4' }
 
 " Markdown
-Plug 'preservim/vim-markdown'
+Plug 'preservim/vim-markdown', { 'branch': '1bc9d0cd8e1cc3e901b0a49c2b50a843f1c89397' }
 
 " Render ANSI color codes in buffers
-Plug 'ttsiodras/vim-plugin-AnsiEsc'
-
+Plug 'ttsiodras/vim-plugin-AnsiEsc', { 'branch': '9a55a38580a4c30297ea70e98e954fc1a6fdeb4c' }
 call plug#end()
 
 """""""""""""""""""""""""""""
