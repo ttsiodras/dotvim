@@ -633,7 +633,7 @@ se foldcolumn=0
 " Reroute the :Ack to use ripgrep - warp speed!
 "
 "let g:ackprg = 'ag --nogroup --nocolor --column'
-let g:ackprg = 'rg --vimgrep --smart-case'
+let g:ackprg = 'rg --vimgrep --smart-case --follow'
 
 "
 " Ignore case unless using caps
