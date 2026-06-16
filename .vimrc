@@ -1291,6 +1291,8 @@ function! SetupYamlEnviron()
     " Whoever thought that indenting the line the moment I add a '#' in front
     " is a good idea, is... mistaken.
     setlocal noautoindent
+    setlocal foldmethod=indent
+    setlocal foldlevel=99
 endfunction
 
 "
