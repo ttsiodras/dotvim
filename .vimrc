@@ -77,6 +77,10 @@ Plug 'preservim/vim-markdown', { 'branch': '1bc9d0cd8e1cc3e901b0a49c2b50a843f1c8
 
 " Render ANSI color codes in buffers
 Plug 'ttsiodras/vim-plugin-AnsiEsc', { 'branch': '9a55a38580a4c30297ea70e98e954fc1a6fdeb4c' }
+
+" Yaml syntax has many pitfalls
+Plug 'dense-analysis/ale'
+
 call plug#end()
 
 """""""""""""""""""""""""""""
@@ -1293,6 +1297,13 @@ function! SetupYamlEnviron()
     setlocal noautoindent
     setlocal foldmethod=indent
     setlocal foldlevel=99
+
+    let g:ale_linters = {
+\   'yaml': ['yamllint'],
+\}
+    let g:ale_lint_on_text_changed = 'normal'
+    let g:ale_lint_on_insert_leave = 1
+    let g:ale_lint_on_save = 1
 endfunction
 
 "
