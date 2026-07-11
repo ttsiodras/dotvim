@@ -707,6 +707,12 @@ nmap <F1> \s]czz\d
 nnoremap <C-Left>  20zh
 nnoremap <C-Right> 20zl
 
+let g:ale_linters = {
+\   'c': [],                                                                                                                                                      
+\   'cpp': [],                                                                                                                                                    
+\   'yaml': ['yamllint'],                                                                                                                                         
+\}
+
 """""""""""""""""""""""""""""""""""""""""""""
 "
 "       Language-specific section
@@ -1298,9 +1304,6 @@ function! SetupYamlEnviron()
     setlocal foldmethod=indent
     setlocal foldlevel=99
 
-    let g:ale_linters = {
-\   'yaml': ['yamllint'],
-\}
     let g:ale_lint_on_text_changed = 'normal'
     let g:ale_lint_on_insert_leave = 1
     let g:ale_lint_on_save = 1
