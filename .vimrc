@@ -78,7 +78,7 @@ Plug 'preservim/vim-markdown', { 'branch': '1bc9d0cd8e1cc3e901b0a49c2b50a843f1c8
 " Render ANSI color codes in buffers
 Plug 'ttsiodras/vim-plugin-AnsiEsc', { 'branch': '9a55a38580a4c30297ea70e98e954fc1a6fdeb4c' }
 
-" Yaml syntax has many pitfalls
+" Yaml syntax has many pitfalls. Use linting (yamllint)
 Plug 'dense-analysis/ale'
 
 call plug#end()
@@ -712,6 +712,12 @@ let g:ale_linters = {
 \   'cpp': [],                                                                                                                                                    
 \   'yaml': ['yamllint'],                                                                                                                                         
 \}
+
+" Force shellcheck to assume bash
+let g:ale_sh_shellcheck_dialect = 'bash'
+
+" Use bash (not sh/dash) for the shell -n syntax check
+let g:ale_sh_shell_default_shell = 'bash'
 
 """""""""""""""""""""""""""""""""""""""""""""
 "
