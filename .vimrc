@@ -407,9 +407,10 @@ syntax on
 " colorscheme elflord
 " colorscheme desert
 " colorscheme catppuccin-mocha
-colorscheme evening
+" colorscheme evening
 " colorscheme delek " from home
 " colorscheme catppuccin-latte
+colorscheme industry
 " se nowrap " from home
 
 "
